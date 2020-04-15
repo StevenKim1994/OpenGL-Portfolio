@@ -30,6 +30,15 @@
     <ClInclude Include="lib\iOpenGL.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="game\game.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\iType.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\iPoint.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL-portfolio.rc">
@@ -58,6 +67,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="lib\iOpenGL.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="game\game.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\iPoint.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

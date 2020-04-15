@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;GDIPVER=0x0110;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>C:\Users\dev\source\repos\OpenGL-portfolio\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\dev\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib;C:\Users\dev\source\repos\OpenGL-portfolio\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -152,10 +152,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="game\game.h" />
     <ClInclude Include="game\main.h" />
     <ClInclude Include="lib\iGraphics.h" />
     <ClInclude Include="lib\iOpenGL.h" />
+    <ClInclude Include="lib\iPoint.h" />
     <ClInclude Include="lib\iStd.h" />
+    <ClInclude Include="lib\iType.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -166,10 +169,12 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="game\game.cpp" />
     <ClCompile Include="game\glew.c" />
     <ClCompile Include="game\main.cpp" />
     <ClCompile Include="lib\iGraphics.cpp" />
     <ClCompile Include="lib\iOpenGL.cpp" />
+    <ClCompile Include="lib\iPoint.cpp" />
     <ClCompile Include="lib\iStd.cpp" />
   </ItemGroup>
   <ItemGroup>

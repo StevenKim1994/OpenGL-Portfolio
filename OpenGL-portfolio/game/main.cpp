@@ -17,7 +17,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInst,
 {
 	ULONG_PTR gpToken = startGdiplus();
 	hInstance = hInst;
-
+	
 	WNDCLASSEXW wc;
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -38,7 +38,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInst,
 	hDC = GetDC(hWnd);
 
 	RECT rect;
-	GetClientRect(hWnd, &rect); // ½ºÅ©·Ñ¹Ù Å¸ÀÌÆ²¹Ù Á¦¿ÜÇÑ À©µµ¿ìÃ¢ Rect Å©±â ¹Ş¾Æ¿È
+	GetClientRect(hWnd, &rect); // ìŠ¤í¬ë¡¤ë°” íƒ€ì´í‹€ë°” ì œì™¸í•œ ìœˆë„ìš°ì°½ Rect í¬ê¸° ë°›ì•„ì˜´
 
 	monitorSizeW = rect.right - rect.left;
 	monitorSizeH = rect.bottom - rect.top;
