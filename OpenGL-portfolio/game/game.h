@@ -5,4 +5,4 @@
 void loadGame();
 void freeGame();
 void drawGame(float dt);
-void keyGame(iKeyState stat)//#bug, iPoint point);
+void keyGame(iKeyState stat, iPoint point); 

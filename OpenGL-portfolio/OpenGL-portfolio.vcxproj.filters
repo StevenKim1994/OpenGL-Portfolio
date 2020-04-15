@@ -39,6 +39,12 @@
     <ClInclude Include="lib\iPoint.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="lib\iSize.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="lib\iRect.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL-portfolio.rc">
@@ -73,6 +79,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="lib\iPoint.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\iSize.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\iRect.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
