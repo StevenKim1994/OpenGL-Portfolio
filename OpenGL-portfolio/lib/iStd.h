@@ -15,7 +15,7 @@
 #define DEVSIZE_WIDTH 960
 #define DEVSIZE_HEIGHT 480
 
-extern int monitorSizeW, monitorSizeH; // 이헤더를 포함하는 외부소스에 이변수 알려줌 .. 전역변수로 쓰기 위함
+extern int monitorSizeW, monitorSizeH; // extern 접두사는 이헤더를 포함하는 외부소스에 이변수 알려줌 .. 이헤더를 포함하는 모든 소스에서 전역변수로 쓰기 위함
 extern iSize devSize;
 extern iRect viewport;
 
