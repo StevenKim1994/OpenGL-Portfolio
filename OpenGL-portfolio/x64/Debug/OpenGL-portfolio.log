@@ -1,12 +1,21 @@
 ﻿  game.cpp
-C:\Users\dev\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\game\game.h(8,14): error C2065: 'iKeyState': 선언되지 않은 식별자입니다.
-C:\Users\dev\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\game\game.h(8,24): error C2146: 구문 오류: ')'이(가) 'stat' 식별자 앞에 없습니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\game\game.h(3,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'iStd.h': No such file or directory
   main.cpp
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\game\main.h(2,10): fatal error C1083: 포함 파일을 열 수 없습니다. 'iStd.h': No such file or directory
   iGraphics.cpp
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.h(94,20): error C2065: 'flaot': 선언되지 않은 식별자입니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.h(94,26): error C2146: 구문 오류: ')'이(가) 'size' 식별자 앞에 없습니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iGraphics.cpp(36,72): warning C4267: '인수': 'size_t'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iGraphics.cpp(54,1): error C2059: 구문 오류: '}'
   iOpenGL.cpp
   iPoint.cpp
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.h(94,20): error C2065: 'flaot': 선언되지 않은 식별자입니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.h(94,26): error C2146: 구문 오류: ')'이(가) 'size' 식별자 앞에 없습니다.
+  iRect.cpp
+  iSize.cpp
   iStd.cpp
-C:\Users\dev\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.cpp(7,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\dev\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.cpp(12,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.h(94,20): error C2065: 'flaot': 선언되지 않은 식별자입니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.h(94,26): error C2146: 구문 오류: ')'이(가) 'size' 식별자 앞에 없습니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.cpp(7,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\user\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iStd.cpp(12,12): warning C4244: 'return': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   코드를 생성하고 있습니다...
-C:\Users\dev\Documents\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib\iPoint.cpp(109): error C4716: 'iPointRotate': 값을 반환해야 합니다.

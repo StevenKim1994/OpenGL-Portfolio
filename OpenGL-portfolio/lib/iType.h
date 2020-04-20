@@ -10,6 +10,8 @@
 #include <time.h>
 
 #include "iPoint.h"
+#include "iSize.h"
+#include "iRect.h"
 
 typedef signed char int8;
 typedef unsigned char uint8;
@@ -37,6 +39,19 @@ struct Texture
 	float width, height;
 	float potWidth, potHeight; // OpenGL의 특성때문에 2의 승수로 텍스처를 불러오기 때문에 실제 width, height를 2의 승수로 만든 값
 	int retainCount; // 참조횟수 자체적인 GarbageCollector 구현을 위함
+};
+
+enum TextureWrap
+{
+	CLAMP = 0,
+	REPEAT,
+};
+
+enum TextureFilter
+{
+	LINEAR = 0,
+	NEAREST,
+	MIPMAP,
 };
 
 #define	TOP		1
