@@ -263,3 +263,7 @@ FakesAssemblies/
 *VC.opendb
 *VC.db-shm
 *VC.db-wal
+*.obj
+*.tlog
+
+*.*.tlog
