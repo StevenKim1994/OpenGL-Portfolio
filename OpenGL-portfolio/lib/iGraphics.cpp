@@ -107,7 +107,7 @@ iGraphics::~iGraphics()
 {
 	if (gd->bmp)
 		delete gd->bmp;
-	if (gd - g)
+	if (gd ->g)
 		delete gd->g;
 
 	free(gd);

@@ -12,6 +12,10 @@
 #include "iPoint.h"
 #include "iSize.h"
 #include "iRect.h"
+#include "iColor.h"
+
+#include "iArray.h"
+#include "iString.h"
 
 typedef signed char int8;
 typedef unsigned char uint8;

@@ -105,5 +105,12 @@ iPoint iPointRotate(const iPoint& p, const iPoint& t, float degree)
 	float sinr = _sin(degree);
 	float cosr = _cos(degree);
 
-	
+	iPoint r = iPointMake(p.x - t.x, t.y - p.y);
+	iPoint _p;
+	_p.x = r.x * cosr - r.y * sinr;
+	_p.y = r.x * sinr + r.y * cosr;
+
+	_p.x = t.x + _p.x;
+	_p.y = t.y - _p.y;
+	return _p;
 }

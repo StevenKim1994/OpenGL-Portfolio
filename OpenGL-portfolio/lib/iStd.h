@@ -5,6 +5,12 @@
 #include "iOpenGL.h"
 #include "iType.h" // 필요한 헤더 왠만하면 여기에 다있음.
 
+#include "iImage.h"
+#include "iPopup.h"
+//#include "iStrTex.h"
+#include "iSort.h"
+#include "iFPS.h"
+
 #if _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") // 디버그모드 콘솔창 나오게하기
 #define xprintf printf
@@ -18,6 +24,7 @@
 extern int monitorSizeW, monitorSizeH; // extern 접두사는 이헤더를 포함하는 외부소스에 이변수 알려줌 .. 이헤더를 포함하는 모든 소스에서 전역변수로 쓰기 위함
 extern iSize devSize;
 extern iRect viewport;
+extern int texNum;
 
 void loadLib(HDC hDC);
 void freeLib();
@@ -56,7 +63,7 @@ public:
 };
 
 extern iFBO* fbo;
-
+float getStringSize();
 uint8 float2uint8(float f);
 void setRGBA(float r, float g, float b, float a);
 void getRGBA(float& r, float& g, float& b, float& a);
@@ -71,7 +78,7 @@ void fillRect(float x, float y, float width, float height, float radius = 0.0f);
 void fillRect(iRect rt, float radius = 0.0f);
 
 void saveImageFromRGBA(const char* path, uint8* rgba, int width, int height);
-uint8 bmp2rgba(Bitmap* bmp, int& width, int& height);
+uint8* bmp2rgba(Bitmap* bmp, int& width, int& height);
 
 Texture* createTexture(int width, int height, bool rgba32f = false);
 void setTexture(TextureWrap wrap, TextureFilter filter);
@@ -104,7 +111,7 @@ iSize sizeOfString(const char* szFormat, ...);
 
 uint32 random();
 float _sin(float degree);
-float _cons(float degree);
+float _cos(float degree);
 float linear(float r, float a, float b); // 등속도 (선형속도)
 iPoint linear(float r, iPoint a, iPoint b); // 등속도 (선형속도)
 float easeIn(float r, float a, float b); // 점점 느리게
