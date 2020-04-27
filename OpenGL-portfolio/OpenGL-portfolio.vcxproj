@@ -106,13 +106,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;GDIPVER=0x0110;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;..\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\OpenAL 1.1 SDK\libs\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -154,11 +155,13 @@
   <ItemGroup>
     <ClInclude Include="game\game.h" />
     <ClInclude Include="game\main.h" />
+    <ClInclude Include="game\sceneManager.h" />
     <ClInclude Include="lib\iArray.h" />
     <ClInclude Include="lib\iColor.h" />
     <ClInclude Include="lib\iFPS.h" />
     <ClInclude Include="lib\iGraphics.h" />
     <ClInclude Include="lib\iImage.h" />
+    <ClInclude Include="lib\iOpenAL.h" />
     <ClInclude Include="lib\iOpenGL.h" />
     <ClInclude Include="lib\iPoint.h" />
     <ClInclude Include="lib\iPopup.h" />
@@ -167,6 +170,7 @@
     <ClInclude Include="lib\iSort.h" />
     <ClInclude Include="lib\iStd.h" />
     <ClInclude Include="lib\iString.h" />
+    <ClInclude Include="lib\iStrTex.h" />
     <ClInclude Include="lib\iType.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
@@ -181,11 +185,13 @@
     <ClCompile Include="game\game.cpp" />
     <ClCompile Include="game\glew.c" />
     <ClCompile Include="game\main.cpp" />
+    <ClCompile Include="game\sceneManager.cpp" />
     <ClCompile Include="lib\iArray.cpp" />
     <ClCompile Include="lib\iColor.cpp" />
     <ClCompile Include="lib\iFPS.cpp" />
     <ClCompile Include="lib\iGraphics.cpp" />
     <ClCompile Include="lib\iImage.cpp" />
+    <ClCompile Include="lib\iOpenAL.cpp" />
     <ClCompile Include="lib\iOpenGL.cpp" />
     <ClCompile Include="lib\iPoint.cpp" />
     <ClCompile Include="lib\iPopup.cpp" />
@@ -194,6 +200,7 @@
     <ClCompile Include="lib\iSort.cpp" />
     <ClCompile Include="lib\iStd.cpp" />
     <ClCompile Include="lib\iString.cpp" />
+    <ClCompile Include="lib\iStrTex.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

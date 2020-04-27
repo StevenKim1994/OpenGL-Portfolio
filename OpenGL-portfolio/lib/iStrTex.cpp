@@ -31,7 +31,7 @@ void iStrTex::setString(const char* szFormat, ...)
 
 	if (strcmp(str, szText) == 0)
 		return;
-
+	
 	int len = strLength;
 	while (len < strlen(szText) + 1)
 		len *= 2;

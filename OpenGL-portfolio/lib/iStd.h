@@ -1,15 +1,16 @@
 #pragma once
 
-#include "../resource.h"
 #include "iGraphics.h"
 #include "iOpenGL.h"
 #include "iType.h" // 필요한 헤더 왠만하면 여기에 다있음.
 
 #include "iImage.h"
 #include "iPopup.h"
-//#include "iStrTex.h"
+#include "iStrTex.h"
 #include "iSort.h"
 #include "iFPS.h"
+
+#include "iOpenAL.h"
 
 #if _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") // 디버그모드 콘솔창 나오게하기

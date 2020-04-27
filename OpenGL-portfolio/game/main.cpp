@@ -1,5 +1,6 @@
 #include "main.h"
 
+#include "game.h"
 HINSTANCE hInstance;
 HWND hWnd;
 HDC hDC;
