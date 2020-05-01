@@ -51,29 +51,66 @@ void initOpenGL()
 {
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	// GL_MODULATE / GL_BLEND_SRC
+	glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND_SRC);
+
+
 
 	glEnable(GL_DEPTH_TEST);
+	//glDepthFunc(GL_LEQUAL); 
 	glDepthFunc(GL_ALWAYS);
-
 	glClearDepth(1.0f);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 	glEnable(GL_SMOOTH);
 }
 
+#include "iStd.h"
 void reshapeOpenGL(int width, int height)
 {
+	float r0 = devSize.width / devSize.height;
+
+	monitorSizeW = width;
+	monitorSizeH = height;
+	float r1 = 1.0f * width / height;
+
+	if (r0 < r1)// 모니터 가로가 큰 경우
+	{
+		viewport.origin.y = 0; viewport.size.height = height;
+		viewport.size.width = devSize.width * height / devSize.height;
+		viewport.origin.x = (width - viewport.size.width) / 2;
+	}
+	else if (r0 > r1)// 모니터 가로가 작은 경우(세로 긴 경우)
+	{
+		viewport.origin.x = 0; viewport.size.width = width;
+		viewport.size.height = devSize.height * width / devSize.width;
+		viewport.origin.y = (height - viewport.size.height) / 2;
+	}
+	else// 정비율
+	{
+		viewport = iRectMake(0, 0, width, height);
+	}
+
+	glViewport(viewport.origin.x, viewport.origin.y, viewport.size.width, viewport.size.height);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, devSize.width, devSize.height, 0, -1000, 1000);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
 }
 
 GLuint nextPot(GLuint x)
 {
- //#bug
-	return 0;
+	x = x - 1;
+	x = x | (x >> 1);
+	x = x | (x >> 2);
+	x = x | (x >> 4);
+	x = x | (x >> 8);
+	x = x | (x >> 16);
+	return x + 1;
 }
 
 Texture* createImageWithRGBA(GLubyte* rgba, GLuint width, GLuint height)

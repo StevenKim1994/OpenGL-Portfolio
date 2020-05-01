@@ -169,6 +169,8 @@ void drawLib(Method_Paint method)
         0, 0, tex->width, tex->height, BOTTOM | RIGHT,
         0.2f, 0.2f, 2, 0, REVERSE_HEIGHT);
 #endif
+
+   
 }
 
 static void keyLib(uint32& key, iKeyState stat, int c)
