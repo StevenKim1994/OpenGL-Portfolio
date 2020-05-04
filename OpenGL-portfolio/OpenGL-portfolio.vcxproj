@@ -156,6 +156,7 @@
     <ClInclude Include="game\game.h" />
     <ClInclude Include="game\intro.h" />
     <ClInclude Include="game\main.h" />
+    <ClInclude Include="game\menu.h" />
     <ClInclude Include="game\sceneManager.h" />
     <ClInclude Include="lib\iArray.h" />
     <ClInclude Include="lib\iColor.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="game\glew.c" />
     <ClCompile Include="game\intro.cpp" />
     <ClCompile Include="game\main.cpp" />
+    <ClCompile Include="game\menu.cpp" />
     <ClCompile Include="game\sceneManager.cpp" />
     <ClCompile Include="lib\iArray.cpp" />
     <ClCompile Include="lib\iColor.cpp" />

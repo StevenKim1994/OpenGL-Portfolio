@@ -113,12 +113,62 @@ GLuint nextPot(GLuint x)
 	return x + 1;
 }
 
-Texture* createImageWithRGBA(GLubyte* rgba, GLuint width, GLuint height)
-{
-//#bug
-	return 0;
-}
+
+struct xTexParam {
+	GLuint minFilter;
+	GLuint magFilter;
+	GLuint wrapS;
+	GLuint wrapT;
+};
+static xTexParam texParam = { GL_NEAREST, GL_NEAREST ,
+		GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE };
 
 void setAntiAliasParameters(bool anti)
 {
+	if (anti == false)
+	{
+		texParam.minFilter = GL_NEAREST;
+		texParam.magFilter = GL_NEAREST;
+	}
+	else
+	{
+		texParam.minFilter = GL_LINEAR;
+		texParam.magFilter = GL_LINEAR;
+	}
 }
+
+
+void applyTexParameters()
+{
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, texParam.minFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, texParam.magFilter);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, texParam.wrapS);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, texParam.wrapT);
+}
+
+Texture* createImageWithRGBA(GLubyte* rgba, GLuint width, GLuint height)
+{
+	GLuint texID;
+	glGenTextures(1, &texID);       // create texture
+	//glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texID);// use
+
+	applyTexParameters();
+
+	int potWidth = nextPot(width), potHeight = nextPot(height);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
+		potWidth, potHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, rgba);
+
+	Texture* tex = (Texture*)malloc(sizeof(Texture));
+	tex->texID = texID;
+	tex->width = width;
+	tex->height = height;
+	tex->potWidth = potWidth;
+	tex->potHeight = potHeight;
+	tex->retainCount = 1;
+#ifdef _DEBUG
+	texNum++;
+#endif
+	return tex;
+}
+

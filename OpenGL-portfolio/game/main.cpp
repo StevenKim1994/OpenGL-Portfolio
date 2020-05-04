@@ -181,6 +181,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         if (wParam == VK_ESCAPE)
             goFullscreen();
         keyLib(iKeyStateBegan, wParam);
+
+        if(wParam != VK_ESCAPE)
+            keyGame(iKeyStateBegan, cursor);
         break;
     case WM_KEYUP:
         keyLib(iKeyStateEnded, wParam);

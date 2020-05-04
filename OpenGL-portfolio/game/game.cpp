@@ -2,6 +2,7 @@
 
 
 #include "intro.h"
+#include "menu.h"
 #include "sceneManager.h"
 
 void loadGame()
@@ -15,7 +16,7 @@ void freeGame()
 	switch(gameState)
 	{
 	case gs_intro: freeIntro();	break;
-	case gs_menu:	break;
+	case gs_menu:	freeMenu(); break;
 	case gs_proc:	break;
 	case gs_ending: break;
 	}
@@ -26,7 +27,7 @@ void drawGame(float dt)
 	switch(gameState)
 	{
 	case gs_intro:	drawIntro(dt); break;
-	case gs_menu:	break;
+	case gs_menu:	drawMenu(dt);  break;
 	case gs_proc:	break;
 	case gs_ending:	break;
 		
@@ -43,7 +44,7 @@ void keyGame(iKeyState stat, iPoint point)
 	switch(gameState)
 	{
 	case gs_intro:	keyIntro(stat, point);	break;
-	case gs_menu:		break;
+	case gs_menu:	keyMenu(stat, point);	break;
 	case gs_proc:		break;
 	case gs_ending:		break;
 	}
