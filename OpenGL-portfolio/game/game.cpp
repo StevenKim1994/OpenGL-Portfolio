@@ -7,6 +7,12 @@
 
 void loadGame()
 {
+	AudioInfo sound[3] = { {"assets/intro/sound/2.wav",false, 0.6f},
+							{"assets/intro/sound/intro.wav",false, 0.6f},
+							{"assets/intro/sound/intro.wav",true, 1.0f}, };
+	loadAudio(sound, 3);
+	audioPlay(2);
+	
 	loadIntro();
 	gameState = gs_intro;
 }
@@ -20,6 +26,8 @@ void freeGame()
 	case gs_proc:	break;
 	case gs_ending: break;
 	}
+
+	freeAudio();
 }
 
 void drawGame(float dt)

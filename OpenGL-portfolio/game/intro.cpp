@@ -22,11 +22,7 @@ void loadIntro()
 	
 	
 	printf("loadIntro()\n");
-	AudioInfo sound[3] = { {"assets/intro/sound/intro.mp3",true, 1.0f},
-							{"assets/intro/sound/intro.mp3",true, 1.0f},
-							{"assets/intro/sound/intro.mp3",true, 1.0f}, };
-	loadAudio(sound, 3);
-	audioPlay(2);
+	
 	bg = createImage("assets/intro/introbackground.png");
 
 	//title = createImage("assets/intro/title.png");
@@ -60,6 +56,8 @@ void freeIntro()
 	free(bg);
 	free(title);
 	free(enter);
+
+	
 }
 
 void drawIntro(float dt)
