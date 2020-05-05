@@ -91,7 +91,7 @@ void drawIntro(float dt)
 
 	if (getKeyDown() & keyboard_enter)
 	{
-
+		audioPlay(1); // 버튼음 재생
 		setLoading(gs_menu, freeMenu, loadMenu);
 	}
 	

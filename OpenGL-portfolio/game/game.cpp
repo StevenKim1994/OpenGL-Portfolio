@@ -5,14 +5,23 @@
 #include "menu.h"
 #include "sceneManager.h"
 
+
+#define SOUND_NUM 128
+
+
 void loadGame()
 {
-	AudioInfo sound[3] = { {"assets/intro/sound/2.wav",false, 0.6f},
-							{"assets/intro/sound/intro.wav",false, 0.6f},
-							{"assets/intro/sound/intro.wav",true, 1.0f}, };
-	loadAudio(sound, 3);
-	audioPlay(2);
-	
+	AudioInfo soundAssets[SOUND_NUM] = {
+							{ "assets/intro/sound/bgm.wav", true, 1.0f},
+							{ "assets/intro/sound/okay.wav", false, 1.0f},
+							};
+
+
+	loadAudio(soundAssets, 2);
+
+	audioPlay(0);
+
+		
 	loadIntro();
 	gameState = gs_intro;
 }

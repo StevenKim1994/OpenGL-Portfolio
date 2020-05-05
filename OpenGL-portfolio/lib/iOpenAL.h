@@ -18,7 +18,7 @@ public:
 	void play(int idx);
 	void pause(int idx);
 	void stop(int idx);
-	void volume(int idx, float vol);
+	void volume(int idx, float vol); 
 
 public:
 	ALuint* gBuffer;
@@ -36,10 +36,10 @@ struct AudioInfo
 	
 };
 
-void loadAudio(AudioInfo* ai, int aiNum);
-void freeAudio();
-void pauseAudio();
-void resumeAudio();
+void loadAudio(AudioInfo* ai, int aiNum); // 게임을 로딩할때
+void freeAudio(); // 종료할때
+void pauseAudio(); //멈출때
+void resumeAudio(); // 재개할때
 void audioPlay(int sndIdx);
 void audioStop();
 void audioStop(int sndIdx);

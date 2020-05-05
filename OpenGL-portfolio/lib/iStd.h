@@ -2,12 +2,15 @@
 
 #include "iGraphics.h"
 #include "iOpenGL.h"
-#include "iType.h" // 필요한 헤더 왠만하면 여기에 다있음.
+
+#include "iType.h"
 
 #include "iImage.h"
 #include "iPopup.h"
 #include "iStrTex.h"
+
 #include "iSort.h"
+//#include "iShortestPath.h"
 #include "iFPS.h"
 
 #include "iOpenAL.h"
