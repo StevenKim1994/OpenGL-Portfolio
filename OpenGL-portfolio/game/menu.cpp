@@ -13,7 +13,7 @@ void drawMenu(float dt)
 {
 	printf("drawMenu()\n");
 
-	setRGBA(1, 1, 1, 1);
+	setRGBA(1, 0, 0, 1);
 	fillRect(0, 0, devSize.width, devSize.height);
 	
 }

@@ -186,8 +186,10 @@ static void keyLib(uint32& key, iKeyState stat, int c)
         case VK_UP:     key |= keyboard_up; break;
         case 's':case 'S':
         case VK_DOWN:   key |= keyboard_down; break;
-
+        
         case VK_SPACE:  key |= keyboard_space; break;
+        
+        case VK_RETURN: key |= keyboard_enter; break;
         }
     }
     else if (stat == iKeyStateEnded)
@@ -203,6 +205,10 @@ static void keyLib(uint32& key, iKeyState stat, int c)
         case VK_DOWN:   key &= ~keyboard_down; break;
 
         case VK_SPACE:  key &= ~keyboard_space; break;
+
+
+        case VK_RETURN: key &= keyboard_enter; break;
+           
         }
     }
 }
