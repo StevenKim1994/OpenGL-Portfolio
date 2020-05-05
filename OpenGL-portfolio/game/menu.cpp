@@ -81,9 +81,6 @@ void createPopMenuBtn()
 
 	}
 
-
-
-
 	iPoint op = iPointMake(devSize.width / 2, 400);
 	pop->openPosition = op;
 	pop->closePosition = op;
