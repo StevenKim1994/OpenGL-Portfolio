@@ -12,9 +12,10 @@
 void loadGame()
 {
 	AudioInfo soundAssets[SOUND_NUM] = {
-							{ "assets/intro/sound/bgm.wav", true, 1.0f},
+							{ "assets/intro/sound/bgm.wav", true, 0.5f},
 							{ "assets/intro/sound/okay.wav", false, 1.0f},
-							};
+							{ "assets/intro/sound/SHOT.wav", false, 1.0f},
+	};
 
 
 	loadAudio(soundAssets, 2);

@@ -141,7 +141,7 @@ void iPopup::paint(float dt)
 		iPoint off;
 		if (stat == iPopupStatOpen)
 		{
-			off = easeIn(showDt / _showDt, openPosition, closePosition);
+			off = easeOut(showDt / _showDt, openPosition, closePosition);//easeIn(showDt / _showDt, openPosition, closePosition);
 			showDt += dt;
 			if (showDt >= _showDt)
 			{
@@ -156,7 +156,7 @@ void iPopup::paint(float dt)
 		}
 		else// if (stat == iPopupStatClose)
 		{
-			off = easeOut(showDt / _showDt, closePosition, openPosition);
+			off = easeOut(showDt / _showDt, closePosition, openPosition);//easeOut(showDt / _showDt, closePosition, openPosition);
 			showDt += dt;
 			if (showDt >= _showDt)
 			{

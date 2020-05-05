@@ -35,8 +35,11 @@ enum iKeyState
 #define keyboard_right	2
 #define keyboard_up		4
 #define keyboard_down	8
-#define keyboard_enter	13
-#define keyboard_space	16
+#define keyboard_enter	16
+#define keyboard_space	32
+
+#define keyboard_1 64
+
 
 struct Texture
 {

@@ -88,9 +88,12 @@ void drawIntro(float dt)
 	setRGBA(1, 1, 1, 1);
 	
 	
+	
+	
 
 	if (getKeyDown() & keyboard_enter)
 	{
+		audioStop(0); // Intro BGM stop
 		audioPlay(1); // 버튼음 재생
 		setLoading(gs_menu, freeMenu, loadMenu);
 	}
@@ -147,6 +150,11 @@ void createTitle()
 
 
 	popTitle = pop;
+
+	if (popTitle->openPosition == popTitle->closePosition)
+		audioPlay(2); // shot sound;
+
+
 	
 }
 
