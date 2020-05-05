@@ -42,7 +42,7 @@ void loadIntro()
 	
 
 	createTitle();
-	
+	audioPlay(2);
 
 }
 
@@ -140,7 +140,7 @@ void createTitle()
 	
 	pop->addObject(img);
 
-
+	
 	iPoint op = iPointMake(devSize.width / 2 - 300, 0.0);
 	pop->openPosition = op;
 	
@@ -151,8 +151,7 @@ void createTitle()
 
 	popTitle = pop;
 
-	if (popTitle->openPosition == popTitle->closePosition)
-		audioPlay(2); // shot sound;
+	
 
 
 	

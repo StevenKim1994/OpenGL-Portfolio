@@ -9,6 +9,6 @@ void keyMenu(iKeyState stat, iPoint point);
 //---------PopMenuBtn----------------------//
 void createPopMenuBtn();
 void freePopMenuBtn();
-void drawPopMenubtn(float dt);
+void drawPopMenuBtn(float dt);
 bool keyPopMenuBtn(iKeyState stat, iPoint point);
 void showPopMenuBtn(bool show);

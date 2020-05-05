@@ -161,6 +161,7 @@
     <ClInclude Include="game\main.h" />
     <ClInclude Include="game\menu.h" />
     <ClInclude Include="game\sceneManager.h" />
+    <ClInclude Include="game\trailer.h" />
     <ClInclude Include="lib\iArray.h" />
     <ClInclude Include="lib\iColor.h" />
     <ClInclude Include="lib\iFPS.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="lib\iString.h" />
     <ClInclude Include="lib\iStrTex.h" />
     <ClInclude Include="lib\iType.h" />
+    <ClInclude Include="lib\iVideo.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
@@ -196,6 +198,7 @@
     <ClCompile Include="game\main.cpp" />
     <ClCompile Include="game\menu.cpp" />
     <ClCompile Include="game\sceneManager.cpp" />
+    <ClCompile Include="game\trailer.cpp" />
     <ClCompile Include="lib\iArray.cpp" />
     <ClCompile Include="lib\iColor.cpp" />
     <ClCompile Include="lib\iFPS.cpp" />
@@ -211,6 +214,7 @@
     <ClCompile Include="lib\iStd.cpp" />
     <ClCompile Include="lib\iString.cpp" />
     <ClCompile Include="lib\iStrTex.cpp" />
+    <ClCompile Include="lib\iVideo.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".editorconfig" />

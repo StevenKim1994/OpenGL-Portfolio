@@ -33,13 +33,34 @@ HRESULT PlayVideo(HWND hwnd, const WCHAR* sURL)
     );
 }
 
+HRESULT StopVideo(HWND hwnd)
+{
+    return MFPCreateMediaPlayer(
+        NULL,
+        FALSE,   // Start playback automatically?
+        0,      // Flags.
+        NULL,   // Callback pointer.
+        hwnd,
+        &g_pPlayer
+    );
+}
 #include "iStd.h"
 
-extern HWND hWnd;
+extern HWND videohWnd;
 
 void playVideo(const char* path)
 {
+    
+	
     wchar_t* wPath = utf8_to_utf16(path);
-    PlayVideo(hWnd, wPath);
+    PlayVideo(videohWnd, wPath);
     free(wPath);
 }
+
+void stopVideo()
+{
+    
+    DestroyWindow(videohWnd);
+    StopVideo(videohWnd);
+}
+

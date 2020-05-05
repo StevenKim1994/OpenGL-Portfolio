@@ -11,6 +11,7 @@
 
 #include "iSort.h"
 //#include "iShortestPath.h"
+#include "iVideo.h"
 #include "iFPS.h"
 
 #include "iOpenAL.h"

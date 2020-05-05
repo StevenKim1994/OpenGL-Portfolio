@@ -1,3 +1,4 @@
+#pragma once
 #include "menu.h"
 
 Texture* menuBg;
@@ -9,8 +10,10 @@ void loadMenu()
 
 	menuBg = createImage("assets/menu/menuBg.jpg");
 
-
+	audioPlay(3);
 	createPopMenuBtn();
+	
+	
 }
 
 void freeMenu()
@@ -32,7 +35,8 @@ void drawMenu(float dt)
 
 #endif 
 
-	drawPopMenubtn(dt);
+	drawPopMenuBtn(dt);
+	showPopMenuBtn(true);
 	
 }
 
@@ -46,45 +50,39 @@ void keyMenu(iKeyState stat, iPoint point)
 //---------------PopMenuBtn-----------------------//
 
 iPopup* PopMenuBtn;
+iImage** imgMenuBtn;
 void createPopMenuBtn()
 {
 	iPopup* pop = new iPopup(iPopupStyleAlpha);
-	iImage** Buttons = (iImage**)malloc(sizeof(iImage*) * 3); 
-	iSize btnSize = iSizeMake(350, 100);
 	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(350, 100);
+	imgMenuBtn = (iImage**)malloc(sizeof(iImage*) * 3);
 
-	setStringSize(5);
-	setStringBorder(0);
-	setStringRGBA(1, 1, 1, 1);
-
-	const char* strBtnIndex[3] = { "게임시작", "게임옵션", "게임종료" };
-
-	//팝업에 포함되는 내용 추가부분
+	for(int i = 0; i <3; i++)
 	{
-		for (int i = 0; i < 3; i++)
+		iImage* img = new iImage();
+		for(int j = 0; j <2; j++)
 		{
-			iImage* img = new iImage();
-			for (int j = 0; j < 2; j++)
-			{
-				if (j == 0) setRGBA(1, 0, 0, 1); // 일단 선택되지 않았을때 버튼의 색은 Red...
-				else if (j == 1) setRGBA(0, 1, 0, 1); // 선택되었을떄 버튼의 색은 Green
-				
-				g->init(btnSize);
-				g->fillRect(0, 0, btnSize.width, btnSize.height, 10);
-				g->drawString(0, 0, TOP | LEFT, strBtnIndex[i]);
-				
-			}
+			Texture* tex;
+			g->init(size);
 
+			if (j == 0)
+				setRGBA(1, 1, 1, 1);
+			else if (j == 1)
+				setRGBA(1, 0, 0, 1);
 
+			g->fillRect(0, 0, size.width, size.height);
+			tex = g->getTexture();
+
+// #bug 어제 여기까지함
+			
+			
+		
 		}
 
 
+		
 	}
-
-	iPoint op = iPointMake(devSize.width / 2, 400);
-	pop->openPosition = op;
-	pop->closePosition = op;
-
 
 
 	PopMenuBtn = pop;
@@ -92,10 +90,12 @@ void createPopMenuBtn()
 
 void freePopMenuBtn()
 {
+	delete PopMenuBtn;
 }
 
-void drawPopMenubtn(float dt)
+void drawPopMenuBtn(float dt)
 {
+	PopMenuBtn->paint(dt);
 }
 
 bool keyPopMenuBtn(iKeyState stat, iPoint point)
@@ -105,4 +105,5 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 
 void showPopMenuBtn(bool show)
 {
+	PopMenuBtn->show(show);
 }

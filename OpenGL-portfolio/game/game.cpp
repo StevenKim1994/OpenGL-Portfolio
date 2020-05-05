@@ -4,7 +4,7 @@
 #include "intro.h"
 #include "menu.h"
 #include "sceneManager.h"
-
+#include "trailer.h"
 
 #define SOUND_NUM 128
 
@@ -12,14 +12,18 @@
 void loadGame()
 {
 	AudioInfo soundAssets[SOUND_NUM] = {
-							{ "assets/intro/sound/bgm.wav", true, 0.5f},
+							{ "assets/intro/sound/bgm.wav", true, 1.0f},
 							{ "assets/intro/sound/okay.wav", false, 1.0f},
 							{ "assets/intro/sound/SHOT.wav", false, 1.0f},
+							{"assets/menu/sound/menuBGM.wav", true, 1.0f}
 	};
 
 
-	loadAudio(soundAssets, 2);
+	loadAudio(soundAssets, 4);
 
+
+	//loadTrailer();
+	//gameState = gs_trailer;
 	audioPlay(0);
 
 		
@@ -35,6 +39,7 @@ void freeGame()
 	case gs_menu:	freeMenu(); break;
 	case gs_proc:	break;
 	case gs_ending: break;
+	case gs_trailer: freeTrailer(); break;
 	}
 
 	freeAudio();
@@ -48,6 +53,7 @@ void drawGame(float dt)
 	case gs_menu:	drawMenu(dt);  break;
 	case gs_proc:	break;
 	case gs_ending:	break;
+	case gs_trailer: drawTrailer(dt); break;
 		
 	}
 
@@ -65,5 +71,6 @@ void keyGame(iKeyState stat, iPoint point)
 	case gs_menu:	keyMenu(stat, point);	break;
 	case gs_proc:		break;
 	case gs_ending:		break;
+	case gs_trailer: keyTrailer(stat, point); break;
 	}
 }
