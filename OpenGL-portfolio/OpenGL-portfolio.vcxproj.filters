@@ -99,6 +99,9 @@
     <ClInclude Include="game\stage.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="game\ending.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL-portfolio.rc">
@@ -193,6 +196,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="game\stage.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="game\ending.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

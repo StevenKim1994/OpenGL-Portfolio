@@ -66,7 +66,7 @@ void createPopPlayerUI();
 void freePopPlayerUI();
 void drawPopPlayerUI(float dt);
 bool keyPopPlayerUI(iKeyState stat, iPoint point);
-void showPopPlayerUI(bool show)
+void showPopPlayerUI(bool show);
 
 
 
