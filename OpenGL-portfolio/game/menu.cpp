@@ -55,7 +55,7 @@ void keyMenu(iKeyState stat, iPoint point)
 
 //---------------PopMenuBtn-----------------------//
 
-const char* strSlot[3] = { "게임시작", "게임설정", "게임종료" };
+const char* strSlot[3] = { "Game Start", "Settings", "Quit" };
 
 iPopup* PopMenuBtn;
 iImage** imgMenuBtn;
@@ -79,16 +79,22 @@ void createPopMenuBtn()
 		for (int j = 0; j < 2; j++)
 		{
 			Texture* tex;
+			iSize size;
+
+	
+
+			//g->fillRect(0, 0, size.width, size.height);
+			//g->drawString(size.width/2, size.height/2, HCENTER | VCENTER, strSlot[i]);
+			
+			igImage* ig = g->createIgImage("assets/menu/menuBtn%d.png", j);
+			size = iSizeMake(g->getIgImageWidth(ig)*2, g->getIgImageHeight(ig)*2);
 			g->init(size);
-
-			if (j == 0)
-				setRGBA(1, 1, 1, 1);
-			else if (j == 1)
-				setRGBA(1, 0, 0, 1);
-
-			g->fillRect(0, 0, size.width, size.height);
-			g->drawString(size.width/2, size.height/2, HCENTER | VCENTER, strSlot[i]);
+			
+			g->drawImage(ig, 0, 0, 2.0,2.0,TOP | LEFT);
+		
+			g->drawString(size.width/2, size.height/2, VCENTER | HCENTER, strSlot[i]);
 			tex = g->getTexture();
+			
 			img->addObject(tex);
 			
 		
@@ -100,8 +106,8 @@ void createPopMenuBtn()
 		imgMenuBtn[i] = img;		
 	}
 
-	pop->openPosition = iPointMake((devSize.width / 2)-175, devSize.height / 2 -100);
-	pop->closePosition = iPointMake((devSize.width / 2)-175, devSize.height / 2 - 100);
+	pop->openPosition = iPointMake((devSize.width / 2)-310, devSize.height / 2 -100);
+	pop->closePosition = iPointMake((devSize.width / 2)-310, devSize.height / 2 - 100);
 
 	pop->methodDrawBefore = drawPopMenuBefore;
 
@@ -146,12 +152,19 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 		if (i == -1)
 			break;
 
-		if (i < 4)
+		if (i < 1)
 		{
 			printf("selectd = %d\n", i);
 			METHOD m = loadStage;
 			setLoading(gs_stage, freeMenu, m);
 			
+		}
+		else
+		{
+			extern bool runWnd;
+
+			//게임 종료 확인팝업창 만들기
+			runWnd = false;
 		}
 
 		break;
@@ -179,4 +192,46 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 void showPopMenuBtn(bool show)
 {
 	PopMenuBtn->show(show);
+}
+
+void createPopSettings()
+{
+}
+
+void freePopSettings()
+{
+}
+
+void drawPopSettings(float dt)
+{
+}
+
+bool keyPopSettings(iKeyState stat, iPoint point)
+{
+	return false;
+}
+
+void showPopSettings(bool show)
+{
+}
+
+void createPopQuitAnswer()
+{
+}
+
+void freePopQuitAnswer()
+{
+}
+
+void drawPopQuitAnswer(float dt)
+{
+}
+
+bool keyPopQuitAnswer(iKeyState stat, iPoint point)
+{
+	return false;
+}
+
+void showPopQuitAnswer(bool show)
+{
 }

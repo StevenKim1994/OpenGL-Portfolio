@@ -15,3 +15,19 @@ void showPopMenuBtn(bool show);
 
 
 //---------PopSettings---------------------//
+void createPopSettings();
+void freePopSettings();
+void drawPopSettings(float dt);
+bool keyPopSettings(iKeyState stat, iPoint point);
+void showPopSettings(bool show);
+
+
+//---------PopQuitAnswer-------------------//
+void createPopQuitAnswer();
+void freePopQuitAnswer();
+void drawPopQuitAnswer(float dt);
+bool keyPopQuitAnswer(iKeyState stat, iPoint point);
+void showPopQuitAnswer(bool show);
+
+
+

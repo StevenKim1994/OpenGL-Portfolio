@@ -17,6 +17,11 @@ struct MapTile
 	uint8 imgIndex;
 };
 
+#define canMove 0
+#define ladder 1
+#define endofTile 5
+#define canNotMove 99
+
 #define MapTileNumX 30
 #define MapTileNumY 30
 #define MapTileWidth 64
@@ -30,6 +35,28 @@ struct MapTile
 #define natureSpeed 100
 #define powGravity 200
 #define powJump 500
+
+
+struct MapHero
+{
+	iPoint position;
+	iSize size;
+	float speed;
+
+	iPoint jumpment;
+	int jumpNum, _jumpNum;
+
+	void move(iPoint movement);
+	void jump();
+	void applyJump(iPoint& movement, float dt);
+
+};
+
+#define MapCharWidth 30
+#define MapCharHeight 30
+#define MapCharSpeed 200
+
+#define hero_color 0,0,1,1
 
 
 

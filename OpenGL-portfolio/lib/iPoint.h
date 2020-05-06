@@ -22,6 +22,8 @@ struct iPoint
 	
 };
 
+#define iPointZero iPointMake(0,0)
+
 iPoint iPointMake(float x, float y);
 iPoint iPointVector(iPoint p);
 float iPointLength(iPoint p);

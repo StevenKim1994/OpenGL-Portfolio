@@ -44,7 +44,7 @@ void loadLib(HDC hDC)
     _a = 1.0f;
 
     _stringName = NULL;
-    setStringName("궁서체");
+    setStringName("assets/font/Textregular.ttf");
     setStringSize(10);
     setStringRGBA(1, 1, 1, 1);
     setStringBorder(1);
@@ -1030,6 +1030,8 @@ void getStringBorderRGBA(float& r, float& g, float& b, float& a)
     a = _stringBorderA;
 }
 
+#if 1
+
 iRect rectOfString(uint8* rgba, int width, int height)
 {
     iRect rt;
@@ -1107,6 +1109,81 @@ iRect rectOfString(uint8* rgba, int width, int height)
 
 iSize sizeOfString(const char* szFormat, ...)
 {
+    /////////////////////////////////////////////////////// initialize
+    static Bitmap* bmp = NULL;
+    static Graphics* g;
+    if (bmp == NULL)
+    {
+        bmp = new Bitmap(devSize.width, devSize.height, PixelFormat32bppARGB);
+        g = Graphics::FromImage(bmp);
+        g->SetPageUnit(UnitPixel);
+        g->SetPixelOffsetMode(PixelOffsetModeHalf);
+        g->SetTextRenderingHint(TextRenderingHintClearTypeGridFit);
+        g->SetSmoothingMode(SmoothingModeAntiAlias8x8);
+        g->SetInterpolationMode(InterpolationModeHighQualityBicubic);
+    }
+    g->Clear(Color(0, 0, 0, 0));
+
+    /////////////////////////////////////////////////////// drawString
+    va_list args;
+    va_start(args, szFormat);
+
+    char szText[1024];
+    _vsnprintf(szText, sizeof(szText), szFormat, args);
+    va_end(args);
+
+    wchar_t* wStr = utf8_to_utf16(szText);
+
+    GraphicsPath path;
+    FontFamily  fontFamily;
+    PointF      pointF(0, 0);
+    StringFormat sf;
+
+    int fontStyle;
+    checkFontFamily(&fontFamily, fontStyle);
+
+    path.AddString(wStr, lstrlenW(wStr), &fontFamily, fontStyle,
+        getStringSize(), pointF, &sf);
+
+    float gr, gg, gb, ga;
+    getStringRGBA(gr, gg, gb, ga);
+    SolidBrush brush(Color(float2uint8(ga),
+        float2uint8(gr),
+        float2uint8(gg),
+        float2uint8(gb)));
+    g->FillPath(&brush, &path);
+
+    float sb = getStringBorder();
+    if (sb)
+    {
+        getStringBorderRGBA(gr, gg, gb, ga);
+        Pen pen(Color(float2uint8(ga),
+            float2uint8(gr),
+            float2uint8(gg),
+            float2uint8(gb)));
+        pen.SetWidth(sb);
+        g->DrawPath(&pen, &path);
+    }
+
+    free(wStr);
+
+    /////////////////////////////////////////////////////// rectOfString
+    BitmapData bmpData;
+    Rect rt(0, 0, devSize.width, devSize.height);
+    bmp->LockBits(&rt, ImageLockModeRead, PixelFormat32bppARGB, &bmpData);
+
+    uint8* argb = (uint8*)bmpData.Scan0;
+    iRect rect = rectOfString(argb, devSize.width, devSize.height);
+
+    bmp->UnlockBits(&bmpData);
+
+    return rect.size;
+}
+
+#else
+
+iSize sizeOfString(const char* szFormat, ...)
+{
     va_list args;
     va_start(args, szFormat);
 
@@ -1134,6 +1211,8 @@ iSize sizeOfString(const char* szFormat, ...)
 
     return iSizeMake(rt.Width, rt.Height);
 }
+
+#endif
 
 void drawString(int x, int y, int anc, const char* szFormat, ...)
 {

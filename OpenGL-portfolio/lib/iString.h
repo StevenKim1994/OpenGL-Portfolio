@@ -38,3 +38,7 @@ public:
 	int strLength;
 };
 
+// 글자가 길떄 stringSize를 float 에 저장한다음 setStringSize의 인자로 넣고 버튼의 가로크기 보다 텍스트의 크기가 크다면 
+
+// if(텍스트의 크기 > 버튼의 가로크기)
+// setStringSize(stringSize * 버튼의 가로크기 / 텍스트의 크기) 로 설정하면 버튼에 맞는 텍스트의 크기가 적용이 된다.
