@@ -15,7 +15,7 @@ void loadMenu()
 	audioPlay(3);
 	createPopMenuBtn();
 	
-	
+	createPopQuitAnswer();
 }
 
 void freeMenu()
@@ -43,11 +43,18 @@ void drawMenu(float dt)
 
 	drawPopMenuBtn(dt);
 	showPopMenuBtn(true);
-	
+
+	drawPopQuitAnswer(dt);
 }
 
 void keyMenu(iKeyState stat, iPoint point)
 {
+	if (keyPopQuitAnswer(stat, point))
+		return;
+
+	if (keyPopSettings(stat, point))
+		return;
+	
 	if (keyPopMenuBtn(stat, point))
 		return;
 }
@@ -67,7 +74,9 @@ void createPopMenuBtn()
 	iPopup* pop = new iPopup(iPopupStyleAlpha);
 	iGraphics* g = iGraphics::instance();
 	iSize size = iSizeMake(350, 100);
+
 	imgMenuBtn = (iImage**)malloc(sizeof(iImage*) * 3);
+
 	setStringBorder(0);
 	setStringBorderRGBA(0, 0, 0, 0);
 	setStringRGBA(0, 0, 0, 1);
@@ -134,7 +143,6 @@ void drawPopMenuBtn(float dt)
 }
 
 
-
 bool keyPopMenuBtn(iKeyState stat, iPoint point)
 {
 	if (PopMenuBtn->bShow == false)
@@ -161,10 +169,10 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 		}
 		else
 		{
-			extern bool runWnd;
-
+			//extern bool runWnd;
+			showPopQuitAnswer(true);
 			//게임 종료 확인팝업창 만들기
-			runWnd = false;
+			//runWnd = false;
 		}
 
 		break;
@@ -194,8 +202,19 @@ void showPopMenuBtn(bool show)
 	PopMenuBtn->show(show);
 }
 
+
+
+
+
+
+iPopup* PopMenuSettings;
+iImage** PopMenuSettingsBtn;
+
 void createPopSettings()
 {
+	iPopup* pop = new iPopup(iPopupStyleZoom);
+
+	
 }
 
 void freePopSettings()
@@ -215,23 +234,74 @@ void showPopSettings(bool show)
 {
 }
 
+
+
+
+
+
+
+iPopup* PopQuitAnswer;
+iImage** PopQuitAnswerBtn;
+
+
 void createPopQuitAnswer()
 {
+	iPopup* pop = new iPopup(iPopupStyleZoom);
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(1280, 720);
+
+	PopQuitAnswerBtn = (iImage**)malloc(sizeof(iImage*) *3); // 0: background 1: yes 2: no
+
+	setStringBorder(0);
+	setStringBorderRGBA(0, 0, 0, 0);
+	setStringRGBA(0, 0, 0, 1);
+	setStringSize(50);
+
+	g->init(size);
+
+	setRGBA(1, 1, 1, 1);
+	g->fillRect(0, 0, size.width, size.height);
+
+	Texture* popBG= g->getTexture();
+	iImage* img = new iImage();
+
+	img->addObject(popBG);
+	freeImage(popBG);
+
+	pop->addObject((img));
+	PopQuitAnswerBtn[0] = img; // Background
+	
+
+	pop->openPosition = iPointMake((devSize.width / 2)-size.width/2, devSize.height / 2 -size.height/2);
+	pop->closePosition = iPointMake((devSize.width / 2)-size.width/2, devSize.height / 2 - size.height/2);
+
+	PopQuitAnswer = pop;
+	
 }
 
 void freePopQuitAnswer()
 {
+	delete PopQuitAnswer;
+	
 }
 
 void drawPopQuitAnswer(float dt)
 {
+	PopQuitAnswer->paint(dt);
 }
 
 bool keyPopQuitAnswer(iKeyState stat, iPoint point)
 {
+	if (PopQuitAnswer->bShow == false)
+		return false;
+
+	if (PopQuitAnswer->stat != iPopupStatProc)
+		return true;
+	
 	return false;
 }
 
 void showPopQuitAnswer(bool show)
 {
+	PopQuitAnswer->show(show);
 }
