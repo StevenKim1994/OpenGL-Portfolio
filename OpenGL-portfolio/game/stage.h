@@ -39,6 +39,7 @@ struct MapTile
 
 struct MapHero
 {
+	Texture* tex;
 	iPoint position;
 	iSize size;
 	float speed;
@@ -57,6 +58,17 @@ struct MapHero
 #define MapCharSpeed 200
 
 #define hero_color 0,0,1,1
+
+
+// 여기에 플레이어의 체력, 게임 플레이상의 UI 출력해야함 
+//-------------popPlayerUI--------------------//
+void createPopPlayerUI();
+void freePopPlayerUI();
+void drawPopPlayerUI(float dt);
+bool keyPopPlayerUI(iKeyState stat, iPoint point);
+void showPopPlayerUI(bool show)
+
+
 
 
 
