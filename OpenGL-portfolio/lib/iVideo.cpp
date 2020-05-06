@@ -33,34 +33,47 @@ HRESULT PlayVideo(HWND hwnd, const WCHAR* sURL)
     );
 }
 
-HRESULT StopVideo(HWND hwnd)
-{
-    return MFPCreateMediaPlayer(
-        NULL,
-        FALSE,   // Start playback automatically?
-        0,      // Flags.
-        NULL,   // Callback pointer.
-        hwnd,
-        &g_pPlayer
-    );
-}
 #include "iStd.h"
 
-extern HWND videohWnd;
+extern HWND hWnd;
 
 void playVideo(const char* path)
 {
-    
-	
     wchar_t* wPath = utf8_to_utf16(path);
-    PlayVideo(videohWnd, wPath);
+    PlayVideo(hWnd, wPath);
     free(wPath);
 }
 
 void stopVideo()
 {
-    
-    DestroyWindow(videohWnd);
-    StopVideo(videohWnd);
+    if (g_pPlayer)
+        g_pPlayer->Stop();
 }
 
+void shutdownViedeo()
+{
+    if (g_pPlayer)
+    {
+        g_pPlayer->Shutdown();
+        g_pPlayer = NULL;
+    }
+
+}
+
+bool updateVideo() // 만약 얘가 플레이 중이라면 OPENGL을 실행하지 않도록 하기하게
+{
+    if (g_pPlayer)
+    {
+        g_pPlayer->UpdateVideo();
+        return true;
+    }
+    return false;
+}
+
+void playVideo()
+{
+    if (g_pPlayer)
+    {
+        g_pPlayer->Play();
+    }
+}

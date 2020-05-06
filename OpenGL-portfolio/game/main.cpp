@@ -49,6 +49,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInst,
 	monitorSizeH = rect.bottom - rect.top;
 
 	loadLib(hDC);
+   
+
 	loadGame();
 	
 	

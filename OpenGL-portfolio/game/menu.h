@@ -12,3 +12,6 @@ void freePopMenuBtn();
 void drawPopMenuBtn(float dt);
 bool keyPopMenuBtn(iKeyState stat, iPoint point);
 void showPopMenuBtn(bool show);
+
+
+//---------PopSettings---------------------//

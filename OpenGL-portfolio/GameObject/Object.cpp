@@ -88,3 +88,25 @@ float Object::getMp()
 {
 	return 0.0f;
 }
+
+void Object::move(iPoint movement)
+{
+}
+
+void Object::jump()
+{
+}
+
+void Object::applyJump(iPoint& movement, float dt)
+{
+}
+
+float getDistanceLine0(iPoint p, iPoint sp, iPoint ep)
+{
+	return 0.0f;
+}
+
+float getDistanceLine1(iPoint p, iPoint sp, iPoint ep)
+{
+	return 0.0f;
+}

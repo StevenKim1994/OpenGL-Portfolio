@@ -8,21 +8,19 @@ class Player : public Object
 {
 private: Player(); // Player는 싱글톤 객체로 사용할 예정임 왜냐하면 게임에서 플레이어는 나 혼자뿐이니까.
 		virtual ~Player();
-
 		static Player* instance;
 
 public:
 	static Player* GetInstance()
 	{
-		if (instance != NULL)
-			return instance;
-
-		else
+		if (instance == NULL)
 		{
 			instance = new Player();
-			return instance;
 		}
+
+		return instance;
 	}
+
 
 
 public : 
@@ -34,4 +32,3 @@ public :
 
 };
 
-Player* Player::instance = NULL;

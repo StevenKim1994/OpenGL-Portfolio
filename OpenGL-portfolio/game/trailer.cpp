@@ -23,11 +23,10 @@ void drawTrailer(float dt)
 	if (getKeyDown() & keyboard_enter)
 	{
 		printf("to Enter\n");
-		//stopVideo
-		//playVideo(NULL);
-		//
-		stopVideo();
-		setLoading(gs_intro, freeIntro, loadIntro);
+		
+		shutdownViedeo();
+		setLoading(gs_intro, freeTrailer, loadIntro);
+		
 	}
 
 }

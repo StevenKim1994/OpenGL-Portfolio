@@ -5,8 +5,9 @@
 #include "menu.h"
 #include "sceneManager.h"
 #include "trailer.h"
+#include "stage.h"
 
-#define SOUND_NUM 128
+#define SOUND_NUM 32
 
 
 void loadGame()
@@ -37,7 +38,7 @@ void freeGame()
 	{
 	case gs_intro: freeIntro();	break;
 	case gs_menu:	freeMenu(); break;
-	case gs_proc:	break;
+	case gs_stage:	freeStage(); break;
 	case gs_ending: break;
 	case gs_trailer: freeTrailer(); break;
 	}
@@ -51,7 +52,7 @@ void drawGame(float dt)
 	{
 	case gs_intro:	drawIntro(dt); break;
 	case gs_menu:	drawMenu(dt);  break;
-	case gs_proc:	break;
+	case gs_stage:  drawStage(dt);	break;
 	case gs_ending:	break;
 	case gs_trailer: drawTrailer(dt); break;
 		
@@ -69,7 +70,7 @@ void keyGame(iKeyState stat, iPoint point)
 	{
 	case gs_intro:	keyIntro(stat, point);	break;
 	case gs_menu:	keyMenu(stat, point);	break;
-	case gs_proc:		break;
+	case gs_stage:	keyStage(stat, point);	break;
 	case gs_ending:		break;
 	case gs_trailer: keyTrailer(stat, point); break;
 	}
