@@ -28,7 +28,7 @@ Player::Player()
 		g->init(size);
 		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
 
-		tex = g->getTexture;
+		tex = g->getTexture();
 
 		idle->addObject(tex);
 		freeImage(tex);
@@ -47,7 +47,7 @@ Player::Player()
 		g->init(size);
 		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
 
-		tex = g->getTexture;
+		tex = g->getTexture();
 
 		meleeAttack->addObject(tex);
 		freeImage(tex);
@@ -67,7 +67,7 @@ Player::Player()
 		g->init(size);
 		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
 
-		tex = g->getTexture;
+		tex = g->getTexture();
 
 		moving->addObject(tex);
 		freeImage(tex);
@@ -86,7 +86,7 @@ Player::Player()
 		g->init(size);
 		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
 
-		tex = g->getTexture;
+		tex = g->getTexture();
 
 		jumpAndFall->addObject(tex);
 		freeImage(tex);
@@ -97,7 +97,21 @@ Player::Player()
 	jumpAndFall->animation = true;
 
 	// HURT ANIAMTION
-	for(int i = 0 ;i,)
+	for (int i = 0; i < hurt_aniNum; i++)
+	{
+		Texture* tex;
+		igImage* ig = g->createIgImage("assets/stage/hero/Knight/hero_hurt (%d).png", i + 1);
+		size = iSizeMake(g->getIgImageWidth(ig) * sizeRate, g->getIgImageHeight(ig) * sizeRate);
+		g->init(size);
+		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
+
+		tex = g->getTexture();
+
+		hurt->addObject(tex);
+		freeImage(tex);
+
+	}
+		
 
 
 	

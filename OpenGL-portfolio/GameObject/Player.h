@@ -6,7 +6,7 @@
 #define meleeAttack_aniNum 22
 #define move_aniNum 8
 #define jumpAndFall_aniNum 14
-#define hurt_aniNum 
+#define hurt_aniNum 100 // 임시
 
 
 class Player : public Object
