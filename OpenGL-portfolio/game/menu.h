@@ -28,6 +28,6 @@ void freePopQuitAnswer();
 void drawPopQuitAnswer(float dt);
 bool keyPopQuitAnswer(iKeyState stat, iPoint point);
 void showPopQuitAnswer(bool show);
-
+void drawPopQuitAnswerBefore(iPopup* me, float dt);
 
 

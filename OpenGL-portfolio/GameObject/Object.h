@@ -8,6 +8,7 @@ public: Object();
 	  ~Object();
 
 private: 
+
 	Texture* tex;
 	iPoint position;
 	iSize size;
