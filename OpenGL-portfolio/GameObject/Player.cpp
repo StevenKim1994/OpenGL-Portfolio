@@ -1,128 +1,101 @@
 #include "Player.h"
 
+
 Player::Player()
 {
+	struct PlayerInfo
+	{
+		const char* path;
+		int num;
+		float sizeRate;
+	};
 
-	
-	idle = new iImage();
-	meleeAttack = new iImage();
-	moving = new iImage();
-	jumping = new iImage();
-	hurt = new iImage();
-	fall = new iImage();
-	jumpAndFall = new iImage();
-
-	float sizeRate = 3.0f;
-
+	PlayerInfo _pi[4] = {
+		{"assets/stage/hero/Knight/hero_idle (%d).png", 15, 3.0f },
+		{"assets/stage/hero/Knight/hero_melee (%d).png", 22, 3.0f},
+		{"assets/stage/hero/Knight/hero_move (%d).png",8, 3.0f},
+		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 3.0f}
+	};
 	iGraphics* g = iGraphics::instance();
 	iSize size;
 
-
-
-	// IDLE ANIMATION
-	for (int i = 0; i < idle_aniNum; i++)
+	imgs = (iImage**)malloc(sizeof(iImage*) * 4);
+	for (int i = 0; i < 4; i++)
 	{
-		Texture* tex;
-		igImage* ig = g->createIgImage("assets/stage/hero/Knight/hero_idle (%d).png", i + 1);
-		size = iSizeMake(g->getIgImageWidth(ig) * sizeRate, g->getIgImageHeight(ig) * sizeRate);
-		g->init(size);
-		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
+		PlayerInfo* pi = &_pi[i];
 
-		tex = g->getTexture();
+		iImage* img = new iImage();
+		for (int j = 0; j < pi->num; j++)
+		{
+			igImage* ig = g->createIgImage(pi->path, j + 1);
+			size = iSizeMake(	g->getIgImageWidth(ig) * pi->sizeRate,
+								g->getIgImageHeight(ig) * pi->sizeRate);
+			g->init(size);
+			g->drawImage(ig, 0, 0, pi->sizeRate, pi->sizeRate, TOP | LEFT);
 
-		idle->addObject(tex);
-		freeImage(tex);
-	}
-
-	idle->_aniDt = 0.1f; 
-	idle->repeatNum = 0; 
-	idle->animation = true;
-
-	// MELEEATTACK ANIMATION
-	for (int i = 0; i < meleeAttack_aniNum; i++)
-	{
-		Texture* tex;
-		igImage* ig = g->createIgImage("assets/stage/hero/Knight/hero_melee (%d).png", i + 1);
-		size = iSizeMake(g->getIgImageWidth(ig) * sizeRate, g->getIgImageHeight(ig)*sizeRate);
-		g->init(size);
-		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
-
-		tex = g->getTexture();
-
-		meleeAttack->addObject(tex);
-		freeImage(tex);
-	}
-
-	meleeAttack->_aniDt = 0.1f;
-	meleeAttack->repeatNum = 1;
-	meleeAttack->animation = true;
-
-
-	// MOVE ANIAMATION
-	for (int i = 0; i < move_aniNum; i++)
-	{
-		Texture* tex;
-		igImage* ig = g->createIgImage("assets/stage/hero/Knight/hero_move (%d).png", i + 1);
-		size = iSizeMake(g->getIgImageWidth(ig) * sizeRate, g->getIgImageHeight(ig) * sizeRate);
-		g->init(size);
-		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
-
-		tex = g->getTexture();
-
-		moving->addObject(tex);
-		freeImage(tex);
-	}
-
-	moving->_aniDt = 0.1f;
-	moving->repeatNum = 0;
-	moving->animation = true;
-
-	// JUMP AND FALL ANIMATION;
-	for (int i = 0; i < jumpAndFall_aniNum; i++)
-	{
-		Texture* tex;
-		igImage* ig = g->createIgImage("assets/stage/hero/Knight/hero_jumpAndFall (%d).png", i + 1);
-		size = iSizeMake(g->getIgImageWidth(ig) * sizeRate, g->getIgImageHeight(ig) * sizeRate);
-		g->init(size);
-		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
-
-		tex = g->getTexture();
-
-		jumpAndFall->addObject(tex);
-		freeImage(tex);
-	}
-
-	jumpAndFall->_aniDt = 0.1f;
-	jumpAndFall->repeatNum = 1;
-	jumpAndFall->animation = true;
-
-	// HURT ANIAMTION
-	for (int i = 0; i < hurt_aniNum; i++)
-	{
-		Texture* tex;
-		igImage* ig = g->createIgImage("assets/stage/hero/Knight/hero_hurt (%d).png", i + 1);
-		size = iSizeMake(g->getIgImageWidth(ig) * sizeRate, g->getIgImageHeight(ig) * sizeRate);
-		g->init(size);
-		g->drawImage(ig, 0, 0, sizeRate, sizeRate, TOP | LEFT);
-
-		tex = g->getTexture();
-
-		hurt->addObject(tex);
-		freeImage(tex);
-
-	}
-		
-
-
+			Texture* tex = g->getTexture();
+			img->addObject(tex);
+			freeImage(tex);
+		}
+		img->_aniDt =  0.1f;
+		img->repeatNum =  (i % 2 == 0 ? 0 : 1);
 	
-
-
-
+		imgs[i] = img;
+	}
+	
+	behave = (Behave)-1;
+	setBehave(Behave_idle, 0);
+	direction = 0;
 }
 
 Player::~Player()
 {
+	for (int i = 0; i < 4; i++)
+		delete imgs[i];
+	free(imgs);
 }
+
+void Player::cbBehave(iImage* me)
+{
+	//for(int i=0; i< Behave_num; i++)
+	//{
+	//	
+	//	if (me == hero->imgs[i])
+	//	{
+	//		if( i%2==1)
+	//		return;
+	//	}
+	//}
+	extern Player* hero;
+	hero->setBehave(Behave_idle, hero->direction);
+}
+
+void Player::setBehave(Behave be, int dir)
+{
+	if (behave != be || direction != dir)
+	{
+		behave = be;
+		img = imgs[be];
+		img->startAnimation(cbBehave);
+		direction = dir;
+	}
+}
+
+void Player::paint(float dt, iPoint offset)
+{
+	// direct;
+	switch (direction)
+	{
+	case 1:
+		break;
+
+	case 2:
+		break;
+	}
+
+	img->paint(dt,offset);
+}
+
 
 
 

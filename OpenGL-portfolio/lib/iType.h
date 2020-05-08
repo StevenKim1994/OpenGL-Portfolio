@@ -38,9 +38,9 @@ enum iKeyState
 #define keyboard_enter	16
 #define keyboard_space	32
 
-#define keyboard_num1	49
-#define keyboard_num2	50
-#define keyboard_num3	51
+#define keyboard_num1	64
+#define keyboard_num2	128
+#define keyboard_num3	256
 
 
 

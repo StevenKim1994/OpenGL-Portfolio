@@ -183,8 +183,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             return true;
         break;
 
-        //case WM_CHAR:
-        //    break;
     case WM_KEYDOWN:
         if (wParam == VK_ESCAPE)
             goFullscreen();

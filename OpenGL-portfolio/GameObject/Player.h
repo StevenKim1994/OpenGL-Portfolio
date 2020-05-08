@@ -2,12 +2,12 @@
 #include "iStd.h"
 #include "Object.h"
 
+#if 0
 #define idle_aniNum 15
 #define meleeAttack_aniNum 22
 #define move_aniNum 8
 #define jumpAndFall_aniNum 14
 #define hurt_aniNum 100 // 임시
-
 
 class Player : public Object
 {
@@ -39,4 +39,45 @@ public:
 	
 
 };
+
+#else
+
+enum Behave
+{
+	Behave_idle = 0,
+	Behave_meleeAttack,
+	Behave_move,
+	Behave_jumpAndFall,
+
+	Behave_num,
+};
+
+class Player : public Object
+{
+public:
+	Player();
+	virtual ~Player();
+
+	static void cbBehave(iImage* img);
+	void setBehave(Behave be, int direction);
+	void paint(float dt, iPoint offset);
+public:
+	iImage** imgs;
+	iImage* img;
+
+	Behave behave;
+	int direction;
+
+public:
+	void Skill1(); // 아직 어떤 스킬을 넣을지 결정하진 않았음.
+	void Skill2();
+	void Skill3();
+
+public:
+
+
+
+};
+
+#endif
 
