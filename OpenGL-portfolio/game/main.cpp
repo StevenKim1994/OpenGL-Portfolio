@@ -39,8 +39,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInst,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 	hDC = GetDC(hWnd);
 
-	videohWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-        CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+	//videohWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+      //  CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 
 	RECT rect;
 	GetClientRect(hWnd, &rect); // 스크롤바 타이틀바 제외한 윈도우창 Rect 크기 받아옴

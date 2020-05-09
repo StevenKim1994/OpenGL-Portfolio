@@ -57,10 +57,12 @@ void freeIntro()
 	freeTitle();
 	
 }
+float resolutionRate = 200; // 1920x1080 : 300;
 
 void drawIntro(float dt)
 {
 	static float r = 0.0f;
+	
 
 	r += 0.3f;
 
@@ -83,7 +85,7 @@ void drawIntro(float dt)
 	showTitle(true);
 
 	drawImage(
-		enter, devSize.width / 2, devSize.height / 2 + 300, 0, 0, enter->potWidth, enter->potHeight, VCENTER|HCENTER, rateSize, rateSize, 0,1, REVERSE_NONE );
+		enter, devSize.width / 2, devSize.height / 2 + resolutionRate, 0, 0, enter->potWidth, enter->potHeight, VCENTER|HCENTER, rateSize, rateSize, 0,1, REVERSE_NONE );
 	//drawImage(enter, devSize.width / 2 , devSize.height /2 + 300, HCENTER | VCENTER);
 	setRGBA(1, 1, 1, 1);
 	
@@ -125,10 +127,10 @@ void createTitle()
 	{
 
 		igImage* ig = g->createIgImage("assets/intro/title.png");
-		iSize size = iSizeMake(g->getIgImageWidth(ig) / 2.0, g->getIgImageHeight(ig) / 2.0);
+		iSize size = iSizeMake(g->getIgImageWidth(ig) / 0.3, g->getIgImageHeight(ig) / 0.3);
 		g->init(size);
 
-		g->drawImage(ig, 0, 0, 1.0 / 2, 1.0 / 2, TOP | LEFT);
+		g->drawImage(ig, 0, 0, 0.3 , 0.3 , TOP | LEFT);
 
 		tex = g->getTexture();
 		g->freeIgImage(ig);
@@ -141,10 +143,12 @@ void createTitle()
 	pop->addObject(img);
 
 	
-	iPoint op = iPointMake(devSize.width / 2 - 300, 0.0);
+	iPoint op = iPointMake(devSize.width / 2 - resolutionRate, 0.0);
+	
 	pop->openPosition = op;
 	
-	iPoint cp = iPointMake(devSize.width / 2 - 300, devSize.height / 2-100);
+	iPoint cp = iPointMake(devSize.width / 2 - resolutionRate, devSize.height / 2-100);
+
 	pop->closePosition = cp;
 
 

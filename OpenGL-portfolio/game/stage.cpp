@@ -3,6 +3,7 @@
 #include "stageTileInfo.h"
 #include "Player.h"
 
+#if 1
 uint8 tileAttr[MapTileNumX * MapTileNumY] = {
 	5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
 	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
@@ -228,6 +229,17 @@ void drawStage(float dt)
 	//-------------------------------------Camera-------------------------------//
 }
 
+#else
+
+
+
+
+
+
+
+
+
+#endif
 
 
 void keyStage(iKeyState stat, iPoint point)
