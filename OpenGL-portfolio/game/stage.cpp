@@ -22,6 +22,7 @@ uint8 tileAttr[MapTileNumX * MapTileNumY] = {
 
 
 
+#define ON_HITBOX 0
 
 Player* hero;
 MapTile* maptile;
@@ -93,18 +94,27 @@ void drawStage(float dt)
 
 		//mh->jump();
 	}
-
-	uint32 keyStat = getKeyStat();
-	uint32 keyDown = getKeyDown();
+	uint32 keyStat = 0;
+	uint32 keyDown = 0;
+	if (hero->behave != Behave_meleeAttack)
+	{
+		 keyStat = getKeyStat();
+		 keyDown = getKeyDown();
+	}
 	iPoint v = iPointZero;
 	if (keyStat & keyboard_left) v.x = -1;
 	else if (keyStat & keyboard_right) v.x = 1;
 	if (keyStat & keyboard_up) v.y = -1;
 	else if (keyStat & keyboard_down) v.y = 1;
 
+	
 	Behave be;
 	if (keyDown & keyboard_num1)
 		be = Behave_meleeAttack;
+
+	else if (keyDown & keyboard_space)
+		be = Behave_jumpAndFall;
+	
 	else
 		be = (v == iPointZero ? Behave_idle : Behave_move);
 	int dir = hero->direction;
@@ -155,10 +165,11 @@ void drawStage(float dt)
 			if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
 				offMt.y = devSize.height - MapTileHeight * MapTileNumY;
 		}
-
+#if DEBUG
 		//hitbox
 		drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
 			(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
+#endif
 	}
 	else// if(v == iPointZero)
 	{
@@ -211,9 +222,11 @@ void drawStage(float dt)
 		}
 
 		//hitbox
+#if ON_HITBOX
 		drawRect((hero->getPosition().x - hero->getSize().width / 2)+ offMt.x,
 				(hero->getPosition().y - hero->getSize().height)+ offMt.y, hero->getSize().width, hero->getSize().height);
-	
+
+#endif
 	}
 
 	// scroll type

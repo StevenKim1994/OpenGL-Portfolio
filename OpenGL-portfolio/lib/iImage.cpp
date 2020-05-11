@@ -140,6 +140,93 @@ void iImage::paint(float dt, iPoint off)
 	}
 }
 
+void iImage::paint(float dt, iPoint off, int direction) 
+{
+	int dir;
+
+	switch(direction)
+	{
+	case 0:
+		dir = REVERSE_WIDTH;
+		break;
+
+	case 1:
+		dir = REVERSE_NONE;
+		break;
+
+	case 2:
+		dir = REVERSE_HEIGHT;
+		break;
+
+	case 3:
+		dir = REVERSE_WIDTH + REVERSE_HEIGHT;
+		break;
+
+		
+	}
+	if (animation)
+	{
+		aniDt += dt;
+		if (aniDt < _aniDt)
+		{
+			;
+		}
+		else
+		{
+			aniDt -= _aniDt;
+			frame++;
+			if (frame == arrayTex->count)
+			{
+				if (_repeatNum == 0)
+					frame = 0;
+				else
+				{
+					repeatNum++;
+					if (repeatNum < _repeatNum)
+						frame = 0;
+					else// if (repeatNum == _repeatNum)
+					{
+						if (method) // 애니메이션 끝나고 호출되는 callback
+							method(this);
+						if (lastFrame)
+							frame = arrayTex->count - 1;
+						else
+							frame = 0;
+						animation = false;
+					}
+				}
+			}
+			tex = (Texture*)arrayTex->objectAtIndex(frame);
+		}
+	}
+
+	if (selected)
+	{
+		selectedDt += dt;
+		if (selectedDt > _selectedDt)
+			selectedDt = _selectedDt;
+	}
+	else
+	{
+		selectedDt -= dt;
+		if (selectedDt < 0.0f)
+			selectedDt = 0.0f;
+	}
+	iPoint p = position + off;
+	float s = 1.0f + linear(selectedDt / _selectedDt, 0.0f, selectedScale);
+	if (s == 0.0f)
+	{
+		drawImage(tex, p.x, p.y, TOP | LEFT);
+	}
+	else
+	{
+		p.x += tex->width / 2;
+		p.y += tex->height / 2;
+		drawImage(tex, p.x, p.y, 0, 0, tex->width, tex->height,
+			VCENTER | HCENTER, s, s, 2, 0, dir);
+	}
+}
+
 void iImage::startAnimation(IMAGE_METHOD m)
 {
 	animation = true;

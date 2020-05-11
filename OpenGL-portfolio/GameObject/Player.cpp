@@ -105,7 +105,7 @@ void Player::paint(float dt, iPoint offset)
 		break;
 	}
 
-		img->paint(dt,offset);
+		img->paint(dt,offset,direction);
 }
 
 

@@ -19,6 +19,7 @@ public:
 	void replaceAtIndex(int index, Texture* tex);
 
 	void paint(float dt, iPoint off);
+	void paint(float dt, iPoint off, int direction);
 	void startAnimation(IMAGE_METHOD m = 0);
 
 	iRect touchRect(iPoint p = iPointMake(0, 0));
