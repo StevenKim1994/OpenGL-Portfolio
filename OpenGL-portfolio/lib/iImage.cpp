@@ -99,7 +99,7 @@ void iImage::paint(float dt, iPoint off)
 						frame = 0;
 					else// if (repeatNum == _repeatNum)
 					{
-						if (method)
+						if (method) // 애니메이션 끝나고 호출되는 callback
 							method(this);
 						if (lastFrame)
 							frame = arrayTex->count - 1;

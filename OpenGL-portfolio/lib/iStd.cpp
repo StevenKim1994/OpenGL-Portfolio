@@ -191,11 +191,11 @@ static void keyLib(uint32& key, iKeyState stat, int c)
         
         case VK_RETURN: key |= keyboard_enter; break;
 
-        case 49: key &= keyboard_num1; break;
+        case 49: key |= keyboard_num1; break;
 
-        case 50: key &= keyboard_num2; break;
+        case 50: key |= keyboard_num2; break;
 
-        case 51: key &= keyboard_num3; break;
+        case 51: key |= keyboard_num3; break;
         }
     }
     else if (stat == iKeyStateEnded)

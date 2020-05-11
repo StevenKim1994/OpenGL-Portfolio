@@ -61,7 +61,6 @@ public:
 	static void cbBehave(iImage* img);
 	void setBehave(Behave be, int direction);
 	void paint(float dt, iPoint offset);
-public:
 	iImage** imgs;
 	iImage* img;
 

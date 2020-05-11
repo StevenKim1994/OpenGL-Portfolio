@@ -9,7 +9,6 @@
 
 
 
-
 iImage* next = (iImage*)malloc(sizeof(iImage));
 Texture* bg;
 Texture* title;

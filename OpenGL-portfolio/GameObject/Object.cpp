@@ -2,6 +2,10 @@
 #include "Object.h"
 #include "stageTileInfo.h"
 
+
+
+
+
 Object::Object()
 {
 }
@@ -101,8 +105,10 @@ float Object::getMp()
 }
 
 
-extern MapTile* mt;
-void Object::move(iPoint movement)
+
+
+
+void Object::move(iPoint movement, MapTile* maptile)
 {
 	iPoint mp = movement;
 
@@ -118,9 +124,9 @@ void Object::move(iPoint movement)
 			bool col = false;
 			for (int y = tly; y < bly + 1; y++)
 			{
-				int attr = mt[MapTileNumX * y + x].attr;
-				if (attr == canNotMove || attr == endofTile)
+				if (maptile[MapTileNumX * y + x].attr == 1)
 				{
+					//printf("!!!\n");
 					col = true;
 					min = MapTileWidth * (x + 1);
 					break;
@@ -146,9 +152,9 @@ void Object::move(iPoint movement)
 			bool col = false;
 			for (int y = TRY; y < BRY + 1; y++)
 			{
-				int attr = mt[MapTileNumX * y + x].attr;
-				if (attr == canNotMove || attr == endofTile)
+				if (maptile[MapTileNumX * y + x].attr == 1)
 				{
+					//printf("!!!\n");
 					col = true;
 					min = MapTileWidth * x - 1;
 					break;
@@ -176,15 +182,13 @@ void Object::move(iPoint movement)
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (mt[MapTileNumX * y + x].attr == canNotMove || (mt[MapTileNumX * y + x].attr == endofTile))
+				if (maptile[MapTileNumX * y + x].attr == 1)
 				{
+					//printf("!!!\n");
 					col = true;
 					min = MapTileHeight * (y + 1);
 					break;
 				}
-
-
-
 			}
 			if (col)
 				break;
@@ -193,8 +197,6 @@ void Object::move(iPoint movement)
 		position.y += mp.y;
 		if (position.y < min + size.height / 2)
 			position.y = min + size.height / 2;
-
-
 	}
 	else if (mp.y > 0)
 	{
@@ -208,8 +210,9 @@ void Object::move(iPoint movement)
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (mt[MapTileNumX * y + x].attr == canNotMove || (mt[MapTileNumX * y + x].attr == endofTile))
+				if (maptile[MapTileNumX * y + x].attr == 1)
 				{
+					//printf("!!!\n");
 					col = true;
 					min = MapTileHeight * y - 1;
 					break;

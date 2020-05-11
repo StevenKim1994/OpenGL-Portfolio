@@ -3,92 +3,71 @@
 #include "stageTileInfo.h"
 #include "Player.h"
 
-#if 1
+
 uint8 tileAttr[MapTileNumX * MapTileNumY] = {
-	5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,5,5,1,5,5,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,5,
-	5,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,5,
-	5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,5,
+
+	5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5,
+	5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 5,
+	5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 5,
+	5, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5,
+	5, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 5,
+	5, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5,
+	5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
+	5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
+	5, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 5,
+	5, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 5,
+	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
+	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 };
 
 
-iPoint offMt;
+
 
 Player* hero;
-int gravity;
-bool onLadder = false;
+MapTile* maptile;
+iPoint offMt;
 
+MapHero* mh;
 
-//extern MapTile* mt;
-MapTile* mt;
 
 void loadStage()
 {
-	mt = (MapTile*)malloc(sizeof(MapTile) * MapTileNumX * MapTileNumY);
 	int i, num = MapTileNumX * MapTileNumY;
-
+	maptile = (MapTile*)malloc(sizeof(MapTile) * num);
 	for (i = 0; i < num; i++)
 	{
-		MapTile* t = &mt[i];
+		MapTile* t = &maptile[i];
 		t->attr = tileAttr[i];
+		//t->imgIndex;
 	}
 
 	offMt = iPointZero;
-
 	hero = new Player();
-	hero->setPosition(iPointMake(300, 1528));
-	hero->setSize(iSizeMake(MapCharWidth, MapCharHeight));
+
+	hero->setSize(iSizeMake(PlayerWidth, PlayerHeight));
+
 	hero->setSpeed(MapCharSpeed);
-	
+	hero->setPosition(iPointMake(200,300));
 
 }
 
 void freeStage()
 {
-	free(mt);
+	free(maptile);
+	//free(mh);
 	delete hero;
 }
 
 void drawStage(float dt)
 {
-
-	//---------------------------MapSettings-------------------------------------//
-	gravity = powGravity;
 	int i, num = MapTileNumX * MapTileNumY;
 	for (i = 0; i < num; i++)
 	{
-		MapTile* t = &mt[i];
+		MapTile* t = &maptile[i];
 		switch (t->attr) {
-		case canMove: setRGBA(tile_color_canMove); break;
-		case ladder: setRGBA(tile_color_ladder); break;
-		//case endofTile: setRGBA(tile_color_end); break;
-		case canNotMove: setRGBA(tile_color_canNotMove); break;
+		case 0: setRGBA(tile_color_canMove); break;
+		case 1: setRGBA(tile_color_canNotMove); break;
+		case 2: setRGBA(tile_color_end); break;
 		}
 		float x = offMt.x + MapTileWidth * (i % MapTileNumX);
 		float y = offMt.y + MapTileHeight * (i / MapTileNumX);
@@ -97,50 +76,57 @@ void drawStage(float dt)
 		drawRect(x + 2, y + 2, MapTileWidth - 4, MapTileHeight - 4);
 	}
 
+	//setRGBA(hero_color);
 	setRGBA(1, 1, 1, 1);
-	iPoint p = hero->getPosition() + offMt;
-	iPoint movement = iPointMake(0, 1) * gravity * dt;
-
-	//---------------------------MapSettings-------------------------------------//
+	
+	
 
 
+	iPoint movement = iPointMake(0, 1) * 100 * dt; // powGravity* dt;
+	//mh->applyJump(movement, dt);
 
+	if (getKeyDown() & keyboard_space)
+	{
+		//if (getKeyStat() & keyboard_down)
+		//	mh->position.y += 1;
+		//else
 
+		//mh->jump();
+	}
 
-	//-----------------------------------KeyInput--------------------------------//
 	uint32 keyStat = getKeyStat();
+	uint32 keyDown = getKeyDown();
 	iPoint v = iPointZero;
 	if (keyStat & keyboard_left) v.x = -1;
 	else if (keyStat & keyboard_right) v.x = 1;
 	if (keyStat & keyboard_up) v.y = -1;
 	else if (keyStat & keyboard_down) v.y = 1;
 
-	Behave be = (v == iPointZero ? Behave_idle : Behave_move);
+	Behave be;
+	if (keyDown & keyboard_num1)
+		be = Behave_meleeAttack;
+	else
+		be = (v == iPointZero ? Behave_idle : Behave_move);
 	int dir = hero->direction;
 	if (v.x < 0) dir = 0;
 	else if (v.x > 0) dir = 1;
 
-	uint32 keyDown = getKeyDown();
-
-	if (keyStat & keyboard_num1)
-		be = Behave_meleeAttack;
-
-	hero->setBehave(be, dir);
-
-	//-----------------------------------KeyInput--------------------------------//
-
-
 	
-	
-	//-------------------------------------Camera--------------------------------//
-	iPoint vp;
+	if( hero->behave!=Behave_meleeAttack )
+		hero->setBehave(be, dir);
+
+
+
 	if (v != iPointZero)
 	{
 		v /= iPointLength(v);
 		iPoint mp = v * (hero->getSpeed() * dt);
-		hero->move(mp + movement);
+		//mh->move(mp + movement);
+		hero->move(mp + movement,maptile);
 
-		vp = offMt + hero->getPosition();
+		iPoint vp = offMt + hero->getPosition();
+		hero->paint(dt, vp);
+		
 		if (vp.x < devSize.width * 0.333333f)
 		{
 			// 왼쪽으로 넘어갔을 경우
@@ -169,28 +155,33 @@ void drawStage(float dt)
 			if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
 				offMt.y = devSize.height - MapTileHeight * MapTileNumY;
 		}
+
+		//hitbox
+		drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
+			(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
 	}
 	else// if(v == iPointZero)
 	{
-		hero->move(movement);
-
-		vp = offMt + hero->getPosition();
-
+		//mh->move(movement);
+		hero->move(movement, maptile);
+		iPoint vp = offMt + hero->getPosition();// mh->position;
+		hero->paint(dt, vp);
+		
 		if (vp.x != devSize.width / 2)
 		{
 			if (vp.x < devSize.width / 2)
 			{
 				offMt.x += natureSpeed * dt;//
-				vp.x = offMt.x + hero->getPosition().x;
+				vp.x = offMt.x + hero->getPosition().x;//mh->position.x;
 				if (vp.x > devSize.width / 2)
-					offMt.x = devSize.width / 2 - hero->getPosition().x;
+					offMt.x = devSize.width / 2 - hero->getPosition().x;//mh->position.x;
 			}
 			else
 			{
 				offMt.x -= natureSpeed * dt;//
-				vp.x = offMt.x + hero->getPosition().x;
+				vp.x = offMt.x + hero->getPosition().x;//mh->position.x;
 				if (vp.x < devSize.width / 2)
-					offMt.x = devSize.width / 2 - hero->getPosition().x;
+					offMt.x = devSize.width / 2 - hero->getPosition().x;//mh->position.x;
 			}
 			if (offMt.x > 0)
 				offMt.x = 0;
@@ -202,44 +193,41 @@ void drawStage(float dt)
 			if (vp.y < devSize.height / 2)
 			{
 				offMt.y += natureSpeed * dt;//
-				vp.y = offMt.y + hero->getPosition().y;
+				vp.y = offMt.y + hero->getPosition().y;//mh->position.y;
 				if (vp.y > devSize.height / 2)
-					offMt.y = devSize.height / 2 - hero->getPosition().y;
+					offMt.y = devSize.height / 2 - hero->getPosition().y; // mh->position.y;
 			}
 			else
 			{
 				offMt.y -= natureSpeed * dt;//
-				vp.y = offMt.y + hero->getPosition().y;
+				vp.y = offMt.y + hero->getPosition().y;//mh->position.y;
 				if (vp.y < devSize.height / 2)
-					offMt.y = devSize.height / 2 - hero->getPosition().y;
+					offMt.y = devSize.height / 2 - hero->getPosition().y;//mh->position.y;
 			}
 			if (offMt.y > 0)
 				offMt.y = 0;
 			else if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
 				offMt.y = devSize.height - MapTileHeight * MapTileNumY;
 		}
-		
 
-		
+		//hitbox
+		drawRect((hero->getPosition().x - hero->getSize().width / 2)+ offMt.x,
+				(hero->getPosition().y - hero->getSize().height)+ offMt.y, hero->getSize().width, hero->getSize().height);
+	
 	}
 
-	hero->paint(dt, p);
-	
+	// scroll type
+	// 1. 항상 주인공 센터
+	// 2. 액정의 범위 벗어나면 스크롤
 
-	//-------------------------------------Camera-------------------------------//
+	// 카메라
+	// 실시간
+	// 따라가는
+
 }
 
-#else
 
 
-
-
-
-
-
-
-
-#endif
 
 
 void keyStage(iKeyState stat, iPoint point)
@@ -264,6 +252,14 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 }
 
 void showPopPlayerUI(bool show)
+{
+}
+
+
+
+
+
+void keyJump(iKeyState stat, iPoint point)
 {
 }
 

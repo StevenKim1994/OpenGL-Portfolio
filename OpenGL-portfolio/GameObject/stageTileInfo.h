@@ -5,7 +5,7 @@
 
 struct MapTile
 {
-	uint8 attr; // 0 : 이동가능 , 1 : 사다리 5: 이동불가 5: 맵의 끝
+	uint8 attr; // 0 : 이동가능 , 1 : 사다리 99: 이동불가 5: 맵의 끝
 	uint8 imgIndex;
 };
 
@@ -15,9 +15,9 @@ struct MapTile
 #define canNotMove 5
 
 #define MapTileNumX 30
-#define MapTileNumY 30
-#define MapTileWidth 60
-#define MapTileHeight 60
+#define MapTileNumY 12
+#define MapTileWidth 64
+#define MapTileHeight 128
 
 #define tile_color_canMove 1,1,1,1
 #define tile_color_canNotMove 1,0,1,1
@@ -28,4 +28,6 @@ struct MapTile
 #define powGravity 200
 #define powJump 500
 
-//MapTile* mt = (MapTile*)malloc(sizeof(MapTile) * MapTileNumX* MapTileNumY);
+
+
+

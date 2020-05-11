@@ -76,7 +76,7 @@ const char* strSlot[3] = { "Game Start", "Settings", "Quit" };
 iPopup* PopMenuBtn;
 iImage** imgMenuBtn;
 
-void drawPopMenuBefore(iPopup* me, float dt);
+void drawPopMenuBefore(iPopup* me, iPoint p, float dt);
 
 void createPopMenuBtn()
 {
@@ -128,7 +128,7 @@ void createPopMenuBtn()
 	PopMenuBtn = pop;
 }
 
-void drawPopMenuBefore(iPopup* me, float dt)
+void drawPopMenuBefore(iPopup* me, iPoint p, float dt)
 {
 	for (int i = 0; i < 3; i++)
 	{
@@ -454,7 +454,7 @@ void showPopQuitAnswer(bool show)
 	PopQuitAnswer->show(show);
 }
 
-void drawPopQuitAnswerBefore(iPopup* me, float dt)
+void drawPopQuitAnswerBefore(iPopup* me, iPoint p,float dt)
 {
 	for (int i = 0; i < 2; i++)
 	{

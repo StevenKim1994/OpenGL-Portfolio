@@ -1,13 +1,22 @@
 #pragma once
 
 #include "iStd.h"
+#include "stageTileInfo.h"
+
+#define PlayerWidth 32
+#define PlayerHeight 33
+#define PlayerSpeed 200
+
+#define PlayerColor 0,0,1,1
+
+
 
 class Object
 {
 public: Object();
 	  ~Object();
 
-private: 
+protected:
 
 	Texture* tex;
 	iPoint position;
@@ -49,7 +58,7 @@ public:
 
 public:
 	//function
-	void move(iPoint movement);
+	void move(iPoint movement, MapTile* maptile);
 	void jump();
 	void applyJump(iPoint& movement, float dt);
 };
@@ -59,8 +68,3 @@ float getDistanceLine0(iPoint p, iPoint sp, iPoint ep);
 // 한점에서 선분까지의 거리
 float getDistanceLine1(iPoint p, iPoint sp, iPoint ep);
 
-#define PlayerWidth 30
-#define PlayerHeight 30
-#define PlayerSpeed 200
-
-#define PlayerColor 0,0,1,1

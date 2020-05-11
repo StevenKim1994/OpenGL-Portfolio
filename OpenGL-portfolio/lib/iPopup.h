@@ -4,7 +4,7 @@
 
 class iPopup;
 typedef void (*IPOPUP_OPEN_METHOD)(iPopup* me);
-typedef void (*IPOPUP_DRAW_METHOD)(iPopup* me, float dt);
+typedef void (*IPOPUP_DRAW_METHOD)(iPopup* me, iPoint p, float dt);
 
 enum iPopupStyle {
 	iPopupStyleNone = 0,

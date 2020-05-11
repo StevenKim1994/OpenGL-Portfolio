@@ -8,13 +8,14 @@ Player::Player()
 		const char* path;
 		int num;
 		float sizeRate;
+		iPoint p;
 	};
 
 	PlayerInfo _pi[4] = {
-		{"assets/stage/hero/Knight/hero_idle (%d).png", 15, 3.0f },
-		{"assets/stage/hero/Knight/hero_melee (%d).png", 22, 3.0f},
-		{"assets/stage/hero/Knight/hero_move (%d).png",8, 3.0f},
-		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 3.0f}
+		{"assets/stage/hero/Knight/hero_idle (%d).png", 15, 2.0f, {-32, -38} },
+		{"assets/stage/hero/Knight/hero_melee (%d).png", 22, 2.0f, {-72, -32}},
+		{"assets/stage/hero/Knight/hero_move (%d).png",8, 2.0f, {-48, -38}},
+		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 2.0f, {-75, -32}}
 	};
 	iGraphics* g = iGraphics::instance();
 	iSize size;
@@ -38,7 +39,22 @@ Player::Player()
 			freeImage(tex);
 		}
 		img->_aniDt =  0.1f;
-		img->repeatNum =  (i % 2 == 0 ? 0 : 1);
+		//img->repeatNum =  (i % 2 == 0 ? 0 : 1);
+		switch (i)
+		{
+		case 0: 
+		case 2:
+			img->_repeatNum = 0;
+			break;
+
+		default:
+			img->_repeatNum = 1;
+		
+			break;
+		}
+
+
+		img->position = pi->p*2;
 	
 		imgs[i] = img;
 	}
@@ -57,23 +73,19 @@ Player::~Player()
 
 void Player::cbBehave(iImage* me)
 {
-	//for(int i=0; i< Behave_num; i++)
-	//{
-	//	
-	//	if (me == hero->imgs[i])
-	//	{
-	//		if( i%2==1)
-	//		return;
-	//	}
-	//}
+	
+	printf("End Animation!\n");
 	extern Player* hero;
+	if(hero->behave != Behave_idle)
 	hero->setBehave(Behave_idle, hero->direction);
 }
 
 void Player::setBehave(Behave be, int dir)
 {
+	
 	if (behave != be || direction != dir)
 	{
+		printf("income\n");
 		behave = be;
 		img = imgs[be];
 		img->startAnimation(cbBehave);
@@ -93,7 +105,7 @@ void Player::paint(float dt, iPoint offset)
 		break;
 	}
 
-	img->paint(dt,offset);
+		img->paint(dt,offset);
 }
 
 
@@ -110,3 +122,6 @@ void Player::Skill2()
 void Player::Skill3()
 {
 }
+
+
+

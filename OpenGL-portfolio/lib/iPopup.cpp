@@ -64,6 +64,85 @@ void iPopup::paint(float dt)
 	if (bShow == false)
 		return;
 
+	float alpha = 1.0f;
+	float rx = 1.0f, ry = 1.0f;
+	iPoint p;
+	if (style == iPopupStyleNone || style == iPopupStyleAlpha || style == iPopupStyleMove)
+	{
+		float a;
+		iPoint pp;
+		if (stat == iPopupStatOpen)
+		{
+			a = linear(showDt / _showDt, 0.0f, 1.0f);
+			if (showDt >= _showDt)
+			{
+				a = 1.0f;
+				stat = iPopupStatProc;
+				if (methodOpen)
+					methodOpen(this);
+			}
+			pp = linear(a, openPosition, closePosition);
+		}
+		else if (stat == iPopupStatProc)
+		{
+			a = 1.0f;
+			pp = closePosition;
+		}
+		else// if (stat == iPopupStatClose)
+		{
+			a = linear(showDt / _showDt, 1.0f, 0.0f);
+			if (showDt >= _showDt)
+			{
+				a = 0.0f;
+				bShow = false;
+				if (methodClose)
+					methodClose(this);
+			}
+			pp = linear(a, openPosition, closePosition);
+		}
+
+		if (style == iPopupStyleNone)
+			p = closePosition;
+		else if (style == iPopupStyleAlpha)
+		{
+			p = closePosition;
+			alpha = a;
+		}
+		else if (style == iPopupStyleMove)
+			p = pp;
+	}
+	else if (style == iPopupStyleZoom)
+	{
+		if (stat == iPopupStatOpen)
+		{
+			rx = ry = easeIn(showDt / _showDt, 0.0f, 1.0f);
+			if (showDt >= _showDt)
+			{
+				stat = iPopupStatProc;
+				if (methodOpen)
+					methodOpen(this);
+			}
+			p = linear(rx, openPosition, closePosition);
+		}
+		else if (stat == iPopupStatProc)
+		{
+			p = closePosition;
+		}
+		else// if (stat == iPopupStatClose)
+		{
+			rx = ry = easeIn(showDt / _showDt, 1.0f, 0.0f);
+			if (showDt >= _showDt)
+			{
+				bShow = false;
+				if (methodClose)
+					methodClose(this);
+			}
+			p = linear(rx, openPosition, closePosition);
+		}
+	}
+
+	showDt += dt;
+
 	float gr, gg, gb, ga;
 	getRGBA(gr, gg, gb, ga);
 	float size = getStringSize();
@@ -77,139 +156,22 @@ void iPopup::paint(float dt)
 	fbo->clear(0, 0, 0, 0);
 	setRGBA(1, 1, 1, 1.0f);
 	if (methodDrawBefore)
-		methodDrawBefore(this, dt);
+		methodDrawBefore(this, p, dt);
 
 	int i, num = arrayImg->count;
 	for (i = 0; i < num; i++)
 	{
 		iImage* img = (iImage*)arrayImg->objectAtIndex(i);
-		img->paint(dt, iPointMake(0, 0));
+		img->paint(dt, p);
 	}
 
 	if (methodDrawAfter)
-		methodDrawAfter(this, dt);
+		methodDrawAfter(this, p, dt);
 	fbo->unbind();///////////////////////////
 
-	if (style == iPopupStyleNone)
-	{
-		iPoint off = closePosition;
-		drawImage(tex, off.x, off.y,
-			0, 0, tex->width, tex->height, TOP | LEFT,
-			1.0f, 1.0f, 2, 0, REVERSE_HEIGHT);
-	}
-	else if (style == iPopupStyleAlpha)
-	{
-		float alpha;
-		iPoint off;
-		if (stat == iPopupStatOpen)
-		{
-			alpha = linear(showDt / _showDt, 0.0f, 1.0f);
-			off = linear(showDt / _showDt, openPosition, closePosition);
-			showDt += dt;
-			if (showDt >= _showDt)
-			{
-				stat = iPopupStatProc;
-				if (methodOpen)
-					methodOpen(this);
-			}
-		}
-		else if (stat == iPopupStatProc)
-		{
-			alpha = 1.0f;
-			off = closePosition;
-		}
-		else// if (stat == iPopupStatClose)
-		{
-			alpha = linear(showDt / _showDt, 1.0f, 0.0f);
-			off = linear(showDt / _showDt, closePosition, openPosition);
-			showDt += dt;
-			if (showDt >= _showDt)
-			{
-				bShow = false;
-				if (methodClose)
-					methodClose(this);
-			}
-		}
-
-		setRGBA(1, 1, 1, alpha);
-		drawImage(tex, off.x, off.y,
-			0, 0, tex->width, tex->height, TOP | LEFT,
-			1.0f, 1.0f, 2, 0, REVERSE_HEIGHT);
-	}
-	else if (style == iPopupStyleMove)
-	{
-		iPoint off;
-		if (stat == iPopupStatOpen)
-		{
-			off = easeOut(showDt / _showDt, openPosition, closePosition);//easeIn(showDt / _showDt, openPosition, closePosition);
-			showDt += dt;
-			if (showDt >= _showDt)
-			{
-				stat = iPopupStatProc;
-				if (methodOpen)
-					methodOpen(this);
-			}
-		}
-		else if (stat == iPopupStatProc)
-		{
-			off = closePosition;
-		}
-		else// if (stat == iPopupStatClose)
-		{
-			off = easeOut(showDt / _showDt, closePosition, openPosition);//easeOut(showDt / _showDt, closePosition, openPosition);
-			showDt += dt;
-			if (showDt >= _showDt)
-			{
-				bShow = false;
-				if (methodClose)
-					methodClose(this);
-			}
-		}
-
-		setRGBA(1, 1, 1, 1.0f);
-		drawImage(tex, off.x, off.y,
-			0, 0, tex->width, tex->height, TOP | LEFT,
-			1.0f, 1.0f, 2, 0, REVERSE_HEIGHT);
-	}
-	else if (style == iPopupStyleZoom)
-	{
-		iPoint off;
-		float scale;
-		if (stat == iPopupStatOpen)
-		{
-			off = easeIn(showDt / _showDt, openPosition, closePosition);
-			scale = showDt / _showDt;
-			showDt += dt;
-			if (showDt >= _showDt)
-			{
-				stat = iPopupStatProc;
-				if (methodOpen)
-					methodOpen(this);
-			}
-		}
-		else if (stat == iPopupStatProc)
-		{
-			off = closePosition;
-			scale = 1.0f;
-		}
-		else// if (stat == iPopupStatClose)
-		{
-			off = easeOut(showDt / _showDt, closePosition, openPosition);
-			scale = 1.0f - showDt / _showDt;
-			showDt += dt;
-			if (showDt >= _showDt)
-			{
-				bShow = false;
-				if (methodClose)
-					methodClose(this);
-			}
-		}
-
-		setRGBA(1, 1, 1, 1.0f);
-		drawImage(tex, off.x, off.y,
-			0, 0, tex->width, tex->height, TOP | LEFT,
-			scale, scale, 2, 0, REVERSE_HEIGHT);
-	}
+	setRGBA(1, 1, 1, alpha);
+	p -= iPointMake(closePosition.x * rx, closePosition.y * ry);
+	drawImage(tex, p.x, p.y, 0, 0, tex->width, tex->height, TOP | LEFT, rx, ry, 2, 0, REVERSE_HEIGHT);
 
 	setRGBA(gr, gg, gb, ga);
 	setStringSize(size);
