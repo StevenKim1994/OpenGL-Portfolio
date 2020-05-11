@@ -221,7 +221,8 @@ void showPopMenuBtn(bool show)
 
 iPopup* PopMenuSettings;
 iImage** PopMenuSettingsBtn;
-float bgmPop, stxPop; // 배경음, 효과음
+float bgmPop, sfxPop; // 배경음, 효과음
+const char* btnName[4] = {"null", "BGM SOUND" ,"EFFECT SOUND" ,"exit"};
 
 void drawPopMenuSettingsBefore(iPopup* me, float dt);
 
@@ -229,26 +230,68 @@ void createPopSettings()
 {
 	iPopup* pop = new iPopup(iPopupStyleZoom);
 
-	PopMenuSettingsBtn = (iImage**)malloc(sizeof(iImage*) * 3);
-	iImage* settingBtn = new iImage();
-
-	Texture* tex;
+	PopMenuSettingsBtn = (iImage**)malloc(sizeof(iImage*) * 4); // 0: bg 1: bgm 2:sfx 3:exit
+	
 	iGraphics* g = iGraphics::instance();
 
 	iSize size = iSizeMake(690, 360);
-	igImage* ig = g->createIgImage("assets/menu/popBg.png");
-	size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
-	g->init(size);
-	g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
-	g->drawString(devSize.width / 2, 100, HCENTER | VCENTER, "Game Settings");
 	
-	tex = g->getTexture();
-	settingBtn->addObject(tex);
-	freeImage(tex);
+	for (int i = 0; i < 4; i++)
+	{
+		iImage* img = new iImage();
+		Texture* tex;
 
-	PopMenuSettingsBtn[0] = settingBtn;
+		if (i == 0) // title
+		{
+			igImage* ig = g->createIgImage("assets/menu/popBg.png");
+			size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
+			g->init(size);
+			g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
+			g->drawString(devSize.width / 2, 100, HCENTER | VCENTER, "Game Settings");
+		}
+		else if (i == 3) // quit
+		{
+
+			igImage* ig = g->createIgImage("assets/menu/BTN1.png");
+			iSize btnSize = iSizeMake(g->getIgImageWidth(ig), g->getIgImageHeight(ig));
+			setStringSize(17);
+			setStringRGBA(1, 1, 1, 1);
+			g->init(btnSize);
+			g->drawImage(ig, 0, 0, 1.0, 1.0,TOP|LEFT);
+			
+		}
+		else
+		{
+			igImage* ig = g->createIgImage("assets/menu/BTN0.png");
+			iSize btnSize = iSizeMake(g->getIgImageWidth(ig)*2, g->getIgImageHeight(ig));
+			setStringSize(17);
+			setStringRGBA(0, 0, 0, 1);
+			g->init(btnSize);
+			g->drawImage(ig, 0, 0, 2.0, 1.0, TOP | LEFT);
+			g->drawString(btnSize.width / 2 ,btnSize.height/2, VCENTER|HCENTER, btnName[i]);
+
+
+		}
+
+		tex = g->getTexture();
+		img->addObject(tex);
+		if ( i == 1 || i == 2)
+		{
+			img->position = iPointMake(size.width / 2 - 450, i * 150 + 100);
+		}
+		else if (i == 3)
+		{
+			img->position = iPointMake(size.width-tex->width, 0);
+		}
+		freeImage(tex);
+
+		PopMenuSettingsBtn[i] = img;
+		
+		pop->addObject(PopMenuSettingsBtn[i]);
+
+	}
 	
-	pop->addObject(settingBtn);
+	
 	pop->openPosition = iPointMake((devSize.width / 2) - size.width / 2, devSize.height / 2 - size.height / 2);
 	pop->closePosition = iPointMake((devSize.width / 2) - size.width / 2, devSize.height / 2 - size.height / 2);
 
