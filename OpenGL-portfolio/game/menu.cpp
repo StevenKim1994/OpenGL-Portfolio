@@ -237,6 +237,7 @@ void createPopSettings()
 
 	iSize size = iSizeMake(690, 360);
 	igImage* ig = g->createIgImage("assets/menu/popBg.png");
+	size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
 	g->init(size);
 	g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
 	g->drawString(devSize.width / 2, 100, HCENTER | VCENTER, "Game Settings");
@@ -248,7 +249,8 @@ void createPopSettings()
 	PopMenuSettingsBtn[0] = settingBtn;
 	
 	pop->addObject(settingBtn);
-
+	pop->openPosition = iPointMake((devSize.width / 2) - size.width / 2, devSize.height / 2 - size.height / 2);
+	pop->closePosition = iPointMake((devSize.width / 2) - size.width / 2, devSize.height / 2 - size.height / 2);
 
 	PopMenuSettings = pop;
 	
