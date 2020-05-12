@@ -59,6 +59,7 @@ public:
 	virtual ~Player();
 
 	static void cbBehave(iImage* img);
+	static void cbSkill(iImage* skillimg);
 	void setBehave(Behave be, int direction);
 	void paint(float dt, iPoint offset);
 	iImage** imgs;
@@ -68,7 +69,8 @@ public:
 	int direction;
 
 public:
-	void Skill1(); // 아직 어떤 스킬을 넣을지 결정하진 않았음.
+	iImage* imgSkill;
+	void Skill1(iPoint pos);
 	void Skill2();
 	void Skill3();
 

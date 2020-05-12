@@ -29,7 +29,6 @@ MapTile* maptile;
 iPoint offMt;
 iPoint vp;
 
-MapHero* mh;
 
 
 void loadStage()
@@ -48,15 +47,15 @@ void loadStage()
 	hero->setSize(iSizeMake(PlayerWidth, PlayerHeight));
 
 	hero->setSpeed(MapCharSpeed);
-	hero->setPosition(iPointMake(300, MapTileHeight * MapTileNumY - 200));
-	
-
+	hero->setPosition(iPointMake(devSize.width /2, devSize.height/2));
+	//hero->setPosition(iPointZero)
+	offMt = iPointZero;
 	// camera positioning
-	offMt.x = devSize.width / 2 - hero->getPosition().x;
-	offMt.y = devSize.height / 2 - hero->getPosition().y;
+	//offMt.x = devSize.width / 2 - hero->getPosition().x;
+	//offMt.y = devSize.height / 2 - hero->getPosition().y;
 
-	vp.x =  offMt.x + hero->getPosition().x;
-	vp.y = offMt.y + hero->getPosition().y;
+	//vp.x =  offMt.x + hero->getPosition().x;
+	//vp.y = offMt.y + hero->getPosition().y;
 
 	createPopPlayerUI();
 
@@ -92,14 +91,8 @@ void drawStage(float dt)
 		drawRect(x + 2, y + 2, MapTileWidth - 4, MapTileHeight - 4);
 	}
 
-	//setRGBA(hero_color);
-	setRGBA(1, 1, 1, 1);
-	
-	
+	iPoint movement = iPointMake(0, 1) * powGravity * dt;
 
-
-	iPoint movement = iPointMake(0, 1) *  powGravity* dt;
-	
 	hero->applyJump(movement, dt);
 	if (getKeyDown() & keyboard_space) // 윗점프
 	{
@@ -122,150 +115,103 @@ void drawStage(float dt)
 	uint32 keyDown = 0;
 	if (hero->behave != Behave_meleeAttack)
 	{
-		 keyStat = getKeyStat();
-		 keyDown = getKeyDown();
+		keyStat = getKeyStat();
+		keyDown = getKeyDown();
 	}
 	iPoint v = iPointZero;
+	Behave be;
 	if (keyStat & keyboard_left) v.x = -1;
 	else if (keyStat & keyboard_right) v.x = 1;
 	if (keyStat & keyboard_up) v.y = -1;
 	else if (keyStat & keyboard_down) v.y = 1;
 
-	
-	Behave be;
+
 	if (keyDown & keyboard_num1)
+	{
 		be = Behave_meleeAttack;
 
+		hero->Skill1(vp);
+	}
 	else if (keyDown & keyboard_space)
 		be = Behave_jumpAndFall;
-
 	else if (keyDown & keyboard_down)
 		be = Behave_idle;
-
 	else if (keyDown & keyboard_up)
 		be = Behave_jumpAndFall;
-
-
 	else
 		be = (v == iPointZero ? Behave_idle : Behave_move);
 	int dir = hero->direction;
 	if (v.x < 0) dir = 0;
 	else if (v.x > 0) dir = 1;
 
-	
-	if( hero->behave!=Behave_meleeAttack && hero->behave != Behave_jumpAndFall)
+
+	if (hero->behave != Behave_meleeAttack && hero->behave != Behave_jumpAndFall)
 		hero->setBehave(be, dir);
 
-	
-
-
-
+	float minX, maxX, minY, maxY;
 	if (v != iPointZero)
 	{
 		v /= iPointLength(v);
 		iPoint mp = v * (hero->getSpeed() * dt);
-		//mh->move(mp + movement);
-		hero->move(mp + movement,maptile);
+		hero->move(mp + movement, maptile);
 
-		vp = offMt + hero->getPosition();
-		hero->paint(dt, vp);
-		
-		if (vp.x < devSize.width * 0.333333f)
-		{
-			// 왼쪽으로 넘어갔을 경우
-			offMt.x += (devSize.width * 0.333333f - vp.x);
-			if (offMt.x > 0)
-				offMt.x = 0;
-		}
-		else if (vp.x > devSize.width * 0.666667f)
-		{
-			// 오른쪽으로 넘어갔을 경우
-			offMt.x += (devSize.width * 0.666667f - vp.x);
-			if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
-				offMt.x = devSize.width - MapTileWidth * MapTileNumX;
-		}
-		if (vp.y < devSize.height * 0.333333f)
-		{
-			// 위로 넘어갔을 경우
-			offMt.y += (devSize.height * 0.333333f - vp.y);
-			if (offMt.y > 0)
-				offMt.y = 0;
-		}
-		else if (vp.y > devSize.height * 0.666667f)
-		{
-			// 아래로 넘어갔을 경우
-			offMt.y += (devSize.height * 0.666667f - vp.y);
-			if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
-				offMt.y = devSize.height - MapTileHeight * MapTileNumY;
-		}
-#if DEBUG
-		//hitbox
-		drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
-			(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
-#endif
+		minX = devSize.width * 0.333333f;
+		maxX = devSize.width * 0.666667f;
+		minY = devSize.height * 0.333333f;
+		maxY = devSize.height * 0.666667f;
 	}
 	else// if(v == iPointZero)
 	{
-		//mh->move(movement);
 		hero->move(movement, maptile);
-		iPoint vp = offMt + hero->getPosition();// mh->position;
-		hero->paint(dt, vp);
 
-
-	
-
-
-		
-		if (vp.x != devSize.width / 2)
-		{
-			if (vp.x < devSize.width / 2)
-			{
-				offMt.x += natureSpeed * dt;//
-				vp.x = offMt.x + hero->getPosition().x;//mh->position.x;
-				if (vp.x > devSize.width / 2)
-					offMt.x = devSize.width / 2 - hero->getPosition().x;//mh->position.x;
-			}
-			else
-			{
-				offMt.x -= natureSpeed * dt;//
-				vp.x = offMt.x + hero->getPosition().x;//mh->position.x;
-				if (vp.x < devSize.width / 2)
-					offMt.x = devSize.width / 2 - hero->getPosition().x;//mh->position.x;
-			}
-			if (offMt.x > 0)
-				offMt.x = 0;
-			else if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
-				offMt.x = devSize.width - MapTileWidth * MapTileNumX;
-		}
-		if (vp.y != devSize.height / 2)
-		{
-			if (vp.y < devSize.height / 2)
-			{
-				offMt.y += natureSpeed * dt;//
-				vp.y = offMt.y + hero->getPosition().y;//mh->position.y;
-				if (vp.y > devSize.height / 2)
-					offMt.y = devSize.height / 2 - hero->getPosition().y; // mh->position.y;
-			}
-			else
-			{
-				offMt.y -= natureSpeed * dt;//
-				vp.y = offMt.y + hero->getPosition().y;//mh->position.y;
-				if (vp.y < devSize.height / 2)
-					offMt.y = devSize.height / 2 - hero->getPosition().y;//mh->position.y;
-			}
-			if (offMt.y > 0)
-				offMt.y = 0;
-			else if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
-				offMt.y = devSize.height - MapTileHeight * MapTileNumY;
-		}
-
-		//hitbox
-#if ON_HITBOX
-		drawRect((hero->getPosition().x - hero->getSize().width / 2)+ offMt.x,
-				(hero->getPosition().y - hero->getSize().height)+ offMt.y, hero->getSize().width, hero->getSize().height);
-
-#endif
+		minX = devSize.width / 2;
+		maxX = devSize.width / 2;
+		minY = devSize.height / 2;
+		maxY = devSize.height / 2;
 	}
+
+	iPoint vp = offMt + hero->getPosition();
+	if (vp.x < minX)
+	{
+		// 왼쪽으로 넘어갔을 경우
+		offMt.x += (minX - vp.x) *dt;
+		if (offMt.x > 0)
+			offMt.x = 0;
+	}
+	else if (vp.x > maxX)
+	{
+		// 오른쪽으로 넘어갔을 경우
+		offMt.x += (maxX - vp.x) * dt;
+		if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
+			offMt.x = devSize.width - MapTileWidth * MapTileNumX;
+	}
+	if (vp.y < minY)
+	{
+		// 위로 넘어갔을 경우
+		offMt.y += (minY - vp.y) * dt;
+		if (offMt.y > 0)
+			offMt.y = 0;
+	}
+	else if (vp.y > maxY)
+	{
+		// 아래로 넘어갔을 경우
+		offMt.y += (maxY - vp.y) * dt;
+		if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
+			offMt.y = devSize.height - MapTileHeight * MapTileNumY;
+	}
+
+	//setRGBA(hero_color);
+	setRGBA(1, 1, 1, 1);
+	hero->paint(dt, offMt);
+
+#if DEBUG
+	//hitbox
+	drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
+		(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
+#endif
+
+
+
 	drawPopPlayerUI(dt);
 	showPopPlayerUI(true);
 

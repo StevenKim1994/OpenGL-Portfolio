@@ -64,6 +64,29 @@ Player::Player()
 	direction = 0;
 	jumpNum = 0;
 	_jumpNum = 2;
+
+	iImage* img = new iImage();
+
+	for (int i = 0; i < 4; i++)
+	{
+		iGraphics* g = iGraphics::instance();
+		//Texture* tex = createImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
+		igImage* ig = g->createIgImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
+		iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 0.5, g->getIgImageHeight(ig) * 0.5);
+		g->init(skillsize);
+		g->drawImage(ig, 0, 0, 0.5, 0.5, TOP | LEFT);
+		tex = g->getTexture();
+
+
+		img->addObject(tex);
+		freeImage(tex);
+	}
+	img->aniDt = 0.0f;
+	img->_aniDt = 0.3f;
+	img->_repeatNum = 1;
+	//iPoint targetPo = iPointMake(targetPosition.x += 10, targetPosition.y);
+	//skill->startAnimation(cbSkill);
+	imgSkill = img;
 }
 
 Player::~Player()
@@ -71,6 +94,8 @@ Player::~Player()
 	for (int i = 0; i < 4; i++)
 		delete imgs[i];
 	free(imgs);
+
+	delete imgSkill;
 }
 
 void Player::cbBehave(iImage* me)
@@ -97,12 +122,29 @@ void Player::setBehave(Behave be, int dir)
 
 void Player::paint(float dt, iPoint offset)
 {
-		img->paint(dt,offset,direction);
+	img->paint(dt, position + offset, direction);
+	if (imgSkill->animation)
+	{
+		imgSkill->paint(dt, offset);
+	}
+}
+
+//iImage* skill;// = new iImage();
+
+void Player::cbSkill(iImage* me)
+{
+//	printf("end skill!\n");
+//	delete skill;
+
 }
 
 
-void Player::Skill1()
+
+void Player::Skill1(iPoint pos)
 {
+	printf("skill! on!\n");
+	imgSkill->position = position;
+	imgSkill->startAnimation();
 }
 
 void Player::Skill2()
