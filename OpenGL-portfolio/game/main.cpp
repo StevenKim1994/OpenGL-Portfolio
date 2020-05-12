@@ -50,6 +50,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInst,
 
 	loadLib(hDC);
 	loadGame();
+    loadCursor();
 	
 	
 	ShowWindow(hWnd, nCmdShow);
@@ -73,13 +74,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInst,
 
 			
 			drawLib(drawGame);
+            drawCursor(0.0f);
 			SwapBuffers(hDC);
 		}
 	}
 
 	freeLib();
 	freeGame();
-	
+    freeCursor();
 
 	DestroyWindow(hWnd);
 	endGdiplus(gpToken);
@@ -216,23 +218,49 @@ static bool bCursor;
 
 void loadCursor()
 {
+    texCursor = createImage("assets/cursor.png");
+    cursor = iPointZero;
+    bCursor = false;
     
 }
 
 void freeCursor()
 {
-  
+    freeImage(texCursor);
 }
 
 void drawCursor(float dt)
 {
-  
+  if(bCursor)
+  {
+      drawImage(texCursor, cursor.x, cursor.y, TOP | LEFT);
+  }
 }
 
 bool updateCursor(bool inClient)
 {
+    if (bCursor == inClient)
+        return false;
+    bCursor = inClient;
 
-    return NULL;
+	if(bCursor)
+	{
+		while(1)
+		{
+            int n = ShowCursor(FALSE);
+            if (n < 0) break;
+		}
+	}
+    else
+    {
+	    while(1)
+	    {
+            int n = ShowCursor(TRUE);
+            if (n > -1) break;
+	    }
+    }
+
+    return true;
 }
 
 void setCurrentMonitor(RECT& rt)
