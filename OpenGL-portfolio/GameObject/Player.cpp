@@ -1,8 +1,16 @@
 #include "Player.h"
 
 
+#define Player_HP 100
+#define Player_MP 100
+#define Player_Stamina 100
+
 Player::Player()
 {
+	HP = Player_HP;
+	MP = Player_MP;
+	Stamina = Player_Stamina;
+	
 	struct PlayerInfo
 	{
 		const char* path;
@@ -13,12 +21,13 @@ Player::Player()
 
 	PlayerInfo _pi[4] = {
 		{"assets/stage/hero/Knight/hero_idle (%d).png", 15, 2.0f, {-32, -38} },
-		{"assets/stage/hero/Knight/hero_melee (%d).png", 22, 2.0f, {-72, -32}},
+		{"assets/stage/hero/Knight/hero_melee (%d).png", 22, 2.0f, {-72, -38}},
 		{"assets/stage/hero/Knight/hero_move (%d).png",8, 2.0f, {-48, -38}},
-		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 2.0f, {-75, -32}}
+		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 2.0f, {-75, -38}}
 	};
 	iGraphics* g = iGraphics::instance();
 	iSize size;
+	
 
 	imgs = (iImage**)malloc(sizeof(iImage*) * 4);
 	for (int i = 0; i < 4; i++)
@@ -39,7 +48,7 @@ Player::Player()
 			freeImage(tex);
 		}
 		img->_aniDt =  0.1f;
-		//img->repeatNum =  (i % 2 == 0 ? 0 : 1);
+
 		switch (i)
 		{
 		case 0: 
@@ -67,26 +76,39 @@ Player::Player()
 
 	iImage* img = new iImage();
 
-	for (int i = 0; i < 4; i++)
-	{
-		iGraphics* g = iGraphics::instance();
-		//Texture* tex = createImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
-		igImage* ig = g->createIgImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
-		iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 0.5, g->getIgImageHeight(ig) * 0.5);
-		g->init(skillsize);
-		g->drawImage(ig, 0, 0, 0.5, 0.5, TOP | LEFT);
-		tex = g->getTexture();
+	{// 근거리 스킬 불러오는 부분
+		
+		for (int i = 0; i < 4; i++) 
+		{
+			iGraphics* g = iGraphics::instance();
+			//Texture* tex = createImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
+			igImage* ig = g->createIgImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
+			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 0.25, g->getIgImageHeight(ig) * 0.25);
+			g->init(skillsize);
+			g->drawImage(ig, 0, 0, 0.25, 0.25, TOP | LEFT);
+			tex = g->getTexture();
 
 
-		img->addObject(tex);
-		freeImage(tex);
+			img->addObject(tex);
+			freeImage(tex);
+		}
+		img->aniDt = 0.0f;
+		img->_aniDt = 0.3f;
+		img->_repeatNum = 1;
+		iPoint p = iPointMake(-128, -128);
+		img->position = p;
+
+		imgSkill = img;
+
 	}
-	img->aniDt = 0.0f;
-	img->_aniDt = 0.3f;
-	img->_repeatNum = 1;
-	//iPoint targetPo = iPointMake(targetPosition.x += 10, targetPosition.y);
-	//skill->startAnimation(cbSkill);
-	imgSkill = img;
+
+	{// 원거리 스킬 불러오는 부분
+		
+
+		
+	}
+	
+	
 }
 
 Player::~Player()
@@ -125,7 +147,7 @@ void Player::paint(float dt, iPoint offset)
 	img->paint(dt, position + offset, direction);
 	if (imgSkill->animation)
 	{
-		imgSkill->paint(dt, offset);
+		imgSkill->paint(dt, offset, direction);
 	}
 }
 
@@ -140,10 +162,15 @@ void Player::cbSkill(iImage* me)
 
 
 
-void Player::Skill1(iPoint pos)
+void Player::Skill1()
 {
-	printf("skill! on!\n");
-	imgSkill->position = position;
+	printf("skill1! on!\n");
+	iPoint targetPos;
+	if (direction == 1)
+		targetPos = iPointMake(position.x + 10, position.y - 100);
+	else if (direction == 0)
+		targetPos = iPointMake(position.x - 128, position.y - 100);
+	imgSkill->position = targetPos;
 	imgSkill->startAnimation();
 }
 

@@ -269,8 +269,7 @@ void createPopSettings()
 			g->init(btnSize);
 			g->drawImage(ig, 0, 0, 2.0, 1.0, TOP | LEFT);
 			g->drawString(btnSize.width / 2 ,btnSize.height/2, VCENTER|HCENTER, btnName[i]);
-
-
+			
 		}
 
 		tex = g->getTexture();
@@ -278,6 +277,8 @@ void createPopSettings()
 		if ( i == 1 || i == 2)
 		{
 			img->position = iPointMake(size.width / 2 - 450, i * 150 + 100);
+
+			
 		}
 		else if (i == 3)
 		{

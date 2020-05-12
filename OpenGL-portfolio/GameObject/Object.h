@@ -30,6 +30,7 @@ protected:
 	float speed; // 공격속도를 의미함.
 	float HP;
 	float MP;
+	float Stamina;
 
 
 public: 

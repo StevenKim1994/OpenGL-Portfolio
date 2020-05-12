@@ -8,6 +8,7 @@
 
 Object::Object()
 {
+	
 }
 
 Object::~Object()

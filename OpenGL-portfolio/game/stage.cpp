@@ -18,7 +18,7 @@ uint8 tileAttr[MapTileNumX * MapTileNumY] = {
 	5, 0, 0, 1, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5,
 	1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
 	1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-};
+}; // 맵 타일
 
 
 
@@ -46,16 +46,11 @@ void loadStage()
 
 	hero->setSize(iSizeMake(PlayerWidth, PlayerHeight));
 
-	hero->setSpeed(MapCharSpeed);
+	hero->setMovement(MapCharMovement);
 	hero->setPosition(iPointMake(devSize.width /2, devSize.height/2));
-	//hero->setPosition(iPointZero)
 	offMt = iPointZero;
 	// camera positioning
-	//offMt.x = devSize.width / 2 - hero->getPosition().x;
-	//offMt.y = devSize.height / 2 - hero->getPosition().y;
 
-	//vp.x =  offMt.x + hero->getPosition().x;
-	//vp.y = offMt.y + hero->getPosition().y;
 
 	createPopPlayerUI();
 
@@ -67,7 +62,7 @@ void freeStage()
 	freePopPlayerUI();
 
 	free(maptile);
-	//free(mh);
+
 	delete hero;
 
 	
@@ -96,11 +91,7 @@ void drawStage(float dt)
 	hero->applyJump(movement, dt);
 	if (getKeyDown() & keyboard_space) // 윗점프
 	{
-		//if (getKeyStat() & keyboard_down)
-		//	mh->position.y += 1;
-		//else
-
-		//mh->jump();
+		
 		hero->jump();
 	}
 
@@ -130,8 +121,9 @@ void drawStage(float dt)
 	{
 		be = Behave_meleeAttack;
 
-		hero->Skill1(vp);
+		hero->Skill1();
 	}
+
 	else if (keyDown & keyboard_space)
 		be = Behave_jumpAndFall;
 	else if (keyDown & keyboard_down)
@@ -152,7 +144,7 @@ void drawStage(float dt)
 	if (v != iPointZero)
 	{
 		v /= iPointLength(v);
-		iPoint mp = v * (hero->getSpeed() * dt);
+		iPoint mp = v * (hero->getMovement() * dt);
 		hero->move(mp + movement, maptile);
 
 		minX = devSize.width * 0.333333f;

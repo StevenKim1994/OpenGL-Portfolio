@@ -23,24 +23,11 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point);
 void showPopPlayerUI(bool show);
 
 
-struct MapHero
-{
-	iPoint position;
-	iSize size;
-	float speed;
-
-	iPoint jumpment;
-	int jumpNum, _jumpNum;
-
-	void move(iPoint movement);
-
-	void jump();
-	void applyJump(iPoint& movement, float dt);
-};
 
 #define MapCharWidth 25
 #define MapCharHeight 25
-#define MapCharSpeed 200
+#define MapCharMovement 200 // 맵 기본 캐릭터들 이동속도
+#define MapCharSpeed 10 // 맵 기본 캐릭터들 공격속도
 
 #define hero_color 0, 0, 1, 1
 
