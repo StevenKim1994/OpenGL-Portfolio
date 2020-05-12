@@ -233,10 +233,21 @@ void Object::move(iPoint movement, MapTile* maptile)
 
 void Object::jump()
 {
+	if (jumpNum == _jumpNum)
+		return;
+
+	jumpNum++;
+	jumpment = iPointMake(0, -1) * powJump;
 }
 
 void Object::applyJump(iPoint& movement, float dt)
 {
+	if (jumpment == iPointZero)
+		return;
+
+	iPoint mp = jumpment * dt;
+	movement += mp;
+	jumpment -= mp;
 }
 
 float getDistanceLine0(iPoint p, iPoint sp, iPoint ep)

@@ -43,3 +43,11 @@ struct MapHero
 #define MapCharSpeed 200
 
 #define hero_color 0, 0, 1, 1
+
+
+//-------------PopPlayerUI----------------------//
+void createPopPlayerUI();
+void freePopPlayerUI();
+void drawPopPlayerUI(float dt);
+bool keyPopPlayerUI(iKeyState stat, iPoint point);
+void showPopPlayerUI(bool show);

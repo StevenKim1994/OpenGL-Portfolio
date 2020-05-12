@@ -62,6 +62,8 @@ Player::Player()
 	behave = (Behave)-1;
 	setBehave(Behave_idle, 0);
 	direction = 0;
+	jumpNum = 0;
+	_jumpNum = 2;
 }
 
 Player::~Player()
@@ -95,20 +97,8 @@ void Player::setBehave(Behave be, int dir)
 
 void Player::paint(float dt, iPoint offset)
 {
-	// direct;
-	switch (direction)
-	{
-	case 1:
-		break;
-
-	case 2:
-		break;
-	}
-
 		img->paint(dt,offset,direction);
 }
-
-
 
 
 void Player::Skill1()
