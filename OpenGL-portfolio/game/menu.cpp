@@ -136,6 +136,10 @@ void drawPopMenuBefore(iPopup* me, iPoint p, float dt)
 	}
 }
 
+void drawPopMenuSettingsBefore(iPopup* me, float dt)
+{
+}
+
 
 void freePopMenuBtn()
 {
@@ -178,7 +182,7 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 
 		else if (i == 1)
 		{
-			printf("selected popsettings\n");
+			//printf("selected popsettings\n");
 			showPopSettings(true);
 		}
 
@@ -218,11 +222,30 @@ void showPopMenuBtn(bool show)
 
 //----------- PopMenuSettings ------------------------
 
+bool touching = false;
+iPoint prevPoint;
+
+void moveTable(iPoint& off, iPoint mp, const iRect& rt, const iSize& size)
+{
+	off += mp;
+
+	float minX = rt.origin.x + rt.size.width - size.width;
+	float minY = rt.origin.y + rt.size.height - size.height;
+	float maxX = rt.origin.x;
+	float maxY = rt.origin.y;
+
+	if (off.x < minX) off.x = minX;
+	else if (off.x > maxX) off.x = maxX;
+
+	if (off.y < minY) off.y = minY;
+	else if (off.y > maxY) off.y = maxY;
+}
+
 
 iPopup* PopMenuSettings;
 iImage** PopMenuSettingsBtn;
 float bgmPop, sfxPop; // 배경음, 효과음
-const char* btnName[4] = {"null", "BGM SOUND" ,"EFFECT SOUND" ,"exit"};
+const char* btnName[3] = {"BGM SOUND" ,"EFFECT SOUND" ,"exit"};
 
 void drawPopMenuSettingsBefore(iPopup* me, float dt);
 
@@ -230,76 +253,122 @@ void createPopSettings()
 {
 	iPopup* pop = new iPopup(iPopupStyleZoom);
 
-	PopMenuSettingsBtn = (iImage**)malloc(sizeof(iImage*) * 4); // 0: bg 1: bgm 2:sfx 3:exit
-	
+	PopMenuSettingsBtn = (iImage**)malloc(sizeof(iImage*) * 3); // 0:bgm 1:sfx 2:exit
 	iGraphics* g = iGraphics::instance();
-
 	iSize size = iSizeMake(690, 360);
 	
-	for (int i = 0; i < 4; i++)
+	igImage* ig = g->createIgImage("assets/menu/popBg.png");
+	size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
+	g->init(size);
+	g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
+	g->drawString(devSize.width / 2, 100, HCENTER | VCENTER, "Game Settings");
+	
+
+	Texture* bgTex;
+	iImage* bgImage = new iImage();
+	bgTex = g->getTexture();
+	bgImage->addObject(bgTex);
+	freeImage(bgTex);
+	pop->addObject(bgImage);
+
+	for (int i = 0; i < 2; i++) // setting bar
 	{
+		// name
+		Texture* opName;
+		iImage* img = new iImage();
+		igImage* ig = g->createIgImage("assets/menu/BTN0.png");
+		iSize btnSize = iSizeMake(g->getIgImageWidth(ig)*2, g->getIgImageHeight(ig));
+		setStringSize(17);
+		setStringRGBA(0, 0, 0, 1);
+		g->init(btnSize);
+		g->drawImage(ig, 0, 0, 2.0, 1.0, TOP | LEFT);
+		g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnName[i]);
+	
+		opName = g->getTexture();
+		img->addObject(opName);
+		freeImage(opName);
+		img->position = iPointMake(size.width - size.width + 150, i * 200 + 200);
+		pop->addObject(img);
+
+
+
+		//range bar
+		Texture* rangeBar;
+		iImage* barImg = new iImage();
+		iSize settingBar = iSizeMake(500, 30);
+		g->init(settingBar);
+		setRGBA(0, 0, 1, 1);
+		g->fillRect(0, 0, settingBar.width, settingBar.height,10);
+		
+		rangeBar = g->getTexture();
+		barImg->addObject(rangeBar);
+		freeImage(rangeBar);
+		barImg->position = iPointMake(size.width - size.width + 150, i * 270 + 270);
+		pop->addObject(barImg);
+		setRGBA(1, 1, 1, 1);
+
+
+	}
+
+
+	{ // exit btn
 		iImage* img = new iImage();
 		Texture* tex;
 
-		if (i == 0) // title
-		{
-			igImage* ig = g->createIgImage("assets/menu/popBg.png");
-			size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
-			g->init(size);
-			g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
-			g->drawString(devSize.width / 2, 100, HCENTER | VCENTER, "Game Settings");
-		}
-		else if (i == 3) // quit
-		{
-
-			igImage* ig = g->createIgImage("assets/menu/BTN1.png");
-			iSize btnSize = iSizeMake(g->getIgImageWidth(ig), g->getIgImageHeight(ig));
-			setStringSize(17);
-			setStringRGBA(1, 1, 1, 1);
-			g->init(btnSize);
-			g->drawImage(ig, 0, 0, 1.0, 1.0,TOP|LEFT);
-			
-		}
-		else
-		{
-			igImage* ig = g->createIgImage("assets/menu/BTN0.png");
-			iSize btnSize = iSizeMake(g->getIgImageWidth(ig)*2, g->getIgImageHeight(ig));
-			setStringSize(17);
-			setStringRGBA(0, 0, 0, 1);
-			g->init(btnSize);
-			g->drawImage(ig, 0, 0, 2.0, 1.0, TOP | LEFT);
-			g->drawString(btnSize.width / 2 ,btnSize.height/2, VCENTER|HCENTER, btnName[i]);
-			
-		}
+		igImage* ig = g->createIgImage("assets/menu/BTN1.png");
+		iSize btnSize = iSizeMake(g->getIgImageWidth(ig)*0.5, g->getIgImageHeight(ig)*0.5);
+		setStringSize(17);
+		setStringRGBA(1, 1, 1, 1);
+		g->init(btnSize);
+		g->drawImage(ig, 0, 0, 0.5, 0.5, TOP | LEFT);
 
 		tex = g->getTexture();
 		img->addObject(tex);
-		if ( i == 1 || i == 2)
-		{
-			img->position = iPointMake(size.width / 2 - 450, i * 150 + 100);
-
-			
-		}
-		else if (i == 3)
-		{
-			img->position = iPointMake(size.width-tex->width, 0);
-		}
 		freeImage(tex);
 
-		PopMenuSettingsBtn[i] = img;
-		
-		pop->addObject(PopMenuSettingsBtn[i]);
+		img->position = iPointMake(size.width - tex->width, 0);
+
+
+		pop->addObject(img);
+		PopMenuSettingsBtn[0] = img;
 
 	}
 	
-	
+	{ // sound setting btn
+
+		for (int i = 0; i < 2; i++)
+		{
+			iImage* img = new iImage();
+			Texture* tex;
+
+			igImage* ig = g->createIgImage("assets/menu/settingIcon.png");
+			iSize btnSize = iSizeMake(g->getIgImageWidth(ig), g->getIgImageHeight(ig));
+			g->init(btnSize);
+			g->drawImage(ig, 0, 0, 1.0, 1.0, TOP | LEFT);
+
+			tex = g->getTexture();
+			img->addObject(tex);
+			freeImage(tex);
+
+			img->position = iPointMake(size.width / 2 +40, (size.height / 2 -70) *(i+1));
+
+			pop->addObject(img);
+			PopMenuSettingsBtn[i + 1] = img;
+		
+		
+		
+		
+		}
+
+	}
+
+
 	pop->openPosition = iPointMake((devSize.width / 2) - size.width / 2, devSize.height / 2 - size.height / 2);
 	pop->closePosition = iPointMake((devSize.width / 2) - size.width / 2, devSize.height / 2 - size.height / 2);
 
 	PopMenuSettings = pop;
+
 	
-
-
 }
 
 
@@ -320,7 +389,100 @@ void drawPopSettings(float dt)
 
 bool keyPopSettings(iKeyState stat, iPoint point)
 {
-	return false;
+	if (PopMenuSettings->bShow == false)
+		return false;
+
+	if (PopMenuSettings->stat != iPopupStatProc)
+		return true;
+
+	int i, j = -1;
+
+	switch (stat)
+	{
+	case iKeyStateBegan:
+	
+		//printf("%f, %f \n", point.x, point.y);
+		i = PopMenuSettings->selected;
+		printf("setting = %d\n", i);
+
+		if (i == 0)
+		{
+			printf("seletec == %d", i);
+			PopMenuSettings->show(false);
+		}
+		else if ( i > 0 && i < 3)
+		{
+			touching = true;
+			prevPoint = point;
+
+		}
+		break;
+	
+
+	case iKeyStateMoved:
+	
+		if (touching)
+		{
+			i = PopMenuSettings->selected;
+			if (i > 0 && i < 3)
+			{
+				iImage* img = PopMenuSettingsBtn[i];
+				img->position.x += (point - prevPoint).x;
+
+				if (img->position.x < 150)
+					img->position.x = 150;
+
+				else if (img->position.x > 630)
+					img->position.x = 630;
+
+				prevPoint = point;
+			}
+		}
+
+		else
+		{
+			for (i = 0; i < 3; i++)
+			{
+				if (containPoint(point, PopMenuSettingsBtn[i]->touchRect(PopMenuSettings->closePosition)))
+				{
+					printf("%d\n", i);
+					j = i;
+					break;
+				}
+			}
+			PopMenuSettings->selected = j;
+		}
+			break;
+	
+
+		
+	case iKeyStateEnded:
+		touching = false;
+		i = PopMenuSettings->selected;
+		if (i == 1) // bgm sound
+		{
+			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
+			printf("bgm %f\n", r);
+			bgmPop = r;
+			audioVolume(bgmPop, sfxPop, 2);
+		}
+		else if (i == 2) // effect sound
+		{
+			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
+			printf("sfx %f\n", r);
+			sfxPop = r;
+			audioVolume(bgmPop, sfxPop, 2);
+
+		}
+
+		
+		break;
+
+
+	}
+
+
+	return true;
 }
 
 void showPopSettings(bool show)
@@ -330,6 +492,8 @@ void showPopSettings(bool show)
 
 
 //-------------- popSettings -----------------//
+
+
 
 
 
