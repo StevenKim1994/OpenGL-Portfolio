@@ -38,3 +38,10 @@ void freePopPlayerUI();
 void drawPopPlayerUI(float dt);
 bool keyPopPlayerUI(iKeyState stat, iPoint point);
 void showPopPlayerUI(bool show);
+
+//------------PopMenuUI------------------------// 
+void createPopMenuUI();
+void freePopMenuUI();
+void drawPopMenuUI(float dt);
+bool keyPopMenuUI(iKeyState stat, iPoint point);
+void showPopMenuUI(bool show);

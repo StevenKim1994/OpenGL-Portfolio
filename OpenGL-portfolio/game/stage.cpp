@@ -115,6 +115,8 @@ void loadStage()
 
 
 	createPopPlayerUI();
+	createPopMenuUI();
+
 
 	
 }
@@ -122,7 +124,7 @@ void loadStage()
 void freeStage()
 {
 	freePopPlayerUI();
-
+	freePopMenuUI();
 	free(maptile);
 
 	delete hero;
@@ -282,6 +284,8 @@ void drawStage(float dt)
 
 	drawPopPlayerUI(dt);
 	showPopPlayerUI(true);
+
+	drawPopMenuUI(dt);
 
 }
 
@@ -464,6 +468,14 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 			if (i == -1)
 				break;
 
+			else if(i == 0)
+			{
+				printf("selected = %d\n", i);
+
+				showPopMenuUI(true);
+			}
+
+		
 			else
 				printf("seletecd = %d\n", i);
 			break;
@@ -493,6 +505,105 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 void showPopPlayerUI(bool show)
 {
 	PopPlayerUI->show(show);
+}
+
+//--------------PopMenuUI---------------------/
+
+iPopup* PopMenuUI;
+iImage** PopMenuUIImgs;
+
+const char* btnString[3] = { "Rusume Game", "Settings", "Game Quit" };
+
+void createPopMenuUI()
+{
+	iPopup* pop = new iPopup(iPopupStyleAlpha);
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(500, 500);
+
+	PopMenuUIImgs = (iImage**)malloc(sizeof(iImage*) * 3);
+
+	// Background //
+	{
+		iImage* img = new iImage();
+		Texture* tex;
+		g->init(size);
+		setStringRGBA(0, 0, 0, 1);
+		setRGBA(1, 0, 1, 1);
+		g->fillRect(0, 0, size.width, size.height);
+
+		tex = g->getTexture();
+		img->addObject(tex);
+		freeImage(tex);
+		img->position = iPointMake(0,0);
+
+		pop->addObject(img);
+	}
+
+	// buttons
+	{
+		setRGBA(0, 1, 1, 1);
+		setStringRGBA(0, 0, 0, 1);
+		setStringSize(20);
+		
+		iSize btnSize = iSizeMake(300, 30);
+		
+		for(int i= 0; i<3; i++)
+		{
+			Texture* tex;
+			iImage* btnImg = new iImage();
+			
+			g->init(btnSize);
+			g->fillRect(0,0,btnSize.width, btnSize.height);
+			g->drawString(btnSize.width / 2, btnSize.height / 2, HCENTER | VCENTER, btnString[i]);
+
+			tex = g->getTexture();
+			btnImg->addObject(tex);
+			freeImage(tex);
+
+			btnImg->position = iPointMake((size.width - btnSize.width) /2,i*100 +15);
+			PopMenuUIImgs[i] = btnImg;
+			pop->addObject(btnImg);
+		
+		}
+		
+	}
+
+
+	// 메뉴창에 간단하게 게임 설명(목표) 넣는 부분
+
+
+
+
+	
+	pop->openPosition = iPointMake((devSize.width - size.width) / 2,(devSize.height - size.height)/2);
+	pop->closePosition = pop->openPosition;
+
+	PopMenuUI = pop;
+
+	setRGBA(1, 1, 1, 1);
+	
+}
+
+void freePopMenuUI()
+{
+	delete PopMenuUI;
+
+	free(PopMenuUIImgs);
+}
+
+void drawPopMenuUI(float dt)
+{
+	PopMenuUI->paint(dt);
+}
+
+bool keyPopMenuUI(iKeyState stat, iPoint point)
+{
+	return true;
+}
+
+void showPopMenuUI(bool show)
+{
+	PopMenuUI->show(show);
 }
 
 
