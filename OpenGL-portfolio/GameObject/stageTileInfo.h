@@ -14,10 +14,10 @@ struct MapTile
 #define endofTile 99
 #define canNotMove 5
 
-#define MapTileNumX 30
-#define MapTileNumY 12
-#define MapTileWidth 64
-#define MapTileHeight 128
+#define MapTileNumX 100
+#define MapTileNumY 50
+#define MapTileWidth 32
+#define MapTileHeight 32
 
 #define tile_color_canMove 1,1,1,1
 #define tile_color_canNotMove 1,0,1,1
