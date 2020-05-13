@@ -150,6 +150,25 @@ void freePopMenuBtn()
 void drawPopMenuBtn(float dt)
 {
 	PopMenuBtn->paint(dt);
+
+	int key = PopMenuBtn->selected;
+	if (getKeyDown() & keyboard_up)
+	{
+		printf("up!!\n");
+		key--;
+		if (key < 0)
+			key = 0;
+	
+	
+	}
+	else if (getKeyDown() & keyboard_down)
+	{
+		printf("donw!!\n");
+		key++;
+		if (key > 2)
+			key = 2;
+	}
+	PopMenuBtn->selected = key;
 }
 
 

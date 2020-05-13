@@ -2,6 +2,7 @@
 #include "stage.h"
 #include "stageTileInfo.h"
 #include "Player.h"
+#include "Orc.h"
 
 
 uint8 tileAttr[MapTileNumX * MapTileNumY] = {
@@ -51,7 +52,7 @@ uint8 tileAttr[MapTileNumX * MapTileNumY] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -68,10 +69,18 @@ MapTile* maptile;
 iPoint offMt;
 iPoint vp;
 
+Orc** orcs;
+Orc* orc;
+
+#define orc_Num 3 // 맵에 존재하는 오크의 최대 마리수
+
 
 
 void loadStage()
 {
+
+
+
 	int i, num = MapTileNumX * MapTileNumY;
 	maptile = (MapTile*)malloc(sizeof(MapTile) * num);
 	for (i = 0; i < num; i++)
@@ -81,14 +90,28 @@ void loadStage()
 		//t->imgIndex;
 	}
 
-	hero = new Player();
+	hero = new Player(); // 플레이어 캐릭터 생성
 
 	hero->setSize(iSizeMake(PlayerWidth, PlayerHeight));
 
 	hero->setMovement(MapCharMovement);
-	hero->setPosition(iPointMake(devSize.width /2, devSize.height/2));
-	offMt = iPointZero;
+	hero->setPosition(iPointMake(MapTileWidth *30,MapTileHeight *45));
+	offMt = hero->getPosition();// iPointZero;
 	// camera positioning
+	offMt = iPointMake(-320, -880+500);
+
+
+
+	orcs = (Orc**)malloc(sizeof(Orc) * orc_Num);
+
+	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
+	{
+		orc = new Orc();
+		orc->setPosition(iPointMake(MapTileWidth * 30, MapTileHeight*45));
+		
+		orcs[i] = orc;
+	}
+
 
 
 	createPopPlayerUI();
@@ -103,7 +126,13 @@ void freeStage()
 	free(maptile);
 
 	delete hero;
+	
+	for (int i = 0; i < orc_Num; i++)
+	{
+		delete orcs[i];
+	}
 
+	free(orcs);
 	
 }
 
@@ -235,6 +264,14 @@ void drawStage(float dt)
 	setRGBA(1, 1, 1, 1);
 	hero->paint(dt, offMt);
 
+
+	orc->paint(dt, offMt);
+	
+#if DEBUG
+	//hitbox
+	drawRect((orc->getPosition().x - orc->getSize().width / 2) + offMt.x, (orc->getPosition().y - orc->getSize().height) + offMt.y, orc->getSize().width, orc->getSize().height);
+
+#endif
 #if DEBUG
 	//hitbox
 	drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
