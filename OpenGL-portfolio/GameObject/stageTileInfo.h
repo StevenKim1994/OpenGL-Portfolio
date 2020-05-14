@@ -26,7 +26,7 @@ struct MapTile
 
 #define natureSpeed 100
 #define powGravity 200
-#define powJump 300
+#define powJump 320
 
 
 

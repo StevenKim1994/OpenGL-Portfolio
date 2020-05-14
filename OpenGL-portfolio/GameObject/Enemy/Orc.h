@@ -1,6 +1,7 @@
 #pragma once
 #include "iStd.h"
 #include "Object.h"
+#include "Monster.h"
 
 enum orcBehave
 {
@@ -15,7 +16,7 @@ enum orcBehave
 };
 
 
-class Orc : public Object
+class Orc : public Monster
 {
 public: Orc();
 	  virtual ~Orc();

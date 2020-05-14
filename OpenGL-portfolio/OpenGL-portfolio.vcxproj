@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;GDIPVER=0x0110;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\OpenGL-portfolio\GameObject;..\OpenGL-portfolio\assets;C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;..\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\OpenGL-portfolio\GameObject\PlayerCharacter;..\OpenGL-portfolio\GameObject\Parents;..\OpenGL-portfolio\GameObject\Enemy;..\OpenGL-portfolio\GameObject;..\OpenGL-portfolio\assets;C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;..\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -153,9 +153,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="GameObject\Object.h" />
-    <ClInclude Include="GameObject\Orc.h" />
-    <ClInclude Include="GameObject\Player.h" />
+    <ClInclude Include="GameObject\Parents\Monster.h" />
+    <ClInclude Include="GameObject\Parents\Object.h" />
+    <ClInclude Include="GameObject\Enemy\Orc.h" />
+    <ClInclude Include="GameObject\PlayerCharacter\Player.h" />
     <ClInclude Include="GameObject\stageTileInfo.h" />
     <ClInclude Include="game\ending.h" />
     <ClInclude Include="game\game.h" />
@@ -192,9 +193,10 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="GameObject\Object.cpp" />
-    <ClCompile Include="GameObject\Orc.cpp" />
-    <ClCompile Include="GameObject\Player.cpp" />
+    <ClCompile Include="GameObject\Parents\Monster.cpp" />
+    <ClCompile Include="GameObject\Parents\Object.cpp" />
+    <ClCompile Include="GameObject\Enemy\Orc.cpp" />
+    <ClCompile Include="GameObject\PlayerCharacter\Player.cpp" />
     <ClCompile Include="game\ending.cpp" />
     <ClCompile Include="game\game.cpp" />
     <ClCompile Include="game\glew.c" />

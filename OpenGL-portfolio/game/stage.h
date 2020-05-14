@@ -45,3 +45,10 @@ void freePopMenuUI();
 void drawPopMenuUI(float dt);
 bool keyPopMenuUI(iKeyState stat, iPoint point);
 void showPopMenuUI(bool show);
+
+//------------PopQuitAnswerUI------------------//
+void createPopQuitAnswerUI();
+void freePopQuitAnswerUI();
+void drawPopQuitAnswerUI(float dt);
+bool keyPopQuitAnswerUI(iKeyState stat, iPoint point);
+void showPopQuitAnswerUI(bool show);

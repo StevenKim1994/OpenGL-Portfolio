@@ -107,7 +107,7 @@ void loadStage()
 	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
 	{
 		orc = new Orc();
-		orc->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth), MapTileHeight*35));
+		orc->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth), MapTileHeight*45));
 		
 		orcs[i] = orc;
 	}
@@ -116,6 +116,7 @@ void loadStage()
 
 	createPopPlayerUI();
 	createPopMenuUI();
+	createPopQuitAnswerUI();
 
 
 	
@@ -125,6 +126,7 @@ void freeStage()
 {
 	freePopPlayerUI();
 	freePopMenuUI();
+	freePopQuitAnswerUI();
 	free(maptile);
 
 	delete hero;
@@ -336,6 +338,8 @@ void drawStage(float dt)
 
 	drawPopMenuUI(dt);
 
+	drawPopQuitAnswerUI(dt);
+	
 }
 
 
@@ -344,8 +348,15 @@ void drawStage(float dt)
 
 void keyStage(iKeyState stat, iPoint point)
 {
+	if(keyPopQuitAnswerUI(stat, point))
+		return;
+
+	if (keyPopMenuUI(stat, point))
+		return;
+	
 	if (keyPopPlayerUI(stat, point))
 		return;
+
 
 }
 
@@ -357,6 +368,7 @@ void keyStage(iKeyState stat, iPoint point)
 iPopup* PopPlayerUI;
 iImage** PopPlayerUIImgs;
 Texture* Poptex;
+iPopup* PopMenuUI;
 
 //const char* slotString[5] = { "Name", "HP", "MP", "Stamina", "Menu" };
 
@@ -521,7 +533,11 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 			{
 				printf("selected = %d\n", i);
 
-				showPopMenuUI(true);
+				if (PopMenuUI->bShow == false)
+					showPopMenuUI(true);
+
+				else
+					showPopMenuUI(false);
 			}
 
 		
@@ -558,7 +574,7 @@ void showPopPlayerUI(bool show)
 
 //--------------PopMenuUI---------------------/
 
-iPopup* PopMenuUI;
+//iPopup* PopMenuUI; PlayerUI 위에 선언해놨음.
 iImage** PopMenuUIImgs;
 
 const char* btnString[3] = { "Rusume Game", "Settings", "Game Quit" };
@@ -610,6 +626,7 @@ void createPopMenuUI()
 			freeImage(tex);
 
 			btnImg->position = iPointMake((size.width - btnSize.width) /2,i*100 +15);
+			
 			PopMenuUIImgs[i] = btnImg;
 			pop->addObject(btnImg);
 		
@@ -627,9 +644,10 @@ void createPopMenuUI()
 	pop->openPosition = iPointMake((devSize.width - size.width) / 2,(devSize.height - size.height)/2);
 	pop->closePosition = pop->openPosition;
 
+	setRGBA(1, 1, 1, 1);
+
 	PopMenuUI = pop;
 
-	setRGBA(1, 1, 1, 1);
 	
 }
 
@@ -637,7 +655,6 @@ void freePopMenuUI()
 {
 	delete PopMenuUI;
 
-	free(PopMenuUIImgs);
 }
 
 void drawPopMenuUI(float dt)
@@ -647,12 +664,233 @@ void drawPopMenuUI(float dt)
 
 bool keyPopMenuUI(iKeyState stat, iPoint point)
 {
+	if (PopMenuUI->bShow == false)
+		return false;
+
+	if (PopMenuUI->stat != iPopupStatProc)
+		return true;
+
+	int i, j = -1;
+
+	switch (stat)
+	{
+	case iKeyStateBegan:
+	{
+		i = PopMenuUI->selected;
+
+		if (i == -1)
+			break;
+
+		else if (i == 0)
+		{
+			printf("selected = %d\n", i);
+
+		}
+
+
+		else if (i == 1)
+		{
+
+		}
+
+		else if (i == 2)
+		{
+			printf("QuitANSWER?\n");
+			showPopQuitAnswerUI(true);
+		}
+
+		printf("seletecd = %d\n", i);
+		break;
+	}
+
+	case iKeyStateMoved:
+	{
+	
+		for (i = 0; i < 3; i++)
+		{
+			if (containPoint(point, PopMenuUIImgs[i]->touchRect(PopMenuUI->closePosition)))
+			{
+				j = i;
+				break;
+			}
+		}
+		PopMenuUI->selected = j;
+		printf("seletecd = %d\n", PopMenuUI->selected);
+		break;
+	}
+	case iKeyStateEnded:
+	{
+
+		break;
+	}
+
+	}
+
 	return true;
 }
 
 void showPopMenuUI(bool show)
 {
 	PopMenuUI->show(show);
+}
+
+
+
+//----------------------PopQuitAnswerUI------------------------//
+
+iPopup* PopQuitAnswerUI;
+iImage** PopQuitAnswerUIBtn;
+// 0 : yes,  1 : no
+const char* btnUISlot[2] = { "Okay", "No" };
+void createPopQuitAnswerUI()
+{
+	iPopup* pop = new iPopup(iPopupStyleAlpha);
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(500, 300);
+
+	PopQuitAnswerUIBtn = (iImage**)malloc(sizeof(iImage*) * 2); // 0 : yes , 1 : no
+
+	setStringBorder(0);
+	setStringBorderRGBA(0, 0, 0, 1);
+	setStringRGBA(0, 0, 0, 1);
+	setStringSize(50);
+
+
+ 
+	{ // background
+		igImage* ig = g->createIgImage("assets/menu/popBg.png");
+		size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
+		g->init(size);
+		g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
+		g->drawString(size.width / 2, size.height /2 -175, VCENTER | HCENTER, "Do you want exit?");
+		Texture* bgTex;
+
+		bgTex = g->getTexture();
+
+		iImage* bgImg = new iImage();
+		bgImg->position = iPointMake(devSize.width / 2, devSize.height / 2);
+
+		bgImg->addObject(bgTex);
+		freeImage(bgTex);
+
+		pop->addObject(bgImg);
+
+	}
+
+	for (int i = 0; i < 2; i++)
+	{
+		iImage* answerBtn = new iImage();
+		Texture* btnTex;
+
+		for (int j = 0; j < 2; j++)
+		{
+			if (j == 0) // btnOff
+			{
+				setRGBA(1, 1, 1, 1);
+				setStringSize(30);
+				igImage* answerBtn = g->createIgImage("assets/menu/BTN0.png");
+				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
+				g->init(btnSize);
+				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnUISlot[i]);
+				btnTex = g->getTexture();
+			}
+
+			else // btnOn
+			{
+				setRGBA(1, 0, 0, 1);
+				setStringSize(30);
+				igImage* answerBtn = g->createIgImage("assets/menu/BTN0.png");
+				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
+				g->init(btnSize);
+				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnUISlot[i]);
+				btnTex = g->getTexture();
+			}
+
+			answerBtn->addObject(btnTex);
+			freeImage(btnTex);
+		}
+			//#bug
+		//answerBtn->position = iPointMake((size.width - 150 * (i+1)) , size.height/2 +500);
+		pop->addObject(answerBtn);
+
+		PopQuitAnswerUIBtn[i] = answerBtn;
+
+	}
+
+	pop->openPosition = iPointMake(devSize.width /2 - size.width -100 , devSize.height/2 -size.height);
+	pop->closePosition = pop->openPosition;
+	PopQuitAnswerUI = pop;
+
+}
+
+void freePopQuitAnswerUI()
+{
+	delete PopQuitAnswerUI;
+}
+
+void drawPopQuitAnswerUI(float dt)
+{
+	PopQuitAnswerUI->paint(dt);
+}
+
+bool keyPopQuitAnswerUI(iKeyState stat, iPoint point)
+{
+	if (PopQuitAnswerUI->bShow == false)
+		return false;
+
+	if (PopQuitAnswerUI->stat != iPopupStatProc)
+		return true;
+
+	int i, j = -1;
+
+	switch (stat)
+	{
+		case iKeyStateBegan:
+		{
+			i = PopQuitAnswerUI->selected;
+
+			if (i == -1)
+				break;
+
+			if (i == 0)
+			{
+				extern bool runWnd;
+				runWnd = false;
+
+			}
+			else if (i == 1)
+			{
+				PopQuitAnswerUI->show(false);
+			}
+			break;
+		}
+
+		case iKeyStateMoved :
+		{
+			for (i = 0; i < 2; i++)
+			{
+				if (containPoint(point, PopQuitAnswerUIBtn[i]->touchRect(PopQuitAnswerUI->closePosition)))
+				{
+					j = i;
+					break;
+				}
+			}
+			PopQuitAnswerUI->selected = j;
+			break;
+		}
+
+		case iKeyStateEnded:
+			break;
+	}
+
+	return true;
+}
+
+void showPopQuitAnswerUI(bool show)
+{
+	PopQuitAnswerUI->show(show);
 }
 
 
