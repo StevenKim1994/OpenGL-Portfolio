@@ -25,10 +25,15 @@ Orc::Orc()
 
 	};
 
-	OrcInfo _oi[3] = {
-		"assets/stage/goblin/goblin idle (%d).png", 4, 2.0f, {-32, -38} ,
-		"assets/stage/goblin/goblin attack (%d).png", 8, 2.0f, {-32,-38},
-		"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-32, -38},
+	OrcInfo _oi[6] = {
+		"assets/stage/goblin/goblin idle (%d).png", 4, 2.0f, {-75, -90} ,
+		"assets/stage/goblin/goblin attack (%d).png", 8, 2.0f, {-75,-90},
+		"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
+		"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
+		"assets/stage/goblin/goblin hurt (%d).png", 4, 2.0f, {-75, -90},
+		"assets/stage/goblin/goblin death (%d).png", 4, 2.0f, {-75, -90},
+
+
 	};
 
 	iGraphics* g = iGraphics::instance();

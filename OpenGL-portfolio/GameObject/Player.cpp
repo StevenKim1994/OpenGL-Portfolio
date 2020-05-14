@@ -20,10 +20,10 @@ Player::Player()
 	};
 
 	PlayerInfo _pi[4] = {
-		{"assets/stage/hero/Knight/hero_idle (%d).png", 15, 2.0f, {-32, -38} },
+		{"assets/stage/hero/Knight/hero_idle (%d).png", 15, 2.0f, {-30, -38} },
 		{"assets/stage/hero/Knight/hero_melee (%d).png", 22, 2.0f, {-72, -38}},
 		{"assets/stage/hero/Knight/hero_move (%d).png",8, 2.0f, {-48, -38}},
-		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 2.0f, {-75, -38}}
+		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 2.0f, {-48, -38}}
 	};
 	iGraphics* g = iGraphics::instance();
 	iSize size;
@@ -47,7 +47,7 @@ Player::Player()
 			img->addObject(tex);
 			freeImage(tex);
 		}
-		img->_aniDt =  0.1f;
+		img->_aniDt =  0.05f;
 
 		switch (i)
 		{
@@ -93,8 +93,9 @@ Player::Player()
 			freeImage(tex);
 		}
 		img->aniDt = 0.0f;
-		img->_aniDt = 0.3f;
+		img->_aniDt = 0.15f;
 		img->_repeatNum = 1;
+		
 		iPoint p = iPointMake(-128, -128);
 		img->position = p;
 
@@ -122,11 +123,11 @@ Player::~Player()
 
 void Player::cbBehave(iImage* me)
 {
-	
+
 	printf("End Animation!\n");
 	extern Player* hero;
 	if(hero->behave != Behave_idle)
-	hero->setBehave(Behave_idle, hero->direction);
+		hero->setBehave(Behave_idle, hero->direction);
 }
 
 void Player::setBehave(Behave be, int dir)
@@ -144,7 +145,14 @@ void Player::setBehave(Behave be, int dir)
 
 void Player::paint(float dt, iPoint offset)
 {
-	img->paint(dt, position + offset, direction);
+	if (direction == 0 && behave == Behave_jumpAndFall)
+	{
+		printf("left direction Jumping!\n");
+		img->paint(dt, (position + offset) - iPointMake(100,0), direction);
+	}
+
+	else
+		img->paint(dt, position + offset, direction);
 	if (imgSkill->animation)
 	{
 		imgSkill->paint(dt, offset, direction);

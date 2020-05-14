@@ -52,9 +52,9 @@ uint8 tileAttr[MapTileNumX * MapTileNumY] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 
 
@@ -107,7 +107,7 @@ void loadStage()
 	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
 	{
 		orc = new Orc();
-		orc->setPosition(iPointMake(MapTileWidth * 30, MapTileHeight*45));
+		orc->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth), MapTileHeight*35));
 		
 		orcs[i] = orc;
 	}
@@ -140,6 +140,9 @@ void freeStage()
 
 void drawStage(float dt)
 {
+	iPoint movement = iPointMake(0, 1) * powGravity * dt;
+
+
 	int i, num = MapTileNumX * MapTileNumY;
 	for (i = 0; i < num; i++)
 	{
@@ -156,9 +159,9 @@ void drawStage(float dt)
 		drawRect(x + 2, y + 2, MapTileWidth - 4, MapTileHeight - 4);
 	}
 
-	iPoint movement = iPointMake(0, 1) * powGravity * dt;
 
 	hero->applyJump(movement, dt);
+	
 	if (getKeyDown() & keyboard_space) // 윗점프
 	{
 		
@@ -183,12 +186,13 @@ void drawStage(float dt)
 	Behave be;
 	if (keyStat & keyboard_left) v.x = -1;
 	else if (keyStat & keyboard_right) v.x = 1;
-	if (keyStat & keyboard_up) v.y = -1;
+	//if (keyStat & keyboard_up) v.y = -1;
 	else if (keyStat & keyboard_down) v.y = 1;
 
 
 	if (keyDown & keyboard_num1)
 	{
+		printf("num1\n");
 		be = Behave_meleeAttack;
 
 		hero->Skill1();
@@ -224,7 +228,7 @@ void drawStage(float dt)
 	}
 	else// if(v == iPointZero)
 	{
-		hero->move(movement, maptile);
+		hero->move(movement * 3, maptile);
 
 		minX = devSize.width / 2;
 		maxX = devSize.width / 2;
@@ -262,20 +266,65 @@ void drawStage(float dt)
 			offMt.y = devSize.height - MapTileHeight * MapTileNumY;
 	}
 
-	//setRGBA(hero_color);
-	setRGBA(1, 1, 1, 1);
-	hero->paint(dt, offMt);
+	{ // paint Orc
+		
+		for (int i = 0; i < orc_Num; i++)
+		{
+			orcBehave orcBehave;
+			if (orcs[i]->getHp() < 1) // Orc의 체력이 1미만이면 Death
+			{
+				orcBehave = orcBehave_death;
+			}
 
+		
+			orcs[i]->r += orcs[i]->rValue * (i + 1);
 
-	orc->paint(dt, offMt);
-	
-#if DEBUG
-	//hitbox
+			float rateOrcV = _sin(orcs[i]->r);
+
+			float orcDir = 0;
+		
+			setRGBA(1, 1, 1, 1);
+			orcs[i]->paint(dt, offMt);
+			orcs[i]->setMovement(100);
+			iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
+			iPoint orcV = iPointMake(rateOrcV, 0);
+			
+			iPoint orcmp = orcV * (orc->getMovement() * dt);
+
+			if (orcV != iPointZero)
+			{
+				orcBehave = orcBehave_move;
+
+				if (orcV.x > 0)
+					orcDir = 1;
+				else
+					orcDir = 0;
+
+			}
+
+			if (orcs[i]->behave != Behave_meleeAttack && orcs[i]->behave != Behave_jumpAndFall)
+				orcs[i]->setBehave(orcBehave, orcDir);
+			//printf("orcDt: %f\n", orcDt);
+
+			orcs[i]->move(orcmp + orcMovement, maptile);
+
+			//OrcDt += 1.0f;
+		}
+	}
+
+	{ // paint Player
+		setRGBA(1, 1, 1, 1);
+		hero->paint(dt, offMt);
+
+	}
+
+#if _DEBUG
+	//hitbox orc
 	drawRect((orc->getPosition().x - orc->getSize().width / 2) + offMt.x, (orc->getPosition().y - orc->getSize().height) + offMt.y, orc->getSize().width, orc->getSize().height);
 
 #endif
-#if DEBUG
-	//hitbox
+#if _DEBUG
+	//hitbox player
 	drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
 		(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
 #endif
