@@ -48,13 +48,13 @@ uint8 tileAttr[MapTileNumX * MapTileNumY] = {
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
-0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 
 
@@ -71,13 +71,27 @@ iPoint vp;
 
 Orc** orcs;
 Orc* orc;
+Texture* bgTex; // bacckground Image
 
 #define orc_Num 3 // 맵에 존재하는 오크의 최대 마리수
 
-
+Texture* tile_ground;
+Texture* tile_inGround;
+Texture* stoneBlock_tex;
 
 void loadStage()
 {
+	iGraphics* g = iGraphics::instance();
+
+	tile_ground = createImage("assets/stage/tileset/ground.png");
+	stoneBlock_tex = createImage("assets/stage/tileset/stoneBlock.png");
+	tile_inGround = createImage("assets/stage/tileset/inGround.png");
+	setRGBA(1, 1, 1, 1);
+	igImage* ig = g->createIgImage("assets/stage/background.png");
+	iSize bgSize = iSizeMake(g->getIgImageWidth(ig) - 640, g->getIgImageHeight(ig) - 360);
+	g->init(bgSize);
+	g->drawImage(ig, 0, 0, 0.666f, 0.666f, TOP | LEFT);
+	bgTex = g->getTexture();
 
 
 
@@ -144,23 +158,34 @@ void drawStage(float dt)
 {
 	iPoint movement = iPointMake(0, 1) * powGravity * dt;
 
+	drawImage(bgTex, 0, 0, TOP | LEFT); // background
+
 
 	int i, num = MapTileNumX * MapTileNumY;
 	for (i = 0; i < num; i++)
 	{
 		MapTile* t = &maptile[i];
-		switch (t->attr) {
-		case 0: setRGBA(tile_color_canMove); break;
-		case 1: setRGBA(tile_color_canNotMove); break;
-		case 2: setRGBA(tile_color_end); break;
-		}
+
 		float x = offMt.x + MapTileWidth * (i % MapTileNumX);
 		float y = offMt.y + MapTileHeight * (i / MapTileNumX);
-		fillRect(x, y, MapTileWidth, MapTileHeight);
+		
+		switch(t->attr)
+		{
+			case 0: break;
+			case 1: setRGBA(1, 1, 1, 1); drawImage(tile_ground, x, y, TOP | LEFT); break;
+			case 2: setRGBA(1, 1, 1, 1); drawImage(tile_inGround, x, y, TOP | LEFT); break;
+			case 3: setRGBA(1, 1, 1, 1); drawImage(stoneBlock_tex, x, y, TOP | LEFT); break;
+
+		}
+		
 		setRGBA(0, 0, 0, 1);
-		drawRect(x + 2, y + 2, MapTileWidth - 4, MapTileHeight - 4);
+
+		//if(t->attr != 0)
+			//drawRect(x + 2, y + 2, MapTileWidth - 4, MapTileHeight - 4);
 	}
 
+	uint32 keyStat = 0;
+	uint32 keyDown = 0;
 
 	hero->applyJump(movement, dt);
 	
@@ -168,6 +193,18 @@ void drawStage(float dt)
 	{
 		
 		hero->jump();
+		if (hero->behave != Behave_meleeAttack)
+		{
+			keyStat = getKeyStat();
+			keyDown = getKeyDown();
+		}
+		iPoint v = iPointZero;
+		Behave be;
+		if (keyStat & keyboard_left) v.x = -1;
+		else if (keyStat & keyboard_right) v.x = 1;
+		//if (keyStat & keyboard_up) v.y = -1;
+		else if (keyStat & keyboard_down) v.y = 1;
+
 	}
 
 	if (getKeyDown() & keyboard_down) // 아래점프
@@ -177,8 +214,6 @@ void drawStage(float dt)
 		hero->setPosition(jumpVector);
 	}
 
-	uint32 keyStat = 0;
-	uint32 keyDown = 0;
 	if (hero->behave != Behave_meleeAttack)
 	{
 		keyStat = getKeyStat();
@@ -192,12 +227,20 @@ void drawStage(float dt)
 	else if (keyStat & keyboard_down) v.y = 1;
 
 
+	
+
 	if (keyDown & keyboard_num1)
 	{
+		
+
 		printf("num1\n");
 		be = Behave_meleeAttack;
 
 		hero->Skill1();
+		
+		zoomLib(hero->getPosition()+offMt,1.5);
+		
+
 	}
 
 	else if (keyDown & keyboard_space)
@@ -319,10 +362,12 @@ void drawStage(float dt)
 		hero->paint(dt, offMt);
 
 	}
+	setRGBA(1, 1, 1, 1);
 
 #if _DEBUG
 	//hitbox orc
-	drawRect((orc->getPosition().x - orc->getSize().width / 2) + offMt.x, (orc->getPosition().y - orc->getSize().height) + offMt.y, orc->getSize().width, orc->getSize().height);
+	for(int i = 0; i<orc_Num; i++)
+		drawRect((orcs[i]->getPosition().x - orcs[i]->getSize().width / 2) + offMt.x, (orcs[i]->getPosition().y - orcs[i]->getSize().height) + offMt.y, orcs[i]->getSize().width, orcs[i]->getSize().height);
 
 #endif
 #if _DEBUG
@@ -335,9 +380,7 @@ void drawStage(float dt)
 
 	drawPopPlayerUI(dt);
 	showPopPlayerUI(true);
-
 	drawPopMenuUI(dt);
-
 	drawPopQuitAnswerUI(dt);
 	
 }
@@ -372,6 +415,7 @@ iPopup* PopMenuUI;
 
 //const char* slotString[5] = { "Name", "HP", "MP", "Stamina", "Menu" };
 
+const char* mapTitle[1] = { "Rock Mountain" };
 void createPopPlayerUI()
 {
 	iPopup* pop = new iPopup(iPopupStyleNone);
@@ -388,7 +432,8 @@ void createPopPlayerUI()
 		setStringRGBA(0, 0, 0, 1);
 		setRGBA(1, 1, 1, 0);// alpha값은 0 투명한 사이즈의 화면크기의 상자를 만드는거니까
 		g->fillRect(0, 0, devSize.width, devSize.height);
-		g->drawString(devSize.width / 2, 10, TOP | LEFT, "Stage");
+		g->drawString(devSize.width / 2, 10, HCENTER | VCENTER, "- Stage -");
+		g->drawString(devSize.width / 2, 35, HCENTER|VCENTER, mapTitle[0]);
 
 		Poptex = g->getTexture();
 		img->addObject(Poptex);
