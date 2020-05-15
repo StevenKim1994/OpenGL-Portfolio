@@ -111,6 +111,9 @@
     <ClInclude Include="lib\iShortestPath.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="lib\cameraFunc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL-portfolio.rc">
@@ -214,6 +217,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="lib\iShortestPath.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\cameraFunc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

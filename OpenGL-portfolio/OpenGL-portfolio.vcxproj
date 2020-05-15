@@ -166,6 +166,7 @@
     <ClInclude Include="game\sceneManager.h" />
     <ClInclude Include="game\stage.h" />
     <ClInclude Include="game\trailer.h" />
+    <ClInclude Include="lib\cameraFunc.h" />
     <ClInclude Include="lib\iArray.h" />
     <ClInclude Include="lib\iColor.h" />
     <ClInclude Include="lib\iFPS.h" />
@@ -207,6 +208,7 @@
     <ClCompile Include="game\sceneManager.cpp" />
     <ClCompile Include="game\stage.cpp" />
     <ClCompile Include="game\trailer.cpp" />
+    <ClCompile Include="lib\cameraFunc.cpp" />
     <ClCompile Include="lib\iArray.cpp" />
     <ClCompile Include="lib\iColor.cpp" />
     <ClCompile Include="lib\iFPS.cpp" />

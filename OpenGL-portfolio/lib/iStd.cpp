@@ -35,6 +35,7 @@ void loadLib(HDC hDC)
 
     devSize = iSizeMake(DEVSIZE_WIDTH, DEVSIZE_HEIGHT);
     fbo = new iFBO(devSize.width, devSize.height);
+    uiFbo = new iFBO(devSize.width, devSize.height); 
     texFboForiPopup = createTexture(devSize.width, devSize.height);
     reshapeOpenGL(monitorSizeW, monitorSizeH);// App.cpp
 
@@ -110,32 +111,6 @@ void checkScreenshot()
 }
 
 
-iPoint shakePosition;
-float shakeRate;
-#define _shakeDt 1.0f;
-float shakeDt = _shakeDt;
-
-void shakeLib(iPoint point, float shakeRate)
-{
-    shakePosition = point;
-    shakeRate = shakeRate;
-    shakeDt = 0.0f;
-
-
-
-}
-
-iPoint zoomPosition;
-float zoomRate;
-#define _zoomDt .2f
-float zoomDt = _zoomDt;
-void zoomLib(iPoint point, float zr)
-{
-    zoomPosition = point;
-    zoomRate = zr;
-    zoomDt = 0.0f;
-}
-
 void drawLib(Method_Paint method)
 {
     DWORD d = GetTickCount();
@@ -158,27 +133,10 @@ void drawLib(Method_Paint method)
 
     setRGBA(1, 1, 1, 1);
     Texture* tex = fbo->getTexture();
-    if (zoomDt < _zoomDt)
-    {
-        float r = 1.0f + (zoomRate - 1.0f) * _sin(180 * zoomDt / _zoomDt);
-        zoomDt += delta;
-        iPoint c = iPointMake(devSize.width / 2, devSize.height / 2);
-        iPoint dp = zoomPosition - c;
-        iPoint rp = dp * r;
-        c -= rp - dp;
-
-        drawImage(tex, c.x, c.y,
-            0, 0, tex->width, tex->height, VCENTER | HCENTER,
-            r, r, 2, 0, REVERSE_HEIGHT);
-}
-    else
-    {
-        //drawImage(tex, 0, 0, TOP | LEFT);
-        drawImage(tex, 0, 0,
-            0, 0, tex->width, tex->height, TOP | LEFT,
-            1.0f, 1.0f, 2, 0, REVERSE_HEIGHT);
-    }
-
+    //drawImage(tex, 0, 0, TOP | LEFT);
+    drawImage(tex, 0, 0,
+        0, 0, tex->width, tex->height, TOP | LEFT,
+        1.0f, 1.0f, 2, 0, REVERSE_HEIGHT);
    
     drawScreenshot();
 
@@ -304,6 +262,7 @@ iFBO::iFBO(int width, int height)
     // frameBuffer
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+ 
     GLenum fboBuffs[1] = { GL_COLOR_ATTACHMENT0, };
     glDrawBuffers(1, fboBuffs);//glDrawBuffer(GL_COLOR_ATTACHMENT0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texID, 0);
@@ -318,7 +277,9 @@ iFBO::iFBO(int width, int height)
     listNum = 0;
 }
 
-iFBO* fbo = NULL;
+iFBO* fbo = NULL; // game 화면 mainFBO
+iFBO* uiFbo = NULL; // game 화면 UIFBO
+
 iFBO::~iFBO()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -327,6 +288,7 @@ iFBO::~iFBO()
     freeImage(tex);
 
     glDeleteFramebuffers(1, &fbo);
+
 
     free(listTex);
 }
@@ -1041,6 +1003,11 @@ float getStringSize() { return _stringSize; }
 void setStringSize(float size)
 {
     _stringSize = size;
+}
+
+float getStirngSize()
+{
+    return 0.0f;
 }
 
 void setStringRGBA(float r, float g, float b, float a)

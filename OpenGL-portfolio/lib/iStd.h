@@ -42,9 +42,6 @@ uint32 getKeyStat();
 bool getKeyStat(uint32 key);
 void resizeLib(int width, int height);
 
-void shakeLib(iPoint point, float shakeRate); // 카메라 진동
-void zoomLib(iPoint point, float zoomRate); // 카메라 확대
-
 class iFBO
 {
 public:
@@ -71,6 +68,7 @@ public:
 };
 
 extern iFBO* fbo;
+extern iFBO* uiFbo;
 float getStringSize();
 uint8 float2uint8(float f);
 void setRGBA(float r, float g, float b, float a);

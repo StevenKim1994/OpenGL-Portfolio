@@ -10,7 +10,8 @@ void freeStage();
 void drawStage(float dt);
 void keyStage(iKeyState stat, iPoint point);
 
-
+void shakeStage(int range, float duration=0.5f); // 카메라 진동
+void zoomStage(iPoint point, float zoomRate); // 카메라 확대
 
 
 
