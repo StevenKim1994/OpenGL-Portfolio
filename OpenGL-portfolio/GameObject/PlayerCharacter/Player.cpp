@@ -71,8 +71,8 @@ Player::Player()
 		imgs[i] = img;
 	}
 	
-	behave = (Behave)-1;
-	setBehave(Behave_idle, 0);
+	behave = (PlayerBehave)-1;
+	setBehave(PlayerBehave_idle, 0);
 	direction = 0;
 	jumpNum = 0;
 	_jumpNum = 2;
@@ -129,11 +129,11 @@ void Player::cbBehave(iImage* me)
 
 	printf("End Animation!\n");
 	extern Player* hero;
-	if(hero->behave != Behave_idle)
-		hero->setBehave(Behave_idle, hero->direction);
+	if(hero->behave != PlayerBehave_idle)
+		hero->setBehave(PlayerBehave_idle, hero->direction);
 }
 
-void Player::setBehave(Behave be, int dir)
+void Player::setBehave(PlayerBehave be, int dir)
 {
 	
 	if (behave != be || direction != dir)
@@ -148,7 +148,7 @@ void Player::setBehave(Behave be, int dir)
 
 void Player::paint(float dt, iPoint offset)
 {
-	if (direction == 0 && behave == Behave_jumpAndFall)
+	if (direction == 0 && behave == PlayerBehave_jumpAndFall)
 	{
 		printf("left direction Jumping!\n");
 		img->paint(dt, (position + offset) - iPointMake(100,0), direction);
@@ -189,8 +189,11 @@ void Player::Skill1(Monster** enermy, int enermyNum)
 	{
 		//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
 		if (containPoint(enermy[i]->getPosition(), imgSkill->touchRect()))
+		{
+			enermy[i]->setHP(enermy[i]->getHp() - 5.f);
 			printf("No. %d Monster Collision!\n", i);
-		
+			printf("HP: %f\n", enermy[i]->getHp());
+		}
 	}
 
 	
@@ -209,10 +212,10 @@ bool Player::moveForMouse(float dt)
 {
 	
 	if (position.x < targetPosition.x)
-		setBehave(Behave_move, 1);
+		setBehave(PlayerBehave_move, 1);
 
 	else
-		setBehave(Behave_move, 0);
+		setBehave(PlayerBehave_move, 0);
 	
 
 	

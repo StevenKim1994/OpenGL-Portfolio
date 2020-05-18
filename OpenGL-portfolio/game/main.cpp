@@ -35,10 +35,18 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInst,
 	wc.hIconSm = LoadIcon(wc.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 	RegisterClassExW(&wc);
 
+
+	
 	hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 	hDC = GetDC(hWnd);
 
+    LONG style = GetWindowLong(hWnd, GWL_STYLE);
+    style = style & (WS_MINIMIZEBOX | WS_MAXIMIZEBOX);
+    //SetWindowLong(hWnd, GWL_STYLE, style); // 최소 최대화 버튼제거
+    HMENU closeMenu = GetSystemMenu(hWnd, FALSE);
+    //EnableMenuItem(closeMenu, SC_CLOSE, MF_BYCOMMAND | MF_DISABLED | MF_GRAYED); // 닫기버튼제거
+	
 	//videohWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       //  CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
 

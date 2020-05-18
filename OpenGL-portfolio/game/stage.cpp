@@ -119,7 +119,7 @@ void loadStage()
 	//hero->setTargetPosition(hero->getPosition());
 	offMt = hero->getPosition();// iPointZero;
 	// camera positioning
-	offMt = iPointMake(-320, -880+500);
+	offMt = iPointMake(-760, -880+500);
 
 
 
@@ -129,7 +129,7 @@ void loadStage()
 	{
 		orc = new Orc();
 		orc->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth), MapTileHeight*45));
-		
+		orc->alive = true;
 		orcs[i] = orc;
 	}
 
@@ -206,13 +206,13 @@ void drawStage(float dt)
 	{
 		
 		hero->jump();
-		if (hero->behave != Behave_meleeAttack)
+		if (hero->behave != PlayerBehave_meleeAttack)
 		{
 			keyStat = getKeyStat();
 			keyDown = getKeyDown();
 		}
 		iPoint v = iPointZero;
-		Behave be;
+		PlayerBehave be;
 		if (keyStat & keyboard_left) v.x = -1;
 		else if (keyStat & keyboard_right) v.x = 1;
 		//if (keyStat & keyboard_up) v.y = -1;
@@ -228,13 +228,13 @@ void drawStage(float dt)
 		hero->setPosition(jumpVector);
 	}
 
-	if (hero->behave != Behave_meleeAttack)
+	if (hero->behave != PlayerBehave_meleeAttack)
 	{
 		keyStat = getKeyStat();
 		keyDown = getKeyDown();
 	}
 	iPoint v = iPointZero;
-	Behave be;
+	PlayerBehave be;
 	if (keyStat & keyboard_left) v.x = -1;
 	else if (keyStat & keyboard_right) v.x = 1;
 	//if (keyStat & keyboard_up) v.y = -1;
@@ -264,7 +264,7 @@ void drawStage(float dt)
 		{
 
 			printf("num1\n");
-			be = Behave_meleeAttack;
+			be = PlayerBehave_meleeAttack;
 			hero->Skill1(orcs, orc_Num);
 			
 
@@ -275,20 +275,20 @@ void drawStage(float dt)
 
 		
 		else if (keyDown & keyboard_space)
-			be = Behave_jumpAndFall;
+			be = PlayerBehave_jumpAndFall;
 		else if (keyDown & keyboard_down)
-			be = Behave_idle;
+			be = PlayerBehave_idle;
 		else if (keyDown & keyboard_up)
-			be = Behave_jumpAndFall;
+			be = PlayerBehave_jumpAndFall;
 		else
-			be = (v == iPointZero ? Behave_idle : Behave_move);
+			be = (v == iPointZero ? PlayerBehave_idle : PlayerBehave_move);
 		int dir = hero->direction;
 		if (v.x < 0) dir = 0;
 		else if (v.x > 0) dir = 1;
 
 	
 
-		if (hero->behave != Behave_meleeAttack && hero->behave != Behave_jumpAndFall)
+		if (hero->behave != PlayerBehave_meleeAttack && hero->behave != PlayerBehave_jumpAndFall)
 			hero->setBehave(be, dir);
 		float minX, maxX, minY, maxY;
 		
@@ -352,47 +352,53 @@ void drawStage(float dt)
 			if (orcs[i]->getHp() < 1) // Orc의 체력이 1미만이면 Death
 			{
 				orcBehave = EnermyBehave_death;
+				orcs[i]->alive = false;
+				hero->kill++;
 			}
 
-		
-			orcs[i]->r += orcs[i]->rValue * (i + 1);
 
-			float rateOrcV = _sin(orcs[i]->r);
-
-			float orcDir = 0;
-		
-			setRGBA(1, 1, 1, 1);
-			orcs[i]->paint(dt, offMt);
-			orcs[i]->setMovement(100);
-			iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
-			iPoint orcV = iPointMake(rateOrcV, 0);
-			
-			iPoint orcmp = orcV * (orc->getMovement() * dt);
-
-			if (orcV != iPointZero)
+			if (orcs[i]->alive == true)
 			{
-				orcBehave = EnermyBehave_move;
+				orcs[i]->r += orcs[i]->rValue * (i + 1);
 
-				if (orcV.x > 0)
-					orcDir = 1;
-				else
-					orcDir = 0;
+				float rateOrcV = _sin(orcs[i]->r);
 
+				float orcDir = 0;
+
+				setRGBA(1, 1, 1, 1);
+				orcs[i]->paint(dt, offMt);
+				orcs[i]->setMovement(100);
+				iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
+				iPoint orcV = iPointMake(rateOrcV, 0);
+
+				iPoint orcmp = orcV * (orc->getMovement() * dt);
+
+				if (orcV != iPointZero)
+				{
+					orcBehave = EnermyBehave_move;
+
+					if (orcV.x > 0)
+						orcDir = 1;
+					else
+						orcDir = 0;
+
+				}
+
+				if (orcs[i]->behave != PlayerBehave_meleeAttack && orcs[i]->behave != PlayerBehave_jumpAndFall)
+					orcs[i]->setBehave(orcBehave, orcDir);
+				//printf("orcDt: %f\n", orcDt);
+
+				orcs[i]->move(orcmp + orcMovement, maptile);
+
+				//OrcDt += 1.0f;
 			}
-
-			if (orcs[i]->behave != Behave_meleeAttack && orcs[i]->behave != Behave_jumpAndFall)
-				orcs[i]->setBehave(orcBehave, orcDir);
-			//printf("orcDt: %f\n", orcDt);
-
-			orcs[i]->move(orcmp + orcMovement, maptile);
-
-			//OrcDt += 1.0f;
 		}
 	}
 
 	{ // paint Player
 		setRGBA(1, 1, 1, 1);
 		hero->paint(dt, offMt);
+
 
 	}
 	setRGBA(1, 1, 1, 1);
@@ -823,6 +829,7 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 		else if (i == 0)
 		{
 			printf("selected = %d\n", i);
+			PopMenuUI->show(false);
 
 		}
 
@@ -948,10 +955,10 @@ void createPopQuitAnswerUI()
 			}
 
 			answerBtn->addObject(btnTex);
+			answerBtn->position = iPointMake(devSize.width/2 * (i+1)+ 150, size.height + 10);
 			freeImage(btnTex);
 		}
-			//#bug
-		//answerBtn->position = iPointMake((size.width - 150 * (i+1)) , size.height/2 +500);
+		
 		pop->addObject(answerBtn);
 
 		PopQuitAnswerUIBtn[i] = answerBtn;

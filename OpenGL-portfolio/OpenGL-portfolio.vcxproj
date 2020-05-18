@@ -153,9 +153,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GameObject\NPC\Potion.h" />
     <ClInclude Include="GameObject\Parents\Monster.h" />
+    <ClInclude Include="GameObject\Parents\NPC.h" />
     <ClInclude Include="GameObject\Parents\Object.h" />
     <ClInclude Include="GameObject\Enemy\Orc.h" />
+    <ClInclude Include="GameObject\Parents\PlayerParent.h" />
     <ClInclude Include="GameObject\PlayerCharacter\Player.h" />
     <ClInclude Include="GameObject\stageTileInfo.h" />
     <ClInclude Include="game\ending.h" />
@@ -195,9 +198,12 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObject\NPC\Potion.cpp" />
     <ClCompile Include="GameObject\Parents\Monster.cpp" />
+    <ClCompile Include="GameObject\Parents\NPC.cpp" />
     <ClCompile Include="GameObject\Parents\Object.cpp" />
     <ClCompile Include="GameObject\Enemy\Orc.cpp" />
+    <ClCompile Include="GameObject\Parents\PlayerParent.cpp" />
     <ClCompile Include="GameObject\PlayerCharacter\Player.cpp" />
     <ClCompile Include="game\ending.cpp" />
     <ClCompile Include="game\game.cpp" />

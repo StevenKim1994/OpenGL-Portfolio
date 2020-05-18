@@ -2,18 +2,10 @@
 #include "iStd.h"
 #include "Object.h"
 #include "Monster.h"
+#include "PlayerParent.h"
 
-enum Behave
-{
-	Behave_idle = 0,
-	Behave_meleeAttack,
-	Behave_move,
-	Behave_jumpAndFall,
 
-	Behave_num,
-};
-
-class Player : public Object
+class Player : public PlayerParent
 {
 public:
 	Player();
@@ -21,14 +13,14 @@ public:
 
 	static void cbBehave(iImage* img);
 	static void cbSkill(iImage* skillimg);
-	void setBehave(Behave be, int direction);
+	void setBehave(PlayerBehave be, int direction);
 	void paint(float dt, iPoint offset);
 	
 	
 	iImage** imgs;
 	iImage* img;
 
-	Behave behave;
+	PlayerBehave behave;
 	int direction;
 	int kill = 0; // 몬스터 처치수
 

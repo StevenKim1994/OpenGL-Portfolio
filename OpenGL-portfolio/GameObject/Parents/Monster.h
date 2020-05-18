@@ -33,6 +33,8 @@ public:
 	float aiTime = 0.0f;
 	float _aiTime;
 
+	bool alive;
+
 
 public:
 
