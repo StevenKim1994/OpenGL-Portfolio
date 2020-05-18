@@ -15,6 +15,7 @@
 #include "iFPS.h"
 
 #include "iOpenAL.h"
+#include "cameraFunc.h"
 
 #if _DEBUG
 #pragma comment(linker, "/entry:wWinMainCRTStartup /subsystem:console") // 디버그모드 콘솔창 나오게하기

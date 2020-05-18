@@ -160,32 +160,6 @@ void freeStage()
 	
 }
 
-iPoint shakePosition;
-float _shakeDt;
-float shakeDt = _shakeDt;
-
-void shakeStage(int range, float duration)
-{
-	int x = random() % range; if (random() % 2) x *= -1;
-	int y = random() % range; if (random() % 2) x *= -1;
-	shakePosition = iPointMake(x, y);
-	printf("shakeposition(%f, %f)\n", shakePosition.x, shakePosition.y);
-	_shakeDt = duration;
-	shakeDt = 0.0f;
-
-}
-
-iPoint zoomPosition;
-float zoomRate;
-#define _zoomDt .2f
-float zoomDt = _zoomDt;
-void zoomStage(iPoint point, float zr)
-{
-	zoomPosition = point;
-	zoomRate = zr;
-	zoomDt = 0.0f;
-}
-
 void drawStage(float dt)
 {
 	fbo->bind(texFboStage);////////////////////////////////////////////////////////////////////////////////
@@ -269,8 +243,9 @@ void drawStage(float dt)
 		printf("num1\n");
 		be = Behave_meleeAttack;
 		hero->Skill1();	
-	//	zoomStage(hero->getPosition()+offMt,1.5);
-		shakeStage(30);
+
+		zoomCamera(hero->getPosition() + offMt, 1.5);
+		shakeCamera(30);
 
 	}
 
@@ -409,52 +384,8 @@ void drawStage(float dt)
 
 	fbo->unbind();////////////////////////////////////////////////////////////////////////////////
 	Texture* tex = texFboStage;
-	if (zoomDt < _zoomDt || shakeDt < _shakeDt)
-	{
-		//카메라줌
-		iPoint c = iPointMake(devSize.width / 2, devSize.height / 2);
-		float r = 1.0f;
-		if (zoomDt < _zoomDt)
-		{
-			r = 1.0f + (zoomRate - 1.0f) * _sin(180 * zoomDt / _zoomDt);
-			zoomDt += dt;
-			iPoint dp = zoomPosition - c;
-			iPoint rp = dp * r;
-			c -= rp - dp;
-		}
 
-		if (shakeDt < _shakeDt) // 진동일때 진동이 아닐떈 암것도 안하면됨 
-		{
-			// cycle 3 = shakePosition * (1.0f + 0.5f + 0.25f)
-			float r = shakeDt / _shakeDt;
-			if (r < 1.0f / 1.75f) // 총3번 흔들림
-			{
-				c += shakePosition * _sin(180 * r / (1.0f / 1.75f)); // 첫번쨰 사이클일떄 100%
-			}
-			else if (r < 1.5f / 1.75f)
-			{
-				c += shakePosition * 0.5f * _sin(180 * (r-1.0f/1.75f) / (0.5f / 1.75f)); // 두번째 사이클일떄 50%
-			}
-			else
-			{
-				c += shakePosition * 0.25f * _sin(180 * (r - 1.5f / 1.75f) / (0.25f / 1.75f)); // 세번쨰 싸이클일때 25%
-			}
-			shakeDt += dt;
-		}
-
-		drawImage(tex, c.x, c.y,
-			0, 0, tex->width, tex->height, VCENTER | HCENTER,
-			r, r, 2, 0, REVERSE_HEIGHT);
-	}
-	else
-	{
-		//drawImage(tex, 0, 0, TOP | LEFT);
-		drawImage(tex, 0, 0,
-			0, 0, tex->width, tex->height, TOP | LEFT,
-			1.0f, 1.0f, 2, 0, REVERSE_HEIGHT);
-	}
-
-
+	showCamera(tex, dt);
 
 	drawPopPlayerUI(dt);
 	showPopPlayerUI(true);
