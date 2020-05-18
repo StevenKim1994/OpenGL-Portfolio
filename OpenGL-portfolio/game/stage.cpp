@@ -313,6 +313,7 @@ void drawStage(float dt)
 			maxY = devSize.height / 2;
 		}
 
+		
 		iPoint vp = offMt + hero->getPosition();
 		if (vp.x < minX)
 		{
@@ -372,6 +373,12 @@ void drawStage(float dt)
 				iPoint orcV = iPointMake(rateOrcV, 0);
 
 				iPoint orcmp = orcV * (orc->getMovement() * dt);
+
+				if(iPointLength(hero->getPosition() - orcs[i]->getPosition()) < 170)
+				{
+					printf("Orc[%d] Player Detected!\n", i);
+					//여기에 플레이어 발견햇을시 콜백함수 추가부분 #bug
+				}
 
 				if (orcV != iPointZero)
 				{
@@ -442,8 +449,8 @@ void keyStage(iKeyState stat, iPoint point)
 	if (keyPopMenuUI(stat, point))
 		return;
 	
-	if (keyPopPlayerUI(stat, point))
-		return;
+	keyPopPlayerUI(stat, point);
+		
 
 		
 	if (stat == iKeyStateBegan)

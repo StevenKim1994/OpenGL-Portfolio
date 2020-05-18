@@ -70,7 +70,7 @@ Texture* Object::getTex()
 	return tex;
 }
 
-iPoint Object::getPosition()
+iPoint& Object::getPosition()
 {
 	return position;
 }
@@ -311,10 +311,25 @@ void Object::applyJump(iPoint& movement, float dt)
 
 float getDistanceLine0(iPoint p, iPoint sp, iPoint ep)
 {
-	return 0.0f;
+	iPoint n = ep - sp;
+	float len = sqrtf(n.x * n.x + n.y * n.y);
+	n /= len;
+
+	iPoint m = p - sp;
+	iPoint proj = n * (m.x * n.x + m.y * n.y);
+
+	return iPointLength(m - proj);
 }
 
 float getDistanceLine1(iPoint p, iPoint sp, iPoint ep)
 {
-	return 0.0f;
+	iPoint n = ep - sp;
+	float len = sqrtf(n.x * n.x + n.y * n.y);
+
+	n /= len;
+
+	iPoint m = p - sp;
+	iPoint proj = n * max(0.0f, min((m.x * n.x + m.y * n.y), len));
+
+	return iPointLength(m - proj);
 }

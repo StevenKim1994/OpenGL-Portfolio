@@ -50,7 +50,7 @@ public:
 
 	//getter
 	Texture* getTex();
-	iPoint getPosition();
+	iPoint& getPosition();
 	iPoint getTargetPosition();
 	iSize getSize();
 	float getMovement();
