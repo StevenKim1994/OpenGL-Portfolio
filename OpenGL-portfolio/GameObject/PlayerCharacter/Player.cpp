@@ -192,5 +192,60 @@ void Player::Skill3()
 {
 }
 
+//Override
+bool Player::moveForMouse(float dt)
+{
+	
+	if (position.x < targetPosition.x)
+		setBehave(Behave_move, 1);
+
+	else
+		setBehave(Behave_move, 0);
+	
+
+	
+	if (position != targetPosition)
+	{
+		if (position.x < targetPosition.x)
+		{
+			position.x += movement * dt;
+			if (position.x > targetPosition.x)
+				position.x = targetPosition.x;
 
 
+		}
+		else if (position.x > targetPosition.x)
+		{
+			position.x -= movement * dt;
+			if (position.x < targetPosition.x)
+				position.x = targetPosition.x;
+		}
+
+		if (position.y < targetPosition.y)
+		{
+			position.y += movement * dt;
+			if (position.y > targetPosition.y)
+				position.y = targetPosition.y;
+		}
+		else if (position.y > targetPosition.y)
+		{
+			position.y -= movement * dt;
+			if (position.y < targetPosition.y)
+				position.y = targetPosition.y;
+		}
+	}
+	else
+	{
+		if (pathIndex < pathNum)
+		{
+			int index = path[pathIndex];
+			targetPosition.x = MapTileWidth * (index % MapTileNumX) + MapTileWidth / 2;
+			targetPosition.y = MapTileHeight * (index / MapTileNumX) + MapTileHeight / 2;
+			pathIndex++;
+		}
+		else
+			return true;
+	}
+	return false;
+
+}

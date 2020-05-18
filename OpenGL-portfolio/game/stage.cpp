@@ -241,36 +241,9 @@ void drawStage(float dt)
 
 	
 
-	if (keyDown & keyboard_num1)
-	{
-	
-		printf("num1\n");
-		be = Behave_meleeAttack;
-		hero->Skill1();	
-
-		zoomCamera(hero->getPosition() + offMt, 1.5);
-		shakeCamera(30);
-
-	}
-
-	else if (keyDown & keyboard_space)
-		be = Behave_jumpAndFall;
-	else if (keyDown & keyboard_down)
-		be = Behave_idle;
-	else if (keyDown & keyboard_up)
-		be = Behave_jumpAndFall;
-	else
-		be = (v == iPointZero ? Behave_idle : Behave_move);
-	int dir = hero->direction;
-	if (v.x < 0) dir = 0;
-	else if (v.x > 0) dir = 1;
-
-
-	if (hero->behave != Behave_meleeAttack && hero->behave != Behave_jumpAndFall)
-		hero->setBehave(be, dir);
 
 	
-	if (mouseMove)
+	if (mouseMove) // 마우스 입력이 있을때
 	{
 		if( hero->moveForMouse(dt) )
 			mouseMove = false;
@@ -282,9 +255,38 @@ void drawStage(float dt)
 			hero->pathNum = hero->pathIndex;
 		}
 	}
-	else
+	else // 키보드 입력일때
 	{
+
+		if (keyDown & keyboard_num1)
+		{
+
+			printf("num1\n");
+			be = Behave_meleeAttack;
+			hero->Skill1();
+
+			zoomCamera(hero->getPosition() + offMt, 1.5);
+			shakeCamera(30);
+
+		}
+
+		else if (keyDown & keyboard_space)
+			be = Behave_jumpAndFall;
+		else if (keyDown & keyboard_down)
+			be = Behave_idle;
+		else if (keyDown & keyboard_up)
+			be = Behave_jumpAndFall;
+		else
+			be = (v == iPointZero ? Behave_idle : Behave_move);
+		int dir = hero->direction;
+		if (v.x < 0) dir = 0;
+		else if (v.x > 0) dir = 1;
+
+
+		if (hero->behave != Behave_meleeAttack && hero->behave != Behave_jumpAndFall)
+			hero->setBehave(be, dir);
 		float minX, maxX, minY, maxY;
+		
 		if (v != iPointZero)
 		{
 			v /= iPointLength(v);
@@ -453,9 +455,9 @@ void keyStage(iKeyState stat, iPoint point)
 		printf("sx : %d sy : %d  ex : %d ey : %d\n", sx, sy, ex, ey);
 		printf("begin :%d dest : %d\n", sy * MapTileNumX+ sx, ey * MapTileNumX + ex);
 		
-		//return;
-		//if (sy != ey)
-			//return;
+		
+		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
+			return;
 
 		sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
 		
@@ -505,17 +507,36 @@ void createPopPlayerUI()
 		g->fillRect(0, 0, devSize.width, devSize.height);
 		g->drawString(devSize.width / 2, 10, HCENTER | VCENTER, "- Stage -");
 		g->drawString(devSize.width / 2, 35, HCENTER|VCENTER, mapTitle[0]);
-
+		g->drawString(devSize.width / 2, 65, HCENTER | VCENTER, "KILL: %d", hero->kill);
 		Poptex = g->getTexture();
 		img->addObject(Poptex);
 		freeImage(Poptex);
 
-		//PopPlayerUIImgs[0] = img;
+	
+		
 		pop->addObject(img);
 
 	}
+
+	{ // 미니맵
+		setRGBA(1, 1, 0, 1);
+		setStringSize(10);
+		iSize mapsize = iSizeMake(200, 200);
+		g->init(mapsize);
+		g->fillRect(0, 0, mapsize.width, mapsize.height);
+		g->drawString(mapsize.width / 2, mapsize.height / 2, HCENTER | VCENTER, "Minimap position");
+		Texture* minimapTex = g->getTexture();
+		iImage* minimap = new iImage();
+		minimap->addObject(minimapTex);
+		minimap->position = iPointMake(devSize.width - mapsize.width, 60);
+		pop->addObject(minimap);
+
+	}
+
+	
 	// Stage Menu
 	{
+		setStringSize(30);
 		iImage* menuBtn = new iImage();
 		Texture* menuBtnTex;
 		iSize menuSize = iSizeMake(200, 100);
@@ -606,10 +627,7 @@ void createPopPlayerUI()
 		pop->addObject(playerStamina);
 
 
-
-
-
-
+		
 
 	}
 

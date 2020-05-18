@@ -23,12 +23,18 @@ public:
 	static void cbSkill(iImage* skillimg);
 	void setBehave(Behave be, int direction);
 	void paint(float dt, iPoint offset);
+	
+	
 	iImage** imgs;
 	iImage* img;
 
 	Behave behave;
 	int direction;
+	int kill = 0; // 몬스터 처치수
 
+	//override func
+	bool moveForMouse(float dt);
+	
 public:
 	iImage* imgSkill; // 근접 스킬
 	iImage* imgRange; // 원거리 스킬
