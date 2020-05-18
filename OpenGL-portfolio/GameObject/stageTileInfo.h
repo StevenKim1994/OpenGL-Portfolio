@@ -9,12 +9,12 @@ struct MapTile
 	uint8 imgIndex;
 };
 
-#define canMove 0
+#define canMove 1
 #define ladder 1
 #define endofTile 99
-#define canNotMove 5
+#define canNotMove 99
 #define stoneBlock 3
-#define inGround 2
+#define inGround 99
 
 #define MapTileNumX 100
 #define MapTileNumY 50

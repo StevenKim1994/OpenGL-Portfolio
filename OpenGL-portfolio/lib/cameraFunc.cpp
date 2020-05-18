@@ -34,6 +34,10 @@ void zoomCamera(iPoint point, float _zoomRate)
 	zoomDt = 0.0f;
 }
 
+void slowCamera(float time)
+{
+}
+
 void showCamera(Texture* tex, float dt)
 {
 	if (zoomDt < _zoomDt || shakeDt < _shakeDt)

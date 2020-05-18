@@ -7,6 +7,8 @@
 
 Player::Player()
 {
+	memset(path, 0x00, sizeof(int) * MapTileNumX * MapTileNumY);
+	pathIndex = pathNum;
 	HP = Player_HP;
 	MP = Player_MP;
 	Stamina = Player_Stamina;

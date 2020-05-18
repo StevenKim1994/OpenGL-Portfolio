@@ -20,6 +20,7 @@ protected:
 
 	Texture* tex;
 	iPoint position;
+	iPoint targetPosition;
 	iSize size;
 	iPoint jumpment;
 	int jumpNum;
@@ -38,6 +39,7 @@ public:
 	//setter
 	void setTex(Texture* tex);
 	void setPosition(iPoint position);
+	void setTargetPosition(iPoint targetPosition);
 	void setSize(iSize size);
 	void setMovement(float movement);
 	void setRange(float range);
@@ -49,6 +51,7 @@ public:
 	//getter
 	Texture* getTex();
 	iPoint getPosition();
+	iPoint getTargetPosition();
 	iSize getSize();
 	float getMovement();
 	float getRange();
@@ -59,9 +62,14 @@ public:
 
 public:
 	//function
+	bool moveForMouse(float dt);
 	void move(iPoint movement, MapTile* maptile);
 	void jump();
 	void applyJump(iPoint& movement, float dt);
+
+	int path[MapTileNumX * MapTileNumY];
+	int pathNum;
+	int pathIndex;
 };
 
 // 한점에서 직선까지의 거리

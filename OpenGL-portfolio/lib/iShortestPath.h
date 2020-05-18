@@ -33,9 +33,4 @@ public:
 
 extern int tiles[MapTileNumX * MapTileNumY];
 
-#include "iType.h"
-void initShortestPath();
-void freeShortestPath();
-void drawShortestPath(float dt);
-void keyShortestPath(iKeyState stat, iPoint point);
 

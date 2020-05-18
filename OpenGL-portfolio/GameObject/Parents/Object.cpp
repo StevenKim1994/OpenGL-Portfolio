@@ -25,6 +25,11 @@ void Object::setPosition(iPoint position)
 	this->position = position;
 }
 
+void Object::setTargetPosition(iPoint targetPosition)
+{
+	this->targetPosition = targetPosition;
+}
+
 void Object::setSize(iSize size)
 {
 	this->size = size;
@@ -68,6 +73,11 @@ Texture* Object::getTex()
 iPoint Object::getPosition()
 {
 	return position;
+}
+
+iPoint Object::getTargetPosition()
+{
+	return targetPosition;
 }
 
 iSize Object::getSize()
@@ -125,7 +135,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 			bool col = false;
 			for (int y = tly; y < bly + 1; y++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == 1)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -153,7 +163,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 			bool col = false;
 			for (int y = TRY; y < BRY + 1; y++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == 1)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -183,7 +193,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == 1)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -211,7 +221,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == 1)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -231,6 +241,54 @@ void Object::move(iPoint movement, MapTile* maptile)
 			jumpNum = 0;
 	}
 }
+
+bool Object::moveForMouse(float dt)
+{
+	if (position != targetPosition)
+	{
+		if (position.x < targetPosition.x)
+		{
+			position.x += movement * dt;
+			if (position.x > targetPosition.x)
+				position.x = targetPosition.x;
+
+
+		}
+		else if (position.x > targetPosition.x)
+		{
+			position.x -= movement * dt;
+			if (position.x < targetPosition.x)
+				position.x = targetPosition.x;
+		}
+
+		if (position.y < targetPosition.y)
+		{
+			position.y += movement * dt;
+			if (position.y > targetPosition.y)
+				position.y = targetPosition.y;
+		}
+		else if (position.y > targetPosition.y)
+		{
+			position.y -= movement * dt;
+			if (position.y < targetPosition.y)
+				position.y = targetPosition.y;
+		}
+	}
+	else
+	{
+		if (pathIndex < pathNum)
+		{
+			int index = path[pathIndex];
+			targetPosition.x = MapTileWidth * (index % MapTileNumX) + MapTileWidth / 2;
+			targetPosition.y = MapTileHeight * (index / MapTileNumX) + MapTileHeight / 2;
+			pathIndex++;
+		}
+		else
+			return true;
+	}
+	return false;
+}
+
 
 void Object::jump()
 {
