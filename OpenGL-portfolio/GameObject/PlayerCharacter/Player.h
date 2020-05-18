@@ -1,7 +1,7 @@
 #pragma once
 #include "iStd.h"
 #include "Object.h"
-
+#include "Monster.h"
 
 enum Behave
 {
@@ -40,7 +40,7 @@ public:
 	iImage* imgRange; // 원거리 스킬
 	iImage* imgBuff; // 버프 스킬
 	iImage* Ultimate; // 궁극기
-	void Skill1();
+	void Skill1(Monster** enermys, int enermyNum);
 	void Skill2();
 	void Skill3();
 

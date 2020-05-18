@@ -1,6 +1,7 @@
 #pragma once
 #include "stage.h"
 #include "stageTileInfo.h"
+#include "Monster.h"
 #include "Player.h"
 #include "Orc.h"
 
@@ -68,7 +69,7 @@ MapTile* maptile;
 iPoint offMt;
 iPoint vp;
 
-Orc** orcs;
+Monster** orcs;
 Orc* orc;
 Texture* bgTex; // bacckground Image
 
@@ -122,7 +123,7 @@ void loadStage()
 
 
 
-	orcs = (Orc**)malloc(sizeof(Orc) * orc_Num);
+	orcs = (Monster**)malloc(sizeof(Monster) * orc_Num);
 
 	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
 	{
@@ -220,9 +221,10 @@ void drawStage(float dt)
 	}
 
 	if (getKeyDown() & keyboard_down) // 아래점프
-	{
+	{		
 		iPoint jumpVector = iPointMake(hero->getPosition().x, hero->getPosition().y + 1);
 		// 왠지 화면밖을 나가는거 예외처리 해야할듯함 #bug
+		
 		hero->setPosition(jumpVector);
 	}
 
@@ -263,13 +265,15 @@ void drawStage(float dt)
 
 			printf("num1\n");
 			be = Behave_meleeAttack;
-			hero->Skill1();
+			hero->Skill1(orcs, orc_Num);
+			
 
 			zoomCamera(hero->getPosition() + offMt, 1.5);
 			shakeCamera(30);
 
 		}
 
+		
 		else if (keyDown & keyboard_space)
 			be = Behave_jumpAndFall;
 		else if (keyDown & keyboard_down)
@@ -282,6 +286,7 @@ void drawStage(float dt)
 		if (v.x < 0) dir = 0;
 		else if (v.x > 0) dir = 1;
 
+	
 
 		if (hero->behave != Behave_meleeAttack && hero->behave != Behave_jumpAndFall)
 			hero->setBehave(be, dir);
@@ -343,10 +348,10 @@ void drawStage(float dt)
 		
 		for (int i = 0; i < orc_Num; i++)
 		{
-			orcBehave orcBehave;
+			EnermyBehave orcBehave;
 			if (orcs[i]->getHp() < 1) // Orc의 체력이 1미만이면 Death
 			{
-				orcBehave = orcBehave_death;
+				orcBehave = EnermyBehave_death;
 			}
 
 		
@@ -366,7 +371,7 @@ void drawStage(float dt)
 
 			if (orcV != iPointZero)
 			{
-				orcBehave = orcBehave_move;
+				orcBehave = EnermyBehave_move;
 
 				if (orcV.x > 0)
 					orcDir = 1;
@@ -424,7 +429,7 @@ void drawStage(float dt)
 void keyStage(iKeyState stat, iPoint point)
 {
 	
-/*
+
 	if(keyPopQuitAnswerUI(stat, point))
 		return;
 
@@ -434,7 +439,7 @@ void keyStage(iKeyState stat, iPoint point)
 	if (keyPopPlayerUI(stat, point))
 		return;
 
-		*/
+		
 	if (stat == iKeyStateBegan)
 	{
 		printf("!!\n");

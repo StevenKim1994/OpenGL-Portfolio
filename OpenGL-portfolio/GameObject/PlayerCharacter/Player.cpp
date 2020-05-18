@@ -1,5 +1,6 @@
+#pragma once
 #include "Player.h"
-
+#include "Monster.h"
 
 #define Player_HP 100
 #define Player_MP 100
@@ -172,7 +173,7 @@ void Player::cbSkill(iImage* me)
 
 
 
-void Player::Skill1()
+void Player::Skill1(Monster** enermy, int enermyNum)
 {
 	printf("skill1! on!\n");
 	iPoint targetPos;
@@ -182,6 +183,17 @@ void Player::Skill1()
 		targetPos = iPointMake(position.x - 128, position.y - 100);
 	imgSkill->position = targetPos;
 	imgSkill->startAnimation();
+
+	//printf("%f %f \n", imgSkill->touchRect().origin.x, imgSkill->touchRect().origin.y); // 스킬 출력 위치
+	for (int i = 0; i < enermyNum; i++)
+	{
+		//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
+		if (containPoint(enermy[i]->getPosition(), imgSkill->touchRect()))
+			printf("No. %d Monster Collision!\n", i);
+		
+	}
+
+	
 }
 
 void Player::Skill2()

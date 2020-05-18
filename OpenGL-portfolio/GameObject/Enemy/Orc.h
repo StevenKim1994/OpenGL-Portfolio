@@ -3,17 +3,6 @@
 #include "Object.h"
 #include "Monster.h"
 
-enum orcBehave
-{
-	orcBehave_idle = 0,
-	orcBehave_meleeAttack,
-	orcBehave_move,
-	orcBehave_jumpAndFall,
-	orcBehave_hurt,
-	orcBehave_death,
-
-	orcBehave_num,
-};
 
 
 class Orc : public Monster
@@ -36,13 +25,12 @@ private:
 
 public:
 	
-	orcBehave behave;
 	int direction;
 
 	static void cbBehave(iImage* img);
 	static void cbSkill(iImage* skillimg);
 
-	void setBehave(orcBehave be, int direction);
+	void setBehave(EnermyBehave be, int direction);
 	void paint(float dt, iPoint offset);
 
 	iImage** imgs;

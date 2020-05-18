@@ -16,7 +16,7 @@ class Object
 public: Object();
 	  ~Object();
 
-protected:
+public:
 
 	Texture* tex;
 	iPoint position;
@@ -59,6 +59,8 @@ public:
 	float getSpeed();
 	float getHp();
 	float getMp();
+
+	
 
 public:
 	//function

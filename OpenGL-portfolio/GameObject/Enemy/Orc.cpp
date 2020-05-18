@@ -82,8 +82,8 @@ Orc::Orc()
 
 	}
 
-	behave = (orcBehave)-1;
-	setBehave(orcBehave_idle, 0);
+	behave = (EnermyBehave)-1;
+	setBehave(EnermyBehave_idle, 0);
 	direction = 0;
 	jumpNum = 0;
 	_jumpNum = 2;
@@ -109,7 +109,7 @@ void Orc::cbSkill(iImage* skillimg)
 {
 }
 
-void Orc::setBehave(orcBehave be, int dir)
+void Orc::setBehave(EnermyBehave be, int dir)
 {
 	if (behave != be || direction != dir)
 	{
