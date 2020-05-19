@@ -70,7 +70,7 @@ Texture* Object::getTex()
 	return tex;
 }
 
-iPoint& Object::getPosition()
+iPoint Object::getPosition()
 {
 	return position;
 }

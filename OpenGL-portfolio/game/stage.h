@@ -10,8 +10,6 @@ void freeStage();
 void drawStage(float dt);
 void keyStage(iKeyState stat, iPoint point);
 
-void shakeStage(int range, float duration=0.5f); // 카메라 진동
-void zoomStage(iPoint point, float zoomRate); // 카메라 확대
 
 
 
@@ -53,3 +51,11 @@ void freePopQuitAnswerUI();
 void drawPopQuitAnswerUI(float dt);
 bool keyPopQuitAnswerUI(iKeyState stat, iPoint point);
 void showPopQuitAnswerUI(bool show);
+
+//------------Number------------------//
+void loadNumber();
+void freeNumber();
+void drawNumber(float dt, iPoint off);
+void addNumber(int dmg, iPoint position);
+
+

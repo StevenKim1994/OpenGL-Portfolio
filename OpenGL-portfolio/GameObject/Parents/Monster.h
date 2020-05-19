@@ -35,7 +35,6 @@ public:
 
 	bool alive;
 
-
 public:
 
 

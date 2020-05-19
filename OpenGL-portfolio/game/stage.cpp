@@ -83,6 +83,51 @@ Texture* texFboStage;
 iShortestPath* sp;
 bool mouseMove = false;
 
+iStrTex* killIndicator;
+iStrTex* timeIndicator;
+
+float gameTime = 0;
+float _gameTime = 100000000000;
+
+
+Texture* methodTimeIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(500, 50);
+
+	setRGBA(1, 1, 1, 0);
+	g->init(size);
+	g->fillRect(0, 0, size.width, size.height);
+
+	setRGBA(1, 1, 1, 1);
+	setStringSize(50);
+	setStringRGBA(1, 1, 0, 1);
+	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER | VCENTER, str);
+
+
+	return g->getTexture();
+}
+
+Texture* methodKillIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(100, 50);
+
+	setRGBA(1, 1, 1, 0);
+	g->init(size);
+	g->fillRect(0, 0, size.width, size.height);
+	
+	setRGBA(1,1, 1, 1);
+	setStringSize(50);
+	setStringRGBA(1, 1, 0, 1);
+	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER|VCENTER, str);
+
+
+	return g->getTexture();
+
+
+}
+
 void loadStage()
 {
 	texFboStage = createTexture(devSize.width, devSize.height);
@@ -124,7 +169,6 @@ void loadStage()
 
 
 	orcs = (Monster**)malloc(sizeof(Monster) * orc_Num);
-
 	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
 	{
 		orc = new Orc();
@@ -137,32 +181,40 @@ void loadStage()
 	sp = new iShortestPath();
 	sp->init(tiles, MapTileNumX, MapTileNumY);
 
+	killIndicator = new iStrTex(methodKillIndicator);
+	killIndicator->setString("%d", hero->kill);
+	
+	timeIndicator = new iStrTex(methodTimeIndicator);
+	timeIndicator->setString("TIME : %0.2f", gameTime);
+
+
 	createPopPlayerUI();
 	createPopMenuUI();
 	createPopQuitAnswerUI();
 
-
-	
+	loadNumber();
 }
 
 void freeStage()
 {
 	freeImage(texFboStage);
 
-	freePopPlayerUI();
-	freePopMenuUI();
-	freePopQuitAnswerUI();
 	free(maptile);
-
 	delete hero;
 	
 	for (int i = 0; i < orc_Num; i++)
 	{
 		delete orcs[i];
 	}
-
 	free(orcs);
-	
+
+	delete sp;
+
+	freePopPlayerUI();
+	freePopMenuUI();
+	freePopQuitAnswerUI();
+
+	freeNumber();
 }
 
 void drawStage(float dt)
@@ -241,7 +293,6 @@ void drawStage(float dt)
 	else if (keyStat & keyboard_down) v.y = 1;
 
 
-	
 
 
 	
@@ -262,15 +313,23 @@ void drawStage(float dt)
 
 		if (keyDown & keyboard_num1)
 		{
-
-			printf("num1\n");
 			be = PlayerBehave_meleeAttack;
-			hero->Skill1(orcs, orc_Num);
-			
+
+			hero->Skill1();
 
 			zoomCamera(hero->getPosition() + offMt, 1.5);
 			shakeCamera(30);
 
+			//printf("%f %f \n", imgSkill->touchRect().origin.x, imgSkill->touchRect().origin.y); // 스킬 출력 위치
+			for (int i = 0; i < orc_Num; i++)
+			{
+				//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
+				if (containPoint(orcs[i]->getPosition(), hero->imgSkill->touchRect()))
+				{
+					orcs[i]->setHP(orcs[i]->getHp() - 5.f);
+					addNumber(5, orcs[i]->getPosition() + iPointMake(0, -50));
+				}
+			}
 		}
 
 		
@@ -283,10 +342,10 @@ void drawStage(float dt)
 		else
 			be = (v == iPointZero ? PlayerBehave_idle : PlayerBehave_move);
 		int dir = hero->direction;
-		if (v.x < 0) dir = 0;
-		else if (v.x > 0) dir = 1;
 
 	
+		if (v.x < 0) dir = 0;
+		else if (v.x > 0) dir = 1;
 
 		if (hero->behave != PlayerBehave_meleeAttack && hero->behave != PlayerBehave_jumpAndFall)
 			hero->setBehave(be, dir);
@@ -318,12 +377,14 @@ void drawStage(float dt)
 		if (vp.x < minX)
 		{
 			// 왼쪽으로 넘어갔을 경우
+		
 			offMt.x += (minX - vp.x) *dt;
 			if (offMt.x > 0)
 				offMt.x = 0;
 		}
 		else if (vp.x > maxX)
 		{
+		
 			// 오른쪽으로 넘어갔을 경우
 			offMt.x += (maxX - vp.x) * dt;
 			if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
@@ -350,11 +411,12 @@ void drawStage(float dt)
 		for (int i = 0; i < orc_Num; i++)
 		{
 			EnermyBehave orcBehave;
-			if (orcs[i]->getHp() < 1) // Orc의 체력이 1미만이면 Death
+			if (orcs[i]->getHp() < 1 && orcs[i]->alive == true) // Orc의 체력이 1미만이면 Death
 			{
 				orcBehave = EnermyBehave_death;
 				orcs[i]->alive = false;
 				hero->kill++;
+				killIndicator->setString("%d", hero->kill);
 			}
 
 
@@ -376,7 +438,7 @@ void drawStage(float dt)
 
 				if(iPointLength(hero->getPosition() - orcs[i]->getPosition()) < 170)
 				{
-					printf("Orc[%d] Player Detected!\n", i);
+					//printf("Orc[%d] Player Detected!\n", i);
 					//여기에 플레이어 발견햇을시 콜백함수 추가부분 #bug
 				}
 
@@ -423,9 +485,16 @@ void drawStage(float dt)
 #endif
 
 	fbo->unbind();////////////////////////////////////////////////////////////////////////////////
+
+	gameTime += dt;
+
+	timeIndicator->setString("TIME : %0.2f",gameTime);
+
 	Texture* tex = texFboStage;
 
 	showCamera(tex, dt);
+
+	drawNumber(dt, offMt);
 
 	drawPopPlayerUI(dt);
 	showPopPlayerUI(true);
@@ -519,22 +588,40 @@ void createPopPlayerUI()
 
 	// Stage Title
 	{
+
 		g->init(size);
 		setStringRGBA(0, 0, 0, 1);
 		setRGBA(1, 1, 1, 0);// alpha값은 0 투명한 사이즈의 화면크기의 상자를 만드는거니까
 		g->fillRect(0, 0, devSize.width, devSize.height);
 		g->drawString(devSize.width / 2, 10, HCENTER | VCENTER, "- Stage -");
 		g->drawString(devSize.width / 2, 35, HCENTER|VCENTER, mapTitle[0]);
-		g->drawString(devSize.width / 2, 65, HCENTER | VCENTER, "KILL: %d", hero->kill);
+		g->drawString(devSize.width / 2, 65, HCENTER | VCENTER, "KILL:");
+	
 		Poptex = g->getTexture();
 		img->addObject(Poptex);
 		freeImage(Poptex);
-
-	
-		
 		pop->addObject(img);
 
 	}
+
+	// kill indicator
+	{
+		setRGBA(1, 1, 1, 1);
+		iImage* kill_indicator = new iImage();
+		kill_indicator->addObject(killIndicator->tex);
+		kill_indicator->position = iPointMake(devSize.width / 2, 90);
+		pop->addObject(kill_indicator);
+	}
+	
+	// time indicator
+	{
+		setRGBA(1, 1, 1, 1);
+		iImage* time_indicator = new iImage();
+		time_indicator->addObject(timeIndicator->tex);
+		time_indicator->position = iPointMake(devSize.width / 2 - 200, 130);
+		pop->addObject(time_indicator);
+	}
+
 
 	{ // 미니맵
 		setRGBA(1, 1, 0, 1);
@@ -1046,8 +1133,106 @@ void showPopQuitAnswerUI(bool show)
 	PopQuitAnswerUI->show(show);
 }
 
+struct Damage
+{
+	iStrTex* stDamage;
+	iPoint p;
+	float delta;
+
+	bool paint(float dt, iPoint off);
+};
+#define Damage_delta 1.0f
+
+Damage* _damage;
+Damage** damage;
+int damageNum;
+#define _damageNum 100
+
+Texture* methodStDamage(const char* str);
+
+void loadNumber()
+{
+	_damage = (Damage*)malloc(sizeof(Damage) * _damageNum);
+	for (int i = 0; i < _damageNum; i++)
+	{
+		Damage* d = &_damage[i];
+		d->stDamage = new iStrTex(methodStDamage);
+		d->p = iPointZero;
+		d->delta = Damage_delta;
+	}
+
+	damage = (Damage**)malloc(sizeof(Damage*) * _damageNum);
+	damageNum = 0;
+}
+
+void freeNumber()
+{
+	for (int i = 0; i < _damageNum; i++)
+		delete _damage[i].stDamage;
+	free(_damage);
+	free(damage);
+}
+void drawNumber(float dt, iPoint off)
+{
+	for (int i = 0; i < damageNum; i++)
+	{
+		if (damage[i]->paint(dt, off))
+		{
+			damageNum--;
+			for (int j = i; j < damageNum; j++)
+				damage[j] = damage[1 + j];
+			i--;
+		}
+	}
+}
+void addNumber(int dmg, iPoint position)
+{
+	for (int i = 0; i < _damageNum; i++)
+	{
+		Damage* d = &_damage[i];
+		if (d->delta >= Damage_delta)
+		{
+			d->stDamage->setString("%d", dmg);
+			d->p = position;
+			d->delta = 0.0f;
+
+			damage[damageNum] = d;
+			damageNum++;
+			return;
+		}
+	}
+}
+
+Texture* methodStDamage(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(100, 20);
+
+	setRGBA(1, 1, 1, 0);
+	g->init(size);
+	g->fillRect(0, 0, size.width, size.height);
+	
+	setRGBA(1,1, 1, 1);
+	setStringSize(20);
+	setStringRGBA(1, 0, 0, 1);
+	g->drawString(size.width / 2, size.height / 2, HCENTER|VCENTER, str);
 
 
+	return g->getTexture();
 
+}
 
+bool Damage::paint(float dt, iPoint off)
+{
+	float r = delta / Damage_delta;
+	iPoint pp = p + off + iPointMake(0, -easeIn(r, 0, 200));
+	float a = 1.0f - r;
+	setRGBA(1, 1, 1, a);
+	stDamage->paint(pp.x, pp.y, VCENTER | HCENTER);
+	setRGBA(1, 1, 1, 1);
 
+	delta += dt;
+	if (delta < Damage_delta)
+		return false;
+	return true;
+}

@@ -17,11 +17,12 @@ void loadGame()
 							{ "assets/intro/sound/bgm.wav", true, 1.0f},
 							{ "assets/intro/sound/okay.wav", false, 1.0f},
 							{ "assets/intro/sound/SHOT.wav", false, 1.0f},
-							{"assets/menu/sound/menuBGM.wav", true, 1.0f}
+							{"assets/menu/sound/menuBGM.wav", true, 1.0f},
+							{"assets/stage/hero/Knight/skill/skill1sound.wav", false, 10.0f},
 	};
 
 
-	loadAudio(soundAssets, 4);
+	loadAudio(soundAssets, 5);
 
 
 	//loadTrailer();
