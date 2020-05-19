@@ -9,17 +9,17 @@ struct MapTile
 	uint8 imgIndex;
 };
 
-#define canMove 1
+#define canMove 00
 #define ladder 1
 #define endofTile 99
 #define canNotMove 99
 #define stoneBlock 3
 #define inGround 99
 
-#define MapTileNumX 100
-#define MapTileNumY 50
-#define MapTileWidth 48
-#define MapTileHeight 38
+#define MapTileNumX 157
+#define MapTileNumY 45
+#define MapTileWidth 16
+#define MapTileHeight 16
 
 #define tile_color_canMove 1,1,1,0
 #define tile_color_canNotMove 1,0,1,1
@@ -30,6 +30,12 @@ struct MapTile
 #define powGravity 200
 #define powJump 300
 
+#define MapCharWidth 10
+#define MapCharHeight 10
+#define MapCharMovement 200 // 맵 기본 캐릭터들 이동속도
+#define MapCharSpeed 10 // 맵 기본 캐릭터들 공격속도
+
+#define hero_color 0, 0, 1, 1
 
 
 

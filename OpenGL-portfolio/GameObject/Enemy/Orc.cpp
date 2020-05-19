@@ -4,8 +4,8 @@
 #define Orc_MP 100
 #define Orc_Stamina 100
 
-#define Orc_Width 32
-#define Orc_Height 32
+#define Orc_Width 10
+#define Orc_Height 10
 
 
 Orc::Orc()
