@@ -20,7 +20,7 @@ private:
 	iPoint Target_Pos;
 	Object* Target;
 
-	float aiTime, _aiTime; // 반응까지에 걸리는 시간 _aiTime은 최대치
+	float aiTime, _aiTime = 10.0f; // 반응까지에 걸리는 시간 _aiTime은 최대치
 
 
 public:

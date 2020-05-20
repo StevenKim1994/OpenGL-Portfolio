@@ -162,6 +162,7 @@
     <ClInclude Include="GameObject\PlayerCharacter\Player.h" />
     <ClInclude Include="GameObject\stageTileInfo.h" />
     <ClInclude Include="game\ending.h" />
+    <ClInclude Include="game\endstage.h" />
     <ClInclude Include="game\game.h" />
     <ClInclude Include="game\intro.h" />
     <ClInclude Include="game\main.h" />
@@ -172,6 +173,7 @@
     <ClInclude Include="lib\cameraFunc.h" />
     <ClInclude Include="lib\iArray.h" />
     <ClInclude Include="lib\iColor.h" />
+    <ClInclude Include="lib\iFont.h" />
     <ClInclude Include="lib\iFPS.h" />
     <ClInclude Include="lib\iGraphics.h" />
     <ClInclude Include="lib\iImage.h" />
@@ -206,6 +208,7 @@
     <ClCompile Include="GameObject\Parents\PlayerParent.cpp" />
     <ClCompile Include="GameObject\PlayerCharacter\Player.cpp" />
     <ClCompile Include="game\ending.cpp" />
+    <ClCompile Include="game\endstage.cpp" />
     <ClCompile Include="game\game.cpp" />
     <ClCompile Include="game\glew.c" />
     <ClCompile Include="game\intro.cpp" />
@@ -217,6 +220,7 @@
     <ClCompile Include="lib\cameraFunc.cpp" />
     <ClCompile Include="lib\iArray.cpp" />
     <ClCompile Include="lib\iColor.cpp" />
+    <ClCompile Include="lib\iFont.cpp" />
     <ClCompile Include="lib\iFPS.cpp" />
     <ClCompile Include="lib\iGraphics.cpp" />
     <ClCompile Include="lib\iImage.cpp" />

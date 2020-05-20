@@ -10,16 +10,16 @@ struct MapTile
 };
 
 #define canMove 00
-#define ladder 1
 #define endofTile 99
 #define canNotMove 99
-#define stoneBlock 3
-#define inGround 99
+#define deadZone 44
 
-#define MapTileNumX 157
-#define MapTileNumY 45
-#define MapTileWidth 16
-#define MapTileHeight 16
+#define nextStagePortal 77
+
+#define MapTileNumX 80
+#define MapTileNumY 25
+#define MapTileWidth 32
+#define MapTileHeight 32
 
 #define tile_color_canMove 1,1,1,0
 #define tile_color_canNotMove 1,0,1,1

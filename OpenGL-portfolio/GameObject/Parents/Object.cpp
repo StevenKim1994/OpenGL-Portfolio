@@ -142,6 +142,10 @@ void Object::move(iPoint movement, MapTile* maptile)
 					min = MapTileWidth * (x + 1);
 					break;
 				}
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				{
+					printf("you die!\n");
+				}
 			}
 			if (col)
 				break;
@@ -169,6 +173,11 @@ void Object::move(iPoint movement, MapTile* maptile)
 					col = true;
 					min = MapTileWidth * x - 1;
 					break;
+				}
+
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				{
+					printf("you die!\n");
 				}
 			}
 			if (col)
@@ -200,6 +209,11 @@ void Object::move(iPoint movement, MapTile* maptile)
 					min = MapTileHeight * (y + 1);
 					break;
 				}
+
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				{
+					printf("you die!\n");
+				}
 			}
 			if (col)
 				break;
@@ -227,6 +241,10 @@ void Object::move(iPoint movement, MapTile* maptile)
 					col = true;
 					min = MapTileHeight * y - 1;
 					break;
+				}
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				{
+					printf("you die!\n");
 				}
 			}
 			if (col)

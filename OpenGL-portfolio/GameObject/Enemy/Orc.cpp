@@ -128,6 +128,8 @@ void Orc::paint(float dt, iPoint offset)
 
 void Orc::Skill1()
 {
+	printf("orc skill1! on!\n");
+
 }
 
 void Orc::Skill2()

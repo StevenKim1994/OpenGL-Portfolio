@@ -26,3 +26,11 @@ Object* Monster::getTarget()
 {
 	return nullptr;
 }
+
+void Monster::Skill1()
+{
+}
+
+void Monster::Skill2()
+{
+}
