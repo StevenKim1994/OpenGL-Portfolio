@@ -9,7 +9,7 @@ struct MapTile
 	uint8 imgIndex;
 };
 
-#define canMove 00
+#define canMove 01
 #define endofTile 99
 #define canNotMove 99
 #define deadZone 44
@@ -17,7 +17,7 @@ struct MapTile
 #define nextStagePortal 77
 
 #define MapTileNumX 80
-#define MapTileNumY 25
+#define MapTileNumY 30
 #define MapTileWidth 32
 #define MapTileHeight 32
 
@@ -30,8 +30,8 @@ struct MapTile
 #define powGravity 200
 #define powJump 300
 
-#define MapCharWidth 10
-#define MapCharHeight 10
+#define MapCharWidth 16
+#define MapCharHeight 16
 #define MapCharMovement 200 // 맵 기본 캐릭터들 이동속도
 #define MapCharSpeed 10 // 맵 기본 캐릭터들 공격속도
 

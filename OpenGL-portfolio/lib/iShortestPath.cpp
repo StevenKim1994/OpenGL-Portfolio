@@ -88,6 +88,7 @@ void iShortestPath::dijkstra(int start, int end, int* path, int& pathNum)
 				if (curr / tileX == tileY - 1) continue;
 				next = curr + tileX;
 			}
+			
 			if (tiles[next] == canNotMove) continue; // 갈수 없는 곳이면 무시함.
 
 			tiNext = &ti[next];

@@ -3,8 +3,8 @@
 #include "iStd.h"
 #include "stageTileInfo.h"
 
-#define PlayerWidth 32
-#define PlayerHeight 33
+#define PlayerWidth 16
+#define PlayerHeight 16
 #define PlayerSpeed 200
 
 #define PlayerColor 0,0,1,1

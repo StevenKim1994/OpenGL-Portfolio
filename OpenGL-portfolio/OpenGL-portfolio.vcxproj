@@ -153,6 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="GameObject\GameUI.h" />
     <ClInclude Include="GameObject\NPC\Potion.h" />
     <ClInclude Include="GameObject\Parents\Monster.h" />
     <ClInclude Include="GameObject\Parents\NPC.h" />
@@ -200,6 +201,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObject\GameUI.cpp" />
     <ClCompile Include="GameObject\NPC\Potion.cpp" />
     <ClCompile Include="GameObject\Parents\Monster.cpp" />
     <ClCompile Include="GameObject\Parents\NPC.cpp" />
