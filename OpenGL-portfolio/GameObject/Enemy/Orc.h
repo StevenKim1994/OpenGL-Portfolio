@@ -7,7 +7,7 @@
 
 class Orc : public Monster
 {
-public: Orc();
+public: Orc(int number);
 	  virtual ~Orc();
 
 public: 
@@ -24,8 +24,9 @@ private:
 
 public:
 	
-
+	int orc_number;
 	static void cbDeath(void* cb);
+	static void cbHurt(void* cb);
 	static void cbBehave(void* cb);
 	static void cbSkill(void* cb);
 

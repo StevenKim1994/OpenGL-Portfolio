@@ -29,6 +29,7 @@ public:
 	float range;
 	float damage;
 	float speed; // 공격속도를 의미함.
+	float _speed;
 	float HP;
 	float _HP;
 	float MP;

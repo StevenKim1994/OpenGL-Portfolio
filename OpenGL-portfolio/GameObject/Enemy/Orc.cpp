@@ -1,5 +1,7 @@
 #include "Orc.h"
 
+#include "GameUI.h"
+
 #define Orc_HP 20
 #define Orc_MP 100
 #define Orc_Stamina 100
@@ -7,13 +9,19 @@
 #define Orc_Width 10
 #define Orc_Height 10
 
+#define Orc_Speed 3.0
 
-Orc::Orc()
+
+Orc::Orc(int number)
 {
+	orc_number = number;
+	
 	HP = Orc_HP;
 	MP = Orc_MP;
+	
 	Stamina = Orc_Stamina;
-
+	speed = 0.0;
+	_speed = Orc_Speed;
 
 	size = iSizeMake(Orc_Width, Orc_Height);
 	struct OrcInfo
@@ -110,14 +118,26 @@ void Orc::cbDeath(void* cb)
 	hero->kill++;
 }
 
+void Orc::cbHurt(void* cb)
+{
+	Orc* o = (Orc*)cb;
+	o->setBehave(EnermyBehave_idle, o->direction);
+}
+
 void Orc::cbBehave(void* cb)
 {
 	iImage* i = (iImage*)cb;
+		
 }
 
 void Orc::cbSkill(void* cb)
 {
-	iImage* skillimg = (iImage*)cb;
+	Orc* o = (Orc*)cb;
+	o->Skill1();
+	o->setBehave(EnermyBehave_idle, o -> direction);
+
+	
+	
 }
 
 #include "../game/stage.h"
@@ -147,8 +167,12 @@ void Orc::setBehave(EnermyBehave be, int dir)
 	{
 		behave = be;
 		img = imgs[be];
-		if(be == EnermyBehave_death)
+		if (be == EnermyBehave_death)
 			img->startAnimation(cbDeath, this);
+		else if (be == EnermyBehave_hurt)
+			img->startAnimation(cbHurt, this);
+		else if (be == EnermyBehave_meleeAttack)
+			img->startAnimation(cbSkill, this);
 		else
 			img->startAnimation(cbBehave, img);
 		direction = dir;
@@ -174,7 +198,7 @@ void Orc::paint(float dt, iPoint offset)
 	{
 		if (detected_Player == false)
 		{
-			printf("orcs[%d] player detected!\n");
+			printf("orcs[%d] player detected!\n", orc_number);
 
 			int sx = position.x;
 			sx /= MapTileWidth;
@@ -207,10 +231,15 @@ void Orc::paint(float dt, iPoint offset)
 
 		if (detected_Player)
 		{
-			//if(behave != EnermyBehave_move)
-				//setBehave(EnermyBehave_move, direction);
+			if (speed > _speed)
+			{
+				setBehave(EnermyBehave_meleeAttack, direction);
+				speed = 0;
+			}
+			speed += 0.05f;
 
 		}
+		
 		moveForMouse(dt);
 
 	}
@@ -222,24 +251,39 @@ void Orc::paint(float dt, iPoint offset)
 		targetPosition = iPointZero;
 		detected_Player = false;
 
-		r += rValue * (1 + 1); // 오크인덱스
+		r += rValue * (1 + orc_number); // 오크인덱스
 
 		float rateOrcV = _sin(r);
-		float orcDir = 0;
+		float orcDir;
+		
 
 		v = iPointMake(rateOrcV, 0);
 
-		if(behave != EnermyBehave_move)
-			setBehave(EnermyBehave_move, orcDir);
+		if (v.x > 0)
+			direction = 1;
+		
+		else
+			direction = 0;
+		
+		setBehave(EnermyBehave_move, direction);
+	
 
-
+		printf("%f\n", v.x);
 	}
 }
 
 void Orc::Skill1()
 {
-	printf("orc skill1! on!\n");
+	
+	extern Player* hero;
+	if (hero->getPosition().x > position.x)
+		hero->setPosition(hero->getPosition() - iPointMake(-10, 0)); // 넉백
 
+	else
+		hero->setPosition(hero->getPosition() - iPointMake(+10, 0));
+	
+	hero->setHP(hero->getHp() - 5.0);
+	
 }
 
 void Orc::Skill2()

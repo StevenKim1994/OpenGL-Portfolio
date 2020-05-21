@@ -166,8 +166,8 @@ void Player::paint(float dt, iPoint offset)
 
 void Player::cbSkill(void* cb)
 {
-//	printf("end skill!\n");
-//	delete skill;
+
+
 
 }
 
