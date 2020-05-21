@@ -68,6 +68,7 @@ Texture* bgTex; // bacckground Image
 Texture* tileset[1521];
 Texture* map;
 Texture* texFboStage;
+Texture* playerPortrait;
 iShortestPath* sp;
 bool mouseMove = false;
 
@@ -120,6 +121,7 @@ Texture* methodKillIndicator(const char* str)
 
 void loadStage()
 {
+	playerPortrait = createImage("assets/stage/hero/Knight/KnightPortrait.png");
 	texFboStage = createTexture(devSize.width, devSize.height);
 
 	iGraphics* g = iGraphics::instance();
@@ -172,17 +174,35 @@ void loadStage()
 
 	hero = new Player(); // 플레이어 캐릭터 생성
 
-	hero->setSize(iSizeMake(PlayerWidth, PlayerHeight));
+	{
+		hero->setSize(iSizeMake(PlayerWidth, PlayerHeight));
+		hero->setMovement(MapCharMovement);
+		hero->setPosition(iPointMake(MapTileWidth * 18, MapTileHeight * 17));
+		
+		// hero name Initialize
+		hero->setName("Steven");
+		hero->alive = true;
 
-	hero->setMovement(MapCharMovement);
-	hero->setPosition(iPointMake(MapTileWidth *18 ,MapTileHeight *17));
-	//hero->setTargetPosition(hero->getPosition());
+		// hero HP Initialize
+		hero->setMaxHp(100.0);
+		hero->setHP(90.0);
 
-	// camera positioning
+		// hero MP Initialize
+		hero->setMaxMp(100.0);
+		hero->setMP(30.0);
 
-	offMt = hero->getPosition();
-	offMt = iPointMake(0, -2000+ 500);
+		// hero Stamina Initialize
+		hero->setMaxStamina(100.0);
+		hero->setStamina(20.0);
+	
 
+	}
+
+	// camera positioning Initialize
+	{
+		offMt = hero->getPosition();
+		offMt = iPointMake(0, -2000 + 500);
+	}
 
 
 	
@@ -209,7 +229,7 @@ void loadStage()
 	createPopPlayerUI();
 	createPopMenuUI();
 	createPopQuitAnswerUI();
-
+	createPopGameOverUI();
 	loadNumber();
 	
 }
@@ -232,14 +252,14 @@ void freeStage()
 	freePopPlayerUI();
 	freePopMenuUI();
 	freePopQuitAnswerUI();
-
+	freePopGameOverUI();
 	freeNumber();
 }
 
 bool nextStageIn = false;
 void drawStage(float dt)
 {
-	
+
 	
 	if (hero->getPosition().x >= 2512 && hero->getPosition().y >= 494 && nextStageIn ==false)
 	{
@@ -348,114 +368,117 @@ void drawStage(float dt)
 
 
 
-	
-	if (mouseMove) // 마우스 입력이 있을때
-	{
-		if( hero->moveForMouse(dt) )
-			mouseMove = false;
-
-		if (v != iPointZero)
-		{
-			mouseMove = false;
-			hero->setTargetPosition(hero->getPosition());
-			hero->pathNum = hero->pathIndex;
-		}
-	}
-	else // 키보드 입력일때
+	if (hero->alive)
 	{
 
-		if (keyDown & keyboard_num1)
+		if (mouseMove) // 마우스 입력이 있을때
 		{
-			be = PlayerBehave_meleeAttack;
+			if (hero->moveForMouse(dt))
+				mouseMove = false;
 
-			hero->Skill1();
-
-			zoomCamera(hero->getPosition() + offMt, 1.5);
-			shakeCamera(30);
-
-			//printf("%f %f \n", imgSkill->touchRect().origin.x, imgSkill->touchRect().origin.y); // 스킬 출력 위치
-			for (int i = 0; i < orc_Num; i++)
+			if (v != iPointZero)
 			{
-				//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
-				if (containPoint(orcs[i]->getPosition(), hero->imgSkill->touchRect()))
-				{
-					orcs[i]->setHP(orcs[i]->getHp() - 5.f);
-					addNumber(5, orcs[i]->getPosition() + iPointMake(0, -50));
-				}
+				mouseMove = false;
+				hero->setTargetPosition(hero->getPosition());
+				hero->pathNum = hero->pathIndex;
 			}
 		}
-
-		
-		else if (keyDown & keyboard_space)
-			be = PlayerBehave_jumpAndFall;
-		else if (keyDown & keyboard_down)
-			be = PlayerBehave_idle;
-		else if (keyDown & keyboard_up)
-			be = PlayerBehave_jumpAndFall;
-		else
-			be = (v == iPointZero ? PlayerBehave_idle : PlayerBehave_move);
-		int dir = hero->direction;
-
-	
-		if (v.x < 0) dir = 0;
-		else if (v.x > 0) dir = 1;
-
-		if (hero->behave != PlayerBehave_meleeAttack && hero->behave != PlayerBehave_jumpAndFall)
-			hero->setBehave(be, dir);
-		float minX, maxX, minY, maxY;
-		
-		if (v != iPointZero)
+		else // 키보드 입력일때
 		{
-			v /= iPointLength(v);
-			iPoint mp = v * (hero->getMovement() * dt);
-			hero->move(mp + movement, maptile);
 
-			minX = devSize.width * 0.333333f;
-			maxX = devSize.width * 0.666667f;
-			minY = devSize.height * 0.333333f;
-			maxY = devSize.height * 0.666667f;
-		}
-		else// if(v == iPointZero)
-		{
-			hero->move(movement * 3, maptile);
+			if (keyDown & keyboard_num1)
+			{
+				be = PlayerBehave_meleeAttack;
 
-			minX = devSize.width / 2;
-			maxX = devSize.width / 2;
-			minY = devSize.height / 2;
-			maxY = devSize.height / 2;
-		}
+				hero->Skill1();
 
-		
-		iPoint vp = offMt + hero->getPosition();
-		if (vp.x < minX)
-		{
-			// 왼쪽으로 넘어갔을 경우
-		
-			offMt.x += (minX - vp.x) *dt;
-			if (offMt.x > 0)
-				offMt.x = 0;
-		}
-		else if (vp.x > maxX)
-		{
-		
-			// 오른쪽으로 넘어갔을 경우
-			offMt.x += (maxX - vp.x) * dt;
-			if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
-				offMt.x = devSize.width - MapTileWidth * MapTileNumX;
-		}
-		if (vp.y < minY)
-		{
-			// 위로 넘어갔을 경우
-			offMt.y += (minY - vp.y) * dt;
-			if (offMt.y > 0)
-				offMt.y = 0;
-		}
-		else if (vp.y > maxY)
-		{
-			// 아래로 넘어갔을 경우
-			offMt.y += (maxY - vp.y) * dt;
-			if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
-				offMt.y = devSize.height - MapTileHeight * MapTileNumY;
+				zoomCamera(hero->getPosition() + offMt, 1.5);
+				shakeCamera(30);
+
+				//printf("%f %f \n", imgSkill->touchRect().origin.x, imgSkill->touchRect().origin.y); // 스킬 출력 위치
+				for (int i = 0; i < orc_Num; i++)
+				{
+					//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
+					if (containPoint(orcs[i]->getPosition(), hero->imgSkill->touchRect()))
+					{
+						orcs[i]->setHP(orcs[i]->getHp() - 5.f);
+						addNumber(5, orcs[i]->getPosition() + iPointMake(0, -50));
+					}
+				}
+			}
+
+
+			else if (keyDown & keyboard_space)
+				be = PlayerBehave_jumpAndFall;
+			else if (keyDown & keyboard_down)
+				be = PlayerBehave_idle;
+			else if (keyDown & keyboard_up)
+				be = PlayerBehave_jumpAndFall;
+			else
+				be = (v == iPointZero ? PlayerBehave_idle : PlayerBehave_move);
+			int dir = hero->direction;
+
+
+			if (v.x < 0) dir = 0;
+			else if (v.x > 0) dir = 1;
+
+			if (hero->behave != PlayerBehave_meleeAttack && hero->behave != PlayerBehave_jumpAndFall)
+				hero->setBehave(be, dir);
+			float minX, maxX, minY, maxY;
+
+			if (v != iPointZero)
+			{
+				v /= iPointLength(v);
+				iPoint mp = v * (hero->getMovement() * dt);
+				hero->move(mp + movement, maptile);
+
+				minX = devSize.width * 0.333333f;
+				maxX = devSize.width * 0.666667f;
+				minY = devSize.height * 0.333333f;
+				maxY = devSize.height * 0.666667f;
+			}
+			else// if(v == iPointZero)
+			{
+				hero->move(movement * 3, maptile);
+
+				minX = devSize.width / 2;
+				maxX = devSize.width / 2;
+				minY = devSize.height / 2;
+				maxY = devSize.height / 2;
+			}
+
+
+			iPoint vp = offMt + hero->getPosition();
+			if (vp.x < minX)
+			{
+				// 왼쪽으로 넘어갔을 경우
+
+				offMt.x += (minX - vp.x) * dt;
+				if (offMt.x > 0)
+					offMt.x = 0;
+			}
+			else if (vp.x > maxX)
+			{
+
+				// 오른쪽으로 넘어갔을 경우
+				offMt.x += (maxX - vp.x) * dt;
+				if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
+					offMt.x = devSize.width - MapTileWidth * MapTileNumX;
+			}
+			if (vp.y < minY)
+			{
+				// 위로 넘어갔을 경우
+				offMt.y += (minY - vp.y) * dt;
+				if (offMt.y > 0)
+					offMt.y = 0;
+			}
+			else if (vp.y > maxY)
+			{
+				// 아래로 넘어갔을 경우
+				offMt.y += (maxY - vp.y) * dt;
+				if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
+					offMt.y = devSize.height - MapTileHeight * MapTileNumY;
+			}
 		}
 	}
 
@@ -577,6 +600,13 @@ void drawStage(float dt)
 	showPopPlayerUI(true);
 	drawPopMenuUI(dt);
 	drawPopQuitAnswerUI(dt);
+	
+	if (hero->alive == false) // 플레이어가 죽으면 
+	{
+		printf("죽음!!!\n");
+		drawPopGameOverUI(dt);
+		showPopGameOverUI(true);
+	}
 
 	
 
@@ -598,6 +628,9 @@ void drawStage(float dt)
 void keyStage(iKeyState stat, iPoint point)
 {
 	
+	if (keyPopGameOverUI(stat, point))
+		return;
+
 
 	if(keyPopQuitAnswerUI(stat, point))
 		return;
@@ -750,6 +783,7 @@ void createPopPlayerUI()
 
 	// PlayerInfo // 나중에 반복문으로 리팩터링 해야할 부분 #refactoring
 	{
+		iImage* playerImage = new iImage();
 		iImage* playerName = new iImage();
 		iImage* playerHP = new iImage();
 		iImage* playerMP = new iImage();
@@ -759,26 +793,34 @@ void createPopPlayerUI()
 		iSize infoSize = iSizeMake(200, 100);
 		setRGBA(0, 1, 0, 1);
 
-		g->init(infoSize);
-		g->fillRect(0, 0, infoSize.width, infoSize.height);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "Portrait");
+		// Player Portrait
 		
+		setRGBA(1, 1, 1, 1);
+		playerImage->addObject(playerPortrait);
+		playerImage->position = iPointMake(0, 10);
+		PopPlayerUIImgs[1] = playerImage;
+		pop->addObject(playerImage);
+
+		// Player Name Indicator
+
+		setStringSize(30);
+		g->init(infoSize);
+		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "%s", hero->getName());
 		infoTex = g->getTexture();
 		playerName->addObject(infoTex);
 		freeImage(infoTex);
-
-		playerName->position = iPointMake(0, 10);
-
-		PopPlayerUIImgs[1] = playerName;
+		playerName->position = iPointMake(70, 15);
 		pop->addObject(playerName);
+		
 
 	
 		infoSize = iSizeMake(200, 50);
 		setRGBA(1, 0, 0, 1);
-
+		setStringSize(15);
+		// HP Indicator
 		g->init(infoSize);
-		g->fillRect(0, 0, infoSize.width, infoSize.height);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "HP");
+		g->fillRect(0, 0, infoSize.width * (hero->getHp() / hero->getMaxHp()), infoSize.height);
+		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "HP: %.1f / %.1f", hero->getHp() , hero->getMaxHp());
 
 		infoTex = g->getTexture();
 		playerHP->addObject(infoTex);
@@ -790,10 +832,11 @@ void createPopPlayerUI()
 		pop->addObject(playerHP);
 		
 
+		// MP Indicator
 		setRGBA(0, 0, 1, 1);
 		g->init(infoSize);
-		g->fillRect(0, 0, infoSize.width, infoSize.height);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "MP");
+		g->fillRect(0, 0, infoSize.width * (hero->getMp() / hero->getMaxMP()), infoSize.height);
+		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "MP: %.1f / %.1f", hero->getMp() , hero->getMaxMP());
 
 		infoTex = g->getTexture();
 		playerMP->addObject(infoTex);
@@ -806,9 +849,10 @@ void createPopPlayerUI()
 
 		setRGBA(1, 1, 0, 1);
 
+		// Stamina Indicator
 		g->init(infoSize);
-		g->fillRect(0, 0, infoSize.width, infoSize.height);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "Stamina");
+		g->fillRect(0, 0, infoSize.width * (hero->getStamina() / hero->getMaxStamina()), infoSize.height);
+		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "Stamina: %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
 
 		infoTex = g->getTexture();
 		playerStamina->addObject(infoTex);
@@ -1289,6 +1333,162 @@ void addNumber(int dmg, iPoint position)
 			return;
 		}
 	}
+}
+
+//------------PopGameOverUI---------------//
+
+iPopup* PopGameOver;
+iImage** GameOverBtn;
+const char* btnStr[2] = { "MainMenu", "Game Quit" };
+
+void createPopGameOverUI()
+{
+	iPopup* pop = new iPopup(iPopupStyleAlpha);
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(devSize.width , devSize.height);
+	setRGBA(1, 0, 0, 1);
+	fillRect(0, 0, devSize.width, devSize.height);
+
+
+	GameOverBtn = (iImage**)malloc(sizeof(iImage*) * 2); // 0 : 메인메뉴 1 : 게임종료
+
+
+	// gameOverTitle
+	{
+		setStringSize(30);
+		setRGBA(1, 0, 0, 1);
+		iSize titleSize = iSizeMake(devSize.width, devSize.height);
+		g->init(titleSize);
+		g->fillRect(0, 0, devSize.width, devSize.height);
+		g->drawString(titleSize.width / 2, titleSize.height / 2, HCENTER | VCENTER, "You die......!");
+		Texture* overTitleTex;
+		overTitleTex = g->getTexture();
+
+		iImage* overTitle = new iImage();
+		overTitle->addObject(overTitleTex);
+		overTitle->position = iPointMake(devSize.width / 2, devSize.height / 2);
+	
+		freeImage(overTitleTex);
+
+		pop->addObject(overTitle);
+
+	}
+	
+	for (int i = 0; i < 2; i++)
+	{
+		iImage* answerBtn = new iImage();
+		Texture* btnTex;
+
+		for (int j = 0; j < 2; j++)
+		{
+			if (j == 0) // off
+			{
+				setRGBA(1, 1, 1, 1);
+				setStringSize(15);
+				igImage* answerBtn = g->createIgImage("assets/menu/BTN0.png");
+				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
+				g->init(btnSize);
+				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnStr[i]);
+				btnTex = g->getTexture();
+			}
+
+			else // on
+			{
+				setRGBA(1, 0, 0, 1);
+				setStringSize(15);
+				igImage* answerBtn = g->createIgImage("assets/menu/BTN0.png");
+				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
+				g->init(btnSize);
+				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnStr[i]);
+				btnTex = g->getTexture();
+			}
+
+			answerBtn->addObject(btnTex);
+			answerBtn->position = iPointMake(devSize.width / 2 * (i + 1) + 150, size.height + 10);
+			freeImage(btnTex);
+		}
+
+		pop->addObject(answerBtn);
+
+		GameOverBtn[i] = answerBtn;
+	}
+
+	pop->openPosition = iPointMake(devSize.width / 2 - size.width , devSize.height /2 - size.height);
+	pop->closePosition = pop->openPosition;
+	
+	PopGameOver = pop;
+}
+
+void freePopGameOverUI()
+{
+	delete PopGameOver;
+}
+
+void drawPopGameOverUI(float dt)
+{
+	PopGameOver->paint(dt);
+}
+
+bool keyPopGameOverUI(iKeyState stat, iPoint point)
+{
+	if (PopGameOver->bShow == false)
+		return false;
+
+	if (PopGameOver->stat != iPopupStatProc)
+		return true;
+
+	int i, j = -1;
+
+	switch (stat)
+	{
+	case iKeyStateBegan:
+	{
+		i = PopGameOver->selected;
+
+		if (i == -1)
+			break;
+
+		if (i == 0)
+		{
+			setLoading(gs_menu, freeStage, loadMenu);
+		}
+
+		else if (i == 1)
+		{
+			extern bool runWnd;
+			runWnd = false;
+		}
+		break;
+	}
+
+	case iKeyStateMoved:
+	{
+		for (i = 0; i < 2; i++)
+		{
+			if (containPoint(point, GameOverBtn[i]->touchRect(PopGameOver->closePosition)))
+			{
+				j = i;
+				break;
+			}
+		}
+
+		PopGameOver->selected = j;
+		break;
+	}
+
+	case iKeyStateEnded:
+		break;
+	
+	}
+
+	return true;
+}
+
+void showPopGameOverUI(bool show)
+{
+	PopGameOver->show(show);
 }
 
 Texture* methodStDamage(const char* str)

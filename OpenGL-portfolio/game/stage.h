@@ -50,3 +50,9 @@ void drawNumber(float dt, iPoint off);
 void addNumber(int dmg, iPoint position);
 
 
+//-------------PopGameOverUI---------------------//
+void createPopGameOverUI();
+void freePopGameOverUI();
+void drawPopGameOverUI(float dt);
+bool keyPopGameOverUI(iKeyState stat, iPoint point);
+void showPopGameOverUI(bool show);

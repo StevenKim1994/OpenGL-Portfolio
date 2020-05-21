@@ -24,6 +24,8 @@ public:
 	int direction;
 	int kill = 0; // 몬스터 처치수
 
+	
+
 	//override func
 	bool moveForMouse(float dt);
 	

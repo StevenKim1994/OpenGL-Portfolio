@@ -65,6 +65,31 @@ void Object::setMP(float mp)
 	this->MP = mp;
 }
 
+void Object::setMaxHp(float _hp)
+{
+	this->_HP = _hp;
+}
+
+void Object::setMaxMp(float _mp)
+{
+	this->_MP = _mp;
+}
+
+void Object::setMaxStamina(float _stamina)
+{
+	this->_Stamina = _stamina;
+}
+
+void Object::setStamina(float stamina)
+{
+	this->Stamina = stamina;
+}
+
+void Object::setName(const char* name)
+{
+	strcpy(this->name, name);
+}
+
 Texture* Object::getTex()
 {
 	return tex;
@@ -113,6 +138,31 @@ float Object::getHp()
 float Object::getMp()
 {
 	return MP;
+}
+
+float Object::getStamina()
+{
+	return Stamina;
+}
+
+float Object::getMaxHp()
+{
+	return _HP;
+}
+
+float Object::getMaxMP()
+{
+	return _MP;
+}
+
+float Object::getMaxStamina()
+{
+	return _Stamina;
+}
+
+const char* Object::getName()
+{
+	return name;
 }
 
 
@@ -178,6 +228,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
 					printf("you die!\n");
+					this->alive = false;
 				}
 			}
 			if (col)

@@ -30,10 +30,15 @@ public:
 	float damage;
 	float speed; // 공격속도를 의미함.
 	float HP;
+	float _HP;
 	float MP;
+	float _MP;
 	float Stamina;
+	float _Stamina;
+	char name[64];
 
-
+public:
+	bool alive;
 public: 
 
 	//setter
@@ -47,6 +52,11 @@ public:
 	void setSpeed(float speed);
 	void setHP(float hp);
 	void setMP(float mp);
+	void setMaxHp(float _hp);
+	void setMaxMp(float _mp);
+	void setMaxStamina(float _stamina);
+	void setStamina(float stamina);
+	void setName(const char* name);
 
 	//getter
 	Texture* getTex();
@@ -59,6 +69,12 @@ public:
 	float getSpeed();
 	float getHp();
 	float getMp();
+	float getStamina();
+	float getMaxHp();
+	float getMaxMP();
+	float getMaxStamina();
+	const char* getName();
+
 
 	
 

@@ -19,13 +19,14 @@ void loadMenu()
 	
 
 
-
+	/*
 	g->init(450, 150);
 	g->fillRect(0,0 , 450, 150, 10);
 	setStringRGBA(0, 0, 0, 1);
 	setStringSize(30);
 	g->drawString(450/2, 150/2, HCENTER|VCENTER, "김시윤 포트폴리오\n 임시텍스처! \n");
-	tex = g->getTexture();
+	*/
+	tex = createImage("assets/menu/mainlogo.png");//g->getTexture();
 
 	createPopMenuBtn();
 	createPopSettings();
