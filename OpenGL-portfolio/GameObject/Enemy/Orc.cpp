@@ -33,15 +33,14 @@ Orc::Orc()
 		"assets/stage/goblin/goblin hurt (%d).png", 4, 2.0f, {-75, -90},
 		"assets/stage/goblin/goblin death (%d).png", 4, 2.0f, {-75, -90},
 
-
 	};
 
 	iGraphics* g = iGraphics::instance();
 	iSize size;
 
-	imgs = (iImage**)malloc(sizeof(iImage*) * 4);
+	imgs = (iImage**)malloc(sizeof(iImage*) * 6);
 
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 6; i++)
 	{
 		OrcInfo* oi = &_oi[i];
 
@@ -80,6 +79,7 @@ Orc::Orc()
 
 		imgs[i] = img;
 
+		movement = 100;
 	}
 
 	behave = (EnermyBehave)-1;
@@ -93,7 +93,7 @@ Orc::Orc()
 
 Orc::~Orc()
 {
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < 6; i++)
 		delete imgs[i];
 
 	free(imgs);
@@ -101,12 +101,44 @@ Orc::~Orc()
 	
 }
 
-void Orc::cbBehave(iImage* img)
+#include "../PlayerCharacter/Player.h"
+void Orc::cbDeath(void* cb)
 {
+	Orc* o = (Orc*)cb;
+	o->alive = false;
+
+	hero->kill++;
 }
 
-void Orc::cbSkill(iImage* skillimg)
+void Orc::cbBehave(void* cb)
 {
+	iImage* i = (iImage*)cb;
+}
+
+void Orc::cbSkill(void* cb)
+{
+	iImage* skillimg = (iImage*)cb;
+}
+
+#include "../game/stage.h"
+void Orc::setDmg(float dmg)
+{
+	EnermyBehave be = behave;
+	int dir = direction;
+
+	HP -= dmg;
+	if (HP > 0)
+	{
+		be = EnermyBehave_hurt;
+	}
+	else
+	{
+		HP = 0;
+		be = EnermyBehave_death;
+	}
+	setBehave(be, dir);
+
+	addNumber(dmg, position + iPointMake(0, -50));
 }
 
 void Orc::setBehave(EnermyBehave be, int dir)
@@ -115,15 +147,93 @@ void Orc::setBehave(EnermyBehave be, int dir)
 	{
 		behave = be;
 		img = imgs[be];
-		img->startAnimation(cbBehave);
+		if(be == EnermyBehave_death)
+			img->startAnimation(cbDeath, this);
+		else
+			img->startAnimation(cbBehave, img);
 		direction = dir;
 	}
 }
 
+#include "stageTileInfo.h"
+extern MapTile* maptile;
+
+extern iShortestPath* sp;
+
 void Orc::paint(float dt, iPoint offset)
 {
+	iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
+	move(v + orcMovement, maptile);
+
 	img->paint(dt, position + offset, direction);
-	
+
+	direction = (position.x < targetPosition.x);
+
+	// 플레이어 발견 했을때!
+	if (iPointLength(hero->getPosition() -position) < 150)
+	{
+		if (detected_Player == false)
+		{
+			printf("orcs[%d] player detected!\n");
+
+			int sx = position.x;
+			sx /= MapTileWidth;
+
+			int sy = position.y;
+			sy /= MapTileHeight;
+
+			int ex = hero->getPosition().x;
+			ex /= MapTileWidth;
+
+			int ey = hero->getPosition().y;
+			ey /= MapTileHeight;
+
+			printf("start : %d %d  end : %d %d\n", sx, sy, ex, ey);
+
+			if (sy == ey) //세로 위치가 같을떄만 !
+			{
+				sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, path, pathNum);
+				sp->removeDuplicate(path, pathNum);
+
+				for (int i = 0; i < pathNum; i++)
+					printf("Orcs[%d] %d\n", i, hero->path[i]);
+
+				targetPosition = position;
+				pathIndex = 1;
+				detected_Player = true;
+			}
+		}
+
+
+		if (detected_Player)
+		{
+			//if(behave != EnermyBehave_move)
+				//setBehave(EnermyBehave_move, direction);
+
+		}
+		moveForMouse(dt);
+
+	}
+	else // 발견하지 못하였을때 또는 멀어졌을떄
+	{
+
+		pathNum = pathIndex;
+		//setBehave(EnermyBehave_idle, direction);
+		targetPosition = iPointZero;
+		detected_Player = false;
+
+		r += rValue * (1 + 1); // 오크인덱스
+
+		float rateOrcV = _sin(r);
+		float orcDir = 0;
+
+		v = iPointMake(rateOrcV, 0);
+
+		if(behave != EnermyBehave_move)
+			setBehave(EnermyBehave_move, orcDir);
+
+
+	}
 }
 
 void Orc::Skill1()

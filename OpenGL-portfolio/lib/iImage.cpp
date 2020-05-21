@@ -123,7 +123,7 @@ void iImage::paint(float dt, iPoint off, int direction)
 					{
 						printf("frame : %d\n", frame);
 						if (method) // 애니메이션 끝나고 호출되는 callback
-							method(this);
+							method(cb);
 						if (lastFrame)
 							frame = arrayTex->count-1;
 						else
@@ -164,13 +164,14 @@ void iImage::paint(float dt, iPoint off, int direction)
 	}
 }
 
-void iImage::startAnimation(IMAGE_METHOD m)
+void iImage::startAnimation(IMAGE_METHOD m, void* cb)
 {
 	animation = true;
 	method = m;
 	aniDt = 0.0f;
 	frame = 0;
 	repeatNum = 0;
+	this->cb = (cb == NULL ? this : cb);
 }
 
 iRect iImage::touchRect(iPoint p)

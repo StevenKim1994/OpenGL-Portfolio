@@ -10,8 +10,18 @@ void freeStage();
 void drawStage(float dt);
 void keyStage(iKeyState stat, iPoint point);
 
+// drawMapTile
+void drawMapTile(float dt);
 
+// ctrl - hero
+void drawHero(float dt);
+// ctrl - orc
+void drawOrc(float dt);
 
+// debugHitbox
+#if _DEBUG
+void debugHitbox(float dt);
+#endif
 
 // 여기에 플레이어의 체력, 게임 플레이상의 UI 출력해야함 
 //-------------popPlayerUI--------------------//

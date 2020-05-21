@@ -11,8 +11,7 @@ public: Orc();
 	  virtual ~Orc();
 
 public: 
-	float r = 0.0f;
-	float rValue =1.0f; // 임시로 public...
+	
 
 
 private:
@@ -25,11 +24,12 @@ private:
 
 public:
 	
-	int direction;
 
-	static void cbBehave(iImage* img);
-	static void cbSkill(iImage* skillimg);
+	static void cbDeath(void* cb);
+	static void cbBehave(void* cb);
+	static void cbSkill(void* cb);
 
+	void setDmg(float dmg);
 	void setBehave(EnermyBehave be, int direction);
 	void paint(float dt, iPoint offset);
 

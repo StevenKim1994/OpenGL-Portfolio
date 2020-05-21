@@ -2,9 +2,7 @@
 
 #include "iType.h"
 
-class iImage;
-
-typedef void (*IMAGE_METHOD)(iImage* me);
+typedef void (*IMAGE_METHOD)(void* cb);
 
 class iImage
 {
@@ -19,7 +17,7 @@ public:
 	void replaceAtIndex(int index, Texture* tex);
 
 	void paint(float dt, iPoint off, int direction = 1);
-	void startAnimation(IMAGE_METHOD m = 0);
+	void startAnimation(IMAGE_METHOD m = 0, void* cb = 0);
 
 	iRect touchRect(iPoint p = iPointMake(0, 0));
 	iImage* copy();
@@ -39,6 +37,7 @@ public:
 	bool lastFrame;
 	int repeatNum, _repeatNum;	// 0 : inf
 	IMAGE_METHOD method;
+	void* cb;
 };
 
 #define default_selectedDt 0.1f

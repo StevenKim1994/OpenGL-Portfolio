@@ -124,7 +124,7 @@ Player::~Player()
 	delete imgSkill;
 }
 
-void Player::cbBehave(iImage* me)
+void Player::cbBehave(void* cb)
 {
 
 	printf("End Animation!\n");
@@ -164,7 +164,7 @@ void Player::paint(float dt, iPoint offset)
 
 //iImage* skill;// = new iImage();
 
-void Player::cbSkill(iImage* me)
+void Player::cbSkill(void* cb)
 {
 //	printf("end skill!\n");
 //	delete skill;

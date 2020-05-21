@@ -60,10 +60,13 @@ iPoint offMt;
 iPoint vp;
 
 Monster** orcs;
-Orc* orc;
+//Orc* orc;
 Texture* bgTex; // bacckground Image
 
-#define orc_Num 3 // 맵에 존재하는 오크의 최대 마리수
+#define orc_Num 3
+
+int _orcNum = orc_Num;
+int orcNum = _orcNum;
 
 Texture* tileset[1521];
 Texture* map;
@@ -209,8 +212,8 @@ void loadStage()
 	orcs = (Monster**)malloc(sizeof(Monster) * orc_Num);
 	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
 	{
-		orc = new Orc();
-		orc->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth), MapTileHeight*3));
+		Orc* orc = new Orc();
+		orc->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth), MapTileHeight*17));
 		orc->alive = true;
 		orcs[i] = orc;
 	}
@@ -241,10 +244,7 @@ void freeStage()
 
 	free(maptile);
 	
-	for (int i = 0; i < orc_Num; i++)
-	{
-		delete orcs[i];
-	}
+
 	free(orcs);
 
 	delete sp;
@@ -256,25 +256,122 @@ void freeStage()
 	freeNumber();
 }
 
-bool nextStageIn = false;
 void drawStage(float dt)
 {
+	fbo->bind(texFboStage);
+	drawMapTile(dt);
+	drawOrc(dt);
+	drawHero(dt);
 
+#if _DEBUG
+	debugHitbox(dt);
+#endif
+	fbo->unbind();
+	showCamera(texFboStage, dt);
+
+	gameTime += dt;
+	timeIndicator->setString("TIME : %0.2f",gameTime);
+	drawNumber(dt, offMt);
+
+	drawPopPlayerUI(dt);
+	drawPopMenuUI(dt);
+	drawPopQuitAnswerUI(dt);
 	
+	drawPopGameOverUI(dt);
+	
+	if (hero->alive == false) // 플레이어가 죽으면 
+	{
+		printf("죽음!!!\n");
+		showPopGameOverUI(true);
+	}
+
+	static bool nextStageIn = false;
 	if (hero->getPosition().x >= 2512 && hero->getPosition().y >= 494 && nextStageIn ==false)
 	{
 		nextStageIn = true;
 		printf("nextStageLoad!!!\n");
 		setLoading(gs_menu, freeStage, loadMenu); // 다음 씬으로! loadendStage()
-		
 	}
-	iPoint movement = iPointMake(0, 1) * powGravity * dt;
-	fbo->bind(texFboStage); // game View FBO
 
-	//drawImage(bgTex, 0, 0, TOP | LEFT); // background
+	{ // logoFadeInOut
+		if (logoDt < _logoDt)
+		{
+			float r = 1.0 * _cos(90 * logoDt / _logoDt);
+			setRGBA(1, 1, 1, r);
+			drawImage(stageLogo, devSize.width / 2, devSize.height / 2 - 230, HCENTER | VCENTER);
+			logoDt += 0.01;
 
+			if (logoDt > _logoDt)
+			{
+				showPopPlayerUI(true);
+			}
+		}
+	}
+}
+
+void keyStage(iKeyState stat, iPoint point)
+{
+	
+	if (keyPopGameOverUI(stat, point))
+		return;
+
+
+	if(keyPopQuitAnswerUI(stat, point))
+		return;
+
+	if (keyPopMenuUI(stat, point))
+		return;
+	
+	keyPopPlayerUI(stat, point);
+		
+
+		
+	if (stat == iKeyStateBegan)
+	{
+		printf("!!\n");
+		
+		
+		int sx = hero->getPosition().x;
+		sx /= MapTileWidth;
+
+		int sy = hero->getPosition().y;
+		sy /= MapTileHeight;
+
+		int ex = point.x - offMt.x;
+		ex /= MapTileWidth;
+
+		int ey = point.y - offMt.y;
+		ey /= MapTileHeight;
+		
+
+		printf("sx : %d sy : %d  ex : %d ey : %d\n", sx, sy, ex, ey);
+		printf("begin :%d dest : %d\n", sy * MapTileNumX+ sx, ey * MapTileNumX + ex);
+		
+		
+		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
+			return;
+
+		sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
+		
+
+		for(int i = 0 ; i < hero->pathNum; i++)
+			printf("중복제거전! %d ,%d\n", i, hero->path[i]);
+		sp->removeDuplicate(hero->path, hero->pathNum);
+		hero->setTargetPosition(hero->getPosition());
+		hero->pathIndex = 1;
+
+		for (int i = 0; i < hero->pathNum; i++)
+			printf("%d ,%d\n", i, hero->path[i]);
+		mouseMove = true;
+	}
+
+
+}
+
+
+void drawMapTile(float dt)
+{
 	int i, num = MapTileNumX * MapTileNumY;
-
 
 	setRGBA(1, 1, 1, 1);
 	{ // MapTilePaint
@@ -289,7 +386,7 @@ void drawStage(float dt)
 			if (i > 879)
 			{
 				setRGBA(1, 1, 1, 1);
-				drawImage(tileset[i-880], x, y, TOP | LEFT);
+				drawImage(tileset[i - 880], x, y, TOP | LEFT);
 			}
 			else
 			{
@@ -300,27 +397,30 @@ void drawStage(float dt)
 #if _DEBUG // tileHitbox
 			switch (t->attr)
 			{
-			//case canMove: break;
-			//case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			//case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			//case nextStagePortal: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				//case canMove: break;
+				//case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				//case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				//case nextStagePortal: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
 			}
 #endif
 
 		}
 
 	}
-			
-	
-	
+
+}
+
+void drawHero(float dt)
+{
 	uint32 keyStat = 0;
 	uint32 keyDown = 0;
 
+	iPoint movement = iPointMake(0, 1) * powGravity * dt;
 	hero->applyJump(movement, dt);
-	
+
 	if (getKeyDown() & keyboard_space) // 윗점프
 	{
-		
+
 		hero->jump();
 		if (hero->behave != PlayerBehave_meleeAttack)
 		{
@@ -343,9 +443,9 @@ void drawStage(float dt)
 		sx /= MapTileWidth;
 
 		int sy = hero->getPosition().y;
-		sy /= MapTileHeight; 
+		sy /= MapTileHeight;
 		sy += 2;// 아랫칸인덱스
-		
+
 		if (tiles[sy * MapTileNumX + sx] == canMove)
 		{
 			iPoint jumpVector = iPointMake(hero->getPosition().x, hero->getPosition().y + 1);
@@ -401,8 +501,7 @@ void drawStage(float dt)
 					//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
 					if (containPoint(orcs[i]->getPosition(), hero->imgSkill->touchRect()))
 					{
-						orcs[i]->setHP(orcs[i]->getHp() - 5.f);
-						addNumber(5, orcs[i]->getPosition() + iPointMake(0, -50));
+						((Orc*)orcs[i])->setDmg(5.f);
 					}
 				}
 			}
@@ -482,210 +581,43 @@ void drawStage(float dt)
 		}
 	}
 
-	{ // paint Orc
-		
-		for (int i = 0; i < orc_Num; i++)
-		{
-			EnermyBehave orcBehave;
-			if (orcs[i]->getHp() < 1 && orcs[i]->alive == true) // Orc의 체력이 1미만이면 Death
-			{
-				orcBehave = EnermyBehave_death;
-				orcs[i]->alive = false;
-				hero->kill++;
-				killIndicator->setString("%d", hero->kill);
-			
-			}
-
-
-			if (orcs[i]->alive == true)
-			{
-				orcs[i]->r += orcs[i]->rValue * (i + 1);
-
-				float rateOrcV = _sin(orcs[i]->r);
-
-				float orcDir = 0;
-
-				setRGBA(1, 1, 1, 1);
-				orcs[i]->paint(dt, offMt);
-				orcs[i]->setMovement(100);
-				iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
-				iPoint orcV = iPointMake(rateOrcV, 0);
-
-				iPoint orcmp = orcV * (orc->getMovement() * dt);
-
-				if(iPointLength(hero->getPosition() - orcs[i]->getPosition()) < 170)
-				{
-					
-					//printf("orcs[%d] player detected!\n", i);
-					orcs[i]->aiTime += 1;
-
-					//printf("Orc[%d] Player Detected!\n", i);
-					//여기에 플레이어 발견햇을시 콜백함수 추가부분 #bug
-				}
-
-				orcBehave = EnermyBehave_idle;
-
-				if (orcs[i]->aiTime > orcs[i]->_aiTime)
-				{
-					orcV = iPointZero;
-					orcBehave = (orcV == iPointZero ? EnermyBehave_meleeAttack: EnermyBehave_move);
-				
-					orcs[i]->Skill1();
-
-
-					orcs[i]->aiTime = 0.0f;
-
-				}
-		
-			
-
-			
-
-				if (orcV != iPointZero)
-				{
-					orcBehave = EnermyBehave_move;
-
-					if (orcV.x > 0)
-						orcDir = 1;
-					else
-						orcDir = 0;
-
-				}
-
-				if (orcs[i]->behave != PlayerBehave_meleeAttack && orcs[i]->behave != PlayerBehave_jumpAndFall)
-					orcs[i]->setBehave(orcBehave, orcDir);
-				//printf("orcDt: %f\n", orcDt);
-
-				orcs[i]->move(orcmp + orcMovement, maptile);
-
-				//OrcDt += 1.0f;
-			}
-		}
-	}
-
-	{ // paint Player
-		setRGBA(1, 1, 1, 1);
-		hero->paint(dt, offMt);
-
-
-	}
+	setRGBA(1, 1, 1, 1);
+	hero->paint(dt, offMt);
 	setRGBA(1, 1, 1, 1);
 
+	//printf("%f %f || ", offMt.x, offMt.y);
+	//printf("%f %f\n", hero->getPosition().x - offMt.x, hero->getPosition().y - offMt.y);
+}
+
+void drawOrc(float dt)
+{ // paint Orc
+	for (int i = 0; i < orcNum; i++)
+	{
+		if (orcs[i]->alive == false)
+		{
+			orcNum--;
+			delete orcs[i];
+			orcs[i] = orcs[orcNum];
+			continue;
+		}
+		orcs[i]->paint(dt, offMt);
+	}
+	
+	killIndicator->setString("%d", hero->kill);
+}
+
 #if _DEBUG
+void debugHitbox(float dt)
+{
 	//hitbox orc
-	for(int i = 0; i<orc_Num; i++)
+	for (int i = 0; i < orc_Num; i++)
 		drawRect((orcs[i]->getPosition().x - orcs[i]->getSize().width / 2) + offMt.x, (orcs[i]->getPosition().y - orcs[i]->getSize().height) + offMt.y, orcs[i]->getSize().width, orcs[i]->getSize().height);
 
-#endif
-#if _DEBUG
 	//hitbox player
 	drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
 		(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
+}
 #endif
-
-	fbo->unbind();////////////////////////////////////////////////////////////////////////////////
-
-	gameTime += dt;
-
-	timeIndicator->setString("TIME : %0.2f",gameTime);
-	//printf("%f %f || ", offMt.x, offMt.y);
-	//printf("%f %f\n", hero->getPosition().x - offMt.x, hero->getPosition().y - offMt.y);
-	Texture* tex = texFboStage;
-
-	showCamera(tex, dt);
-
-	drawNumber(dt, offMt);
-
-	drawPopPlayerUI(dt);
-	showPopPlayerUI(true);
-	drawPopMenuUI(dt);
-	drawPopQuitAnswerUI(dt);
-	
-	if (hero->alive == false) // 플레이어가 죽으면 
-	{
-		printf("죽음!!!\n");
-		drawPopGameOverUI(dt);
-		showPopGameOverUI(true);
-	}
-
-	
-
-	{ // logoFadeInOut
-		if (logoDt < _logoDt)
-		{
-			float r = 1.0 * _cos(90 * logoDt / _logoDt);
-			setRGBA(1, 1, 1, r);
-			drawImage(stageLogo, devSize.width / 2, devSize.height / 2 - 230, HCENTER | VCENTER);
-			logoDt += 0.01;
-		}
-	}
-}
-
-
-
-
-
-void keyStage(iKeyState stat, iPoint point)
-{
-	
-	if (keyPopGameOverUI(stat, point))
-		return;
-
-
-	if(keyPopQuitAnswerUI(stat, point))
-		return;
-
-	if (keyPopMenuUI(stat, point))
-		return;
-	
-	keyPopPlayerUI(stat, point);
-		
-
-		
-	if (stat == iKeyStateBegan)
-	{
-		printf("!!\n");
-		
-		
-		int sx = hero->getPosition().x;
-		sx /= MapTileWidth;
-
-		int sy = hero->getPosition().y;
-		sy /= MapTileHeight;
-
-		int ex = point.x - offMt.x;
-		ex /= MapTileWidth;
-
-		int ey = point.y - offMt.y;
-		ey /= MapTileHeight;
-		
-
-		printf("sx : %d sy : %d  ex : %d ey : %d\n", sx, sy, ex, ey);
-		printf("begin :%d dest : %d\n", sy * MapTileNumX+ sx, ey * MapTileNumX + ex);
-		
-		
-		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
-			return;
-
-		sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
-		
-
-		for(int i = 0 ; i < hero->pathNum; i++)
-			printf("중복제거전! %d ,%d\n", i, hero->path[i]);
-		sp->removeDuplicate(hero->path, hero->pathNum);
-		hero->setTargetPosition(hero->getPosition());
-		hero->pathIndex = 1;
-
-		for (int i = 0; i < hero->pathNum; i++)
-			printf("%d ,%d\n", i, hero->path[i]);
-		mouseMove = true;
-	}
-
-
-}
-
-
-
 
 //----------------PopPlayerUI------------------------//
 

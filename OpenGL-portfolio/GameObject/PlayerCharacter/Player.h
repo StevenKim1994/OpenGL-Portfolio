@@ -11,8 +11,8 @@ public:
 	Player();
 	virtual ~Player();
 
-	static void cbBehave(iImage* img);
-	static void cbSkill(iImage* skillimg);
+	static void cbBehave(void* cb);
+	static void cbSkill(void* cb);
 	void setBehave(PlayerBehave be, int direction);
 	void paint(float dt, iPoint offset);
 	
@@ -44,5 +44,5 @@ public:
 
 };
 
-
+extern Player* hero;
 

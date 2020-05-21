@@ -23,8 +23,8 @@ public: Monster();
 
 public:
 	EnermyBehave behave;
-	float r = 0.0f; 
-	float rValue = 1.0f; 
+	float roamingDt;
+	float _roamingDt = 2.0f;
 	
 	bool detected_Player;
 	iPoint Target_Pos;
@@ -33,7 +33,13 @@ public:
 	float aiTime = 0.0f;
 	float _aiTime;
 
+	float rateV;
+	iPoint v = iPointZero;
+	int direction;
 	bool alive;
+
+	float r = 0.0f;
+	float rValue = 1.0f; // 임시로 public...
 
 public:
 
@@ -46,7 +52,6 @@ public:
 	bool getDetected_Player();
 	Object* getTarget();
 
-	int direction;
 
 	static void cbBehave(iImage* img);
 	static void cbSkill(iImage* skillimg);
