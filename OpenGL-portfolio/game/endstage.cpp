@@ -110,7 +110,7 @@ void loadEndStage()
 	}
 
 	hero->setPosition(iPointMake(MapTileWidth * 0, MapTileHeight * 19));
-
+	offMt = hero->getPosition();
 
 	sp = new iShortestPath();
 	sp->init(endStagetiles, MapTileNumX, MapTileNumY);
