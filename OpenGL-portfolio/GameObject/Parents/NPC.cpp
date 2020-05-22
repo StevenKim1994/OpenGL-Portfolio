@@ -4,6 +4,7 @@
 
 NPC::NPC()
 {
+	
 }
 
 NPC::~NPC()

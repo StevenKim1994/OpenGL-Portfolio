@@ -5,9 +5,10 @@
 #define gs_intro	0
 #define	gs_menu		1
 #define	gs_stage	2
-
+#define gs_endStage 3
 
 #define gs_ending	8
+
 #define gs_trailer  9
 #define	gs_none		0xFF
 

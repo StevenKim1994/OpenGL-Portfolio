@@ -283,7 +283,11 @@ void Orc::Skill1()
 		hero->setPosition(hero->getPosition() - iPointMake(+10, 0));
 	
 	hero->setHP(hero->getHp() - 5.0);
-	
+	extern iStrTex* hpIndicator;
+	hpIndicator->setString("%f", hero->getHp());
+
+	if (hero->getHp() < 1)
+		hero->alive = false;
 }
 
 void Orc::Skill2()

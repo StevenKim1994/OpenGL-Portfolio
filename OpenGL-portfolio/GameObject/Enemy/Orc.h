@@ -3,7 +3,7 @@
 #include "Object.h"
 #include "Monster.h"
 
-
+#define orc_Num 10
 
 class Orc : public Monster
 {

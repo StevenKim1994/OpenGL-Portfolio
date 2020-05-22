@@ -11,6 +11,9 @@
 extern iStrTex* killIndicator;
 extern iStrTex* timeIndicator;
 extern Texture* playerPortrait;
+extern iStrTex* hpIndicator;
+extern iStrTex* mpIndicator;
+extern iStrTex* staminaIndicator;
 //----------------PopPlayerUI------------------------//
 
 iPopup* PopPlayerUI;
@@ -105,7 +108,6 @@ void createPopPlayerUI()
 
 	}
 
-	// PlayerInfo // 나중에 반복문으로 리팩터링 해야할 부분 #refactoring
 	{
 		iImage* playerImage = new iImage();
 		iImage* playerName = new iImage();
@@ -137,7 +139,28 @@ void createPopPlayerUI()
 		pop->addObject(playerName);
 
 
+		setRGBA(1, 1, 1, 1);
+		playerHP->addObject(hpIndicator->tex);
+		freeImage(hpIndicator->tex);
+		playerHP->position = iPointMake(0, 110);
+		PopPlayerUIImgs[2] = playerHP;
+		pop->addObject(playerHP);
 
+		playerMP->addObject(mpIndicator->tex);
+		freeImage(mpIndicator->tex);
+		playerMP->position = iPointMake(0, 160);
+		PopPlayerUIImgs[3] = playerMP;
+		pop->addObject(playerMP);
+
+		playerStamina->addObject(staminaIndicator->tex);
+		freeImage(staminaIndicator->tex);
+		playerStamina->position = iPointMake(0, 210);
+		PopPlayerUIImgs[4] = playerStamina;
+		pop->addObject(playerStamina);
+
+
+
+		/*
 		infoSize = iSizeMake(200, 50);
 		setRGBA(1, 0, 0, 1);
 		setStringSize(15);
@@ -186,6 +209,8 @@ void createPopPlayerUI()
 
 		PopPlayerUIImgs[4] = playerStamina;
 		pop->addObject(playerStamina);
+		*/
+
 
 
 
@@ -780,7 +805,17 @@ bool keyPopGameOverUI(iKeyState stat, iPoint point)
 
 		if (i == 0)
 		{
-			setLoading(gs_menu, freeStage, loadMenu);
+			switch (gameState)
+			{
+			case gs_stage:
+				setLoading(gs_menu, freeStage, loadMenu);
+			break;
+
+			case gs_endStage:
+				setLoading(gs_menu, freeEndStage, loadMenu);
+			break;
+
+			}
 		}
 
 		else if (i == 1)
