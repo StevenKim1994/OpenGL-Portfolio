@@ -179,6 +179,7 @@
     <ClInclude Include="lib\cameraFunc.h" />
     <ClInclude Include="lib\iArray.h" />
     <ClInclude Include="lib\iColor.h" />
+    <ClInclude Include="lib\iCSVReader.h" />
     <ClInclude Include="lib\iFont.h" />
     <ClInclude Include="lib\iFPS.h" />
     <ClInclude Include="lib\iGraphics.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="lib\cameraFunc.cpp" />
     <ClCompile Include="lib\iArray.cpp" />
     <ClCompile Include="lib\iColor.cpp" />
+    <ClCompile Include="lib\iCSVReader.cpp" />
     <ClCompile Include="lib\iFont.cpp" />
     <ClCompile Include="lib\iFPS.cpp" />
     <ClCompile Include="lib\iGraphics.cpp" />

@@ -147,6 +147,9 @@
     <ClInclude Include="GameObject\Enermy\Orc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="lib\iCSVReader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL-portfolio.rc">
@@ -283,6 +286,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\Enermy\Orc.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="lib\iCSVReader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
