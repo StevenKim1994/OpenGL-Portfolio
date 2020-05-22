@@ -147,6 +147,7 @@ void drawEndStage(float dt)
 	fbo->bind(texFboStage);
 	drawEndStageMapTile(dt);
 	drawHero(dt);
+	stagenpc->paint(dt, offMt);
 	fbo->unbind();
 
 	showCamera(texFboStage, dt);
@@ -209,6 +210,8 @@ void drawEndStage(float dt)
 			}
 		}
 	}
+
+	
 	
 }
 void keyEndStage(iKeyState stat, iPoint point)

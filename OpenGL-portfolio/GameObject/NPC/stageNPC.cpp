@@ -4,14 +4,20 @@
 
 stageNPC::stageNPC()
 {
+	
+
+	NPCInfo _ni[1] = {
+		
+			"assets/stage/stageNPC/stageNPC (%d).png", 8, 1.5f, {0,-42},
+		
+	};
+
 	iGraphics* g = iGraphics::instance();
 	iSize size;
 
-	NPCInfo _ni[NPCBehave_num] = {
-		{"assets/stage/stageNPC/stageNPC (%d).png", 9, 1.0f, {iPointZero}},
-	};
-
-	for (int i = 0; i < NPCBehave_num; i++)
+	imgs = (iImage**)malloc(sizeof(iImage*) * 1);
+	
+	for (int i = 0; i < 1; i++)
 	{
 		NPCInfo* ni = &_ni[i];
 
@@ -27,8 +33,9 @@ stageNPC::stageNPC()
 			Texture* tex = g->getTexture();
 			img->addObject(tex);
 			freeImage(tex);
+		
 		}
-		img->_aniDt = 0.05f;
+		img->_aniDt = 0.15f;
 
 		switch (i)
 		{
@@ -42,8 +49,8 @@ stageNPC::stageNPC()
 	}
 
 	behave = (NPCBehave)-1;
-	setBehave(NPCBehave_idle, 0);
-	direction = 0;
+	direction = 1;
+	setBehave(NPCBehave_idle, direction);
 
 	
 }
