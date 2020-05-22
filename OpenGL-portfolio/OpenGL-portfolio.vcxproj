@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;GDIPVER=0x0110;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\OpenGL-portfolio\GameObject\PlayerCharacter;..\OpenGL-portfolio\GameObject\Parents;..\OpenGL-portfolio\GameObject\Enemy;..\OpenGL-portfolio\GameObject;..\OpenGL-portfolio\assets;C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;..\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\OpenGL-portfolio\GameObject\PlayerCharacter;..\OpenGL-portfolio\GameObject\Parents;..\OpenGL-portfolio\GameObject\Enermy;..\OpenGL-portfolio\GameObject;..\OpenGL-portfolio\assets;C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;..\OpenGL-portfolio\lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PrecompiledHeaderFile />
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -160,7 +160,7 @@
     <ClInclude Include="GameObject\Parents\Monster.h" />
     <ClInclude Include="GameObject\Parents\NPC.h" />
     <ClInclude Include="GameObject\Parents\Object.h" />
-    <ClInclude Include="GameObject\Enemy\Orc.h" />
+    <ClInclude Include="GameObject\Enermy\Orc.h" />
     <ClInclude Include="GameObject\Parents\PlayerParent.h" />
     <ClInclude Include="GameObject\PlayerCharacter\Player.h" />
     <ClInclude Include="GameObject\Prop\FirePlace.h" />
@@ -212,7 +212,7 @@
     <ClCompile Include="GameObject\Parents\Monster.cpp" />
     <ClCompile Include="GameObject\Parents\NPC.cpp" />
     <ClCompile Include="GameObject\Parents\Object.cpp" />
-    <ClCompile Include="GameObject\Enemy\Orc.cpp" />
+    <ClCompile Include="GameObject\Enermy\Orc.cpp" />
     <ClCompile Include="GameObject\Parents\PlayerParent.cpp" />
     <ClCompile Include="GameObject\PlayerCharacter\Player.cpp" />
     <ClCompile Include="GameObject\Prop\FirePlace.cpp" />

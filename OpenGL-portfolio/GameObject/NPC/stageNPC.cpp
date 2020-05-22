@@ -8,7 +8,7 @@ stageNPC::stageNPC()
 
 	NPCInfo _ni[1] = {
 		
-			"assets/stage/stageNPC/stageNPC (%d).png", 8, 1.5f, {0,-42},
+			"assets/stage/stageNPC/stageNPC (%d).png", 8, 1.5f, {-16,-42},
 		
 	};
 

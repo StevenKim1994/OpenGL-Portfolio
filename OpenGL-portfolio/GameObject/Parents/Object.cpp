@@ -194,7 +194,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 				}
 				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
-					printf("you die!\n");
+				
 				}
 			}
 			if (col)
@@ -263,7 +263,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 
 				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
-					printf("you die!\n");
+					
 				}
 			}
 			if (col)
@@ -295,7 +295,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 				}
 				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
-					printf("you die!\n");
+					
 				}
 			}
 			if (col)

@@ -9,6 +9,7 @@
 #include "GameUI.h"
 #include "endstage.h"
 
+
 #define ON_HITBOX 0
 
 Player* hero;
@@ -274,8 +275,8 @@ void loadStage()
 	killIndicator = new iStrTex(methodKillIndicator);
 	killIndicator->setString("%d", hero->kill);
 	
-	timeIndicator = new iStrTex(methodTimeIndicator);
-	timeIndicator->setString("TIME : %0.2f", gameTime);
+	//timeIndicator = new iStrTex(methodTimeIndicator);
+	//timeIndicator->setString("TIME : %0.2f", gameTime);
 
 	hpIndicator = new iStrTex(methodPlayerHPIndicator);
 	hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
@@ -320,8 +321,8 @@ void drawStage(float dt)
 	fbo->unbind();
 	showCamera(texFboStage, dt);
 
-	gameTime += dt;
-	timeIndicator->setString("TIME : %0.2f",gameTime);
+	//gameTime += dt;
+	//timeIndicator->setString("TIME : %0.2f",gameTime);
 	drawNumber(dt, offMt);
 
 	drawPopPlayerUI(dt);
@@ -404,24 +405,16 @@ void keyStage(iKeyState stat, iPoint point)
 		ey /= MapTileHeight;
 		
 
-		printf("sx : %d sy : %d  ex : %d ey : %d\n", sx, sy, ex, ey);
-		printf("begin :%d dest : %d\n", sy * MapTileNumX+ sx, ey * MapTileNumX + ex);
-		
 		
 		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
 			return;
 
 		sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
 		
-
-		for(int i = 0 ; i < hero->pathNum; i++)
-			printf("중복제거전! %d ,%d\n", i, hero->path[i]);
 		sp->removeDuplicate(hero->path, hero->pathNum);
 		hero->setTargetPosition(hero->getPosition());
 		hero->pathIndex = 1;
 
-		for (int i = 0; i < hero->pathNum; i++)
-			printf("%d ,%d\n", i, hero->path[i]);
 		mouseMove = true;
 	}
 

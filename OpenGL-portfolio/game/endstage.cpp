@@ -10,7 +10,7 @@ extern iPoint vp;
 extern iShortestPath* sp;
 
 extern iStrTex* killIndicator;
-extern iStrTex* timeIndicator;
+//extern iStrTex* timeIndicator;
 extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
@@ -59,10 +59,10 @@ int endStagetiles[MapTileNumX * MapTileNumY] =
 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
-99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
-99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
-99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 44, 44, 44, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
-99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 44, 44, 44, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
+99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
+99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
+99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 44, 44, 44, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
+99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 44, 44, 44, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01, 01,
 };
  // 01 : canMove
  // 99 : canNotMove
@@ -117,6 +117,7 @@ void loadEndStage()
 
 	stagenpc = new stageNPC();
 	stagenpc->setPosition(iPointMake(MapTileWidth * 47, MapTileHeight * 13));
+	stagenpc->setSize(iSizeMake(32, 32));
 
 
 	createPopPlayerUI();
@@ -143,10 +144,11 @@ void freeEndStage()
 }
 void drawEndStage(float dt)
 {
-	printf("endStage\n");
+	
 	fbo->bind(texFboStage);
 	drawEndStageMapTile(dt);
 	drawHero(dt);
+	drawRect(hero->getPosition().x+offMt.x, hero->getPosition().y+offMt.y, hero->getSize().width, hero->getSize().height);
 	stagenpc->paint(dt, offMt);
 	fbo->unbind();
 
@@ -164,7 +166,7 @@ void drawEndStage(float dt)
 
 	killIndicator->setString("%d", hero->kill);
 
-	timeIndicator->setString("TIME : %0.2f", gameTime);
+	//timeIndicator->setString("TIME : %0.2f", gameTime);
 
 	hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
 
@@ -229,42 +231,49 @@ void keyEndStage(iKeyState stat, iPoint point)
 
 	if (stat == iKeyStateBegan)
 	{
-		printf("!!\n");
+		if (containPoint(point, iRectMake(stagenpc->getPosition().x+ offMt.x, stagenpc->getPosition().y+offMt.y, 32, 32))) // 엔피씨를 클릭한다면
+		{
+			printf("NPC Click!\n");
+		
+		}
+
+		else // 갈수 있는 땅을 클릭한다면
+		{
+			int sx = hero->getPosition().x;
+			sx /= MapTileWidth;
+
+			int sy = hero->getPosition().y;
+			sy /= MapTileHeight;
+
+			int ex = point.x - offMt.x;
+			ex /= MapTileWidth;
+
+			int ey = point.y - offMt.y;
+			ey /= MapTileHeight;
 
 
-		int sx = hero->getPosition().x;
-		sx /= MapTileWidth;
 
-		int sy = hero->getPosition().y;
-		sy /= MapTileHeight;
+			if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
+				return;
 
-		int ex = point.x - offMt.x;
-		ex /= MapTileWidth;
-
-		int ey = point.y - offMt.y;
-		ey /= MapTileHeight;
+			sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
 
 
-		printf("sx : %d sy : %d  ex : %d ey : %d\n", sx, sy, ex, ey);
-		printf("begin :%d dest : %d\n", sy * MapTileNumX + sx, ey * MapTileNumX + ex);
+	
+			sp->removeDuplicate(hero->path, hero->pathNum);
+			hero->setTargetPosition(hero->getPosition());
+			hero->pathIndex = 1;
 
-
-		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
-			return;
-
-		sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
-
-
-		for (int i = 0; i < hero->pathNum; i++)
-			printf("중복제거전! %d ,%d\n", i, hero->path[i]);
-		sp->removeDuplicate(hero->path, hero->pathNum);
-		hero->setTargetPosition(hero->getPosition());
-		hero->pathIndex = 1;
-
-		for (int i = 0; i < hero->pathNum; i++)
-			printf("%d ,%d\n", i, hero->path[i]);
-
-		mouseMove = true;
+			mouseMove = true;
+		}
+	}
+	else if(stat == iKeyStateMoved)
+	{
+		if (containPoint(point, iRectMake(stagenpc->getPosition().x + offMt.x, stagenpc->getPosition().y + offMt.y, 32, 32))) // 엔피씨를 클릭한다면
+		{
+			printf("NPC mouseOver!\n");
+		
+		}
 	}
 
 	

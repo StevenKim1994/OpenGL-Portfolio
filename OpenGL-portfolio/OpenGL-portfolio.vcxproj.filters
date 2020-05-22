@@ -102,9 +102,6 @@
     <ClInclude Include="GameObject\Parents\Monster.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Enemy\Orc.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\PlayerCharacter\Player.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -145,6 +142,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\NPC\stageNPC.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Enermy\Orc.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -243,9 +243,6 @@
     <ClCompile Include="GameObject\Parents\Monster.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\Enemy\Orc.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject\PlayerCharacter\Player.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -283,6 +280,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\NPC\stageNPC.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Enermy\Orc.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

@@ -212,15 +212,12 @@ void Orc::paint(float dt, iPoint offset)
 			int ey = hero->getPosition().y;
 			ey /= MapTileHeight;
 
-			printf("start : %d %d  end : %d %d\n", sx, sy, ex, ey);
 
 			if (sy == ey) //세로 위치가 같을떄만 !
 			{
 				sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, path, pathNum);
 				sp->removeDuplicate(path, pathNum);
 
-				for (int i = 0; i < pathNum; i++)
-					printf("Orcs[%d] %d\n", i, hero->path[i]);
 
 				targetPosition = position;
 				pathIndex = 1;
@@ -266,9 +263,7 @@ void Orc::paint(float dt, iPoint offset)
 			direction = 0;
 		
 		setBehave(EnermyBehave_move, direction);
-	
 
-		printf("%f\n", v.x);
 	}
 }
 

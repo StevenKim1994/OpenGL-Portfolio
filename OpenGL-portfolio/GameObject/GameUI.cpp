@@ -62,13 +62,13 @@ void createPopPlayerUI()
 	}
 
 	// time indicator
-	{
-		setRGBA(1, 1, 1, 1);
-		iImage* time_indicator = new iImage();
-		time_indicator->addObject(timeIndicator->tex);
-		time_indicator->position = iPointMake(devSize.width / 2 - 200, 130);
-		pop->addObject(time_indicator);
-	}
+	//{
+	//	setRGBA(1, 1, 1, 1);
+	//	iImage* time_indicator = new iImage();
+	//	time_indicator->addObject(timeIndicator->tex);
+	//	time_indicator->position = iPointMake(devSize.width / 2 - 200, 130);
+	//	pop->addObject(time_indicator);
+	//}
 
 
 	{ // 미니맵
