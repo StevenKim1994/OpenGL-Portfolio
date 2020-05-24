@@ -7,6 +7,7 @@
 #include "../game/stage.h"
 #include "../game/endstage.h"
 #include "../game/sceneManager.h"
+#include "../game/vilege.h"
 
 extern iStrTex* killIndicator;
 extern iStrTex* timeIndicator;
@@ -982,6 +983,8 @@ bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point)
 			if( i==0)
 			{
 				printf("마을안으로!\n");
+				setLoading(gs_villege, freeEndStage, loadVillege);
+				
 			}
 			else if( i == 1)
 			{

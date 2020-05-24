@@ -6,6 +6,7 @@
 #define	gs_menu		1
 #define	gs_stage	2
 #define gs_endStage 3
+#define gs_villege	4
 
 #define gs_ending	8
 

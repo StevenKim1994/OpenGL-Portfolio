@@ -8,7 +8,7 @@
 #include "stage.h"
 #include "ending.h"
 #include "endstage.h"
-
+#include "vilege.h"
 #define SOUND_NUM 32
 
 
@@ -45,6 +45,7 @@ void freeGame()
 	case gs_ending: freeEnding(); break;
 	case gs_trailer: freeTrailer(); break;
 	case gs_endStage: freeEndStage(); break;
+	case gs_villege: freeVillege(); break;
 	}
 
 	freeAudio();
@@ -60,6 +61,7 @@ void drawGame(float dt)
 	case gs_ending:	drawEnding(dt);  break;
 	case gs_trailer: drawTrailer(dt); break;
 	case gs_endStage: drawEndStage(dt); break;
+	case gs_villege: drawVillege(dt); break;
 		
 	}
 
@@ -79,5 +81,6 @@ void keyGame(iKeyState stat, iPoint point)
 	case gs_ending:	keyEnding(stat, point);	break;
 	case gs_trailer: keyTrailer(stat, point); break;
 	case gs_endStage: keyEndStage(stat, point); break;
+	case gs_villege: keyVilliege(stat, point); break;
 	}
 }

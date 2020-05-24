@@ -2,6 +2,7 @@
 
 #include "Player.h"
 
+#include "vilege.h"
 #include "../GameObject/NPC/stageNPC.h"
 
 extern Player* hero;
@@ -297,7 +298,7 @@ void keyEndStage(iKeyState stat, iPoint point)
 	}
 	else if(stat == iKeyStateMoved)
 	{
-		if (containPoint(point, iRectMake(stagenpc->getPosition().x + offMt.x, stagenpc->getPosition().y + offMt.y, 32, 32))) // 엔피씨를 클릭한다면
+		if (containPoint(point, iRectMake(stagenpc->getPosition().x + offMt.x, stagenpc->getPosition().y + offMt.y, 32, 32))) // 엔피씨를 마우스 오버한다면
 		{
 			printf("NPC mouseOver!\n");
 		

@@ -26,9 +26,9 @@ Monster** orcs;
 int _orcNum = orc_Num;
 int orcNum = _orcNum;
 
-Texture* tileset[1521];
+ Texture* tileset[1521];
 Texture* map;
-Texture* texFboStage;
+ Texture* texFboStage;
 Texture* playerPortrait;
 iShortestPath* sp;
 bool mouseMove = false;
@@ -46,7 +46,7 @@ float gameTime = 0;
 float _gameTime = 100000000000;
 
 float logoDt = 0.0;
-Texture* stageLogo;
+ Texture* stageLogo;
 
 
 
