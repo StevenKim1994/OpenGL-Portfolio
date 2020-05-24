@@ -83,7 +83,7 @@ void loadEndStage()
 
 	setStringSize(70);
 	setStringRGBA(0, 0, 0, 1);
-	g->drawString(logoSize.width / 2, logoSize.height / 2, HCENTER | VCENTER, "Waterfront Cave");
+	g->drawString(logoSize.width / 2, logoSize.height / 2, HCENTER | VCENTER, "Cave");
 	stageLogo = g->getTexture();
 
 	setStringSize(30);
@@ -181,18 +181,39 @@ void drawEndStage(float dt)
 	if (hero->getStamina() != hero->getMaxStamina())
 	{
 		hero->setStamina(hero->getStamina() + 0.1f);
-		staminaIndicator->setString("%f", (hero->getStamina()));
+		staminaIndicator->setString("%0.1f", (hero->getStamina()));
 
 		if (hero->getStamina() > hero->getMaxStamina())
 			hero->setStamina(hero->getMaxStamina());
 	}
 
-
+	
 
 	if (hero->alive == false)
 	{
 		printf("Player is Dead!\n");
 		showPopGameOverUI(true);
+	}
+
+	//MP charge
+	if (hero->getMp() != hero->getMaxMP())
+	{
+		hero->setMP(hero->getMp() + 0.1f);
+		mpIndicator->setString("%0.1f", (hero->getMp()));
+
+		if (hero->getMp() > hero->getMaxMP())
+			hero->setMP(hero->getMaxMP());
+	}
+
+
+	//stamina charge
+	if (hero->getStamina() != hero->getMaxStamina())
+	{
+		hero->setStamina(hero->getStamina() + 0.1f);
+		staminaIndicator->setString("%f", (hero->getStamina()));
+
+		if (hero->getStamina() > hero->getMaxStamina())
+			hero->setStamina(hero->getMaxStamina());
 	}
 
 

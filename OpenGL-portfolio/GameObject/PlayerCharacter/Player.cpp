@@ -105,12 +105,14 @@ Player::Player()
 		imgSkill = img;
 	}
 
+	
+	//근거리 타격이펙트 (Monster 오브젝트에 copy용)
 	iImage* img2 = new iImage();
 	{
 		for(int i = 0; i<31; i++)
 		{
 			iGraphics* g = iGraphics::instance();
-
+			setRGBA(1, 0, 0, 1);
 			igImage* ig = g->createIgImage("assets/stage/hero/knight/skill/hit/tile%03d.png", i);
 			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 1.0, g->getIgImageHeight(ig) * 1.0);
 			g->init(skillsize);
@@ -126,8 +128,33 @@ Player::Player()
 		
 
 		imgSKillHit = img2;
+		setRGBA(1, 1, 1, 1);	
+	}
 
-		
+
+	//버프스킬
+	iImage* img3 = new iImage();
+	{
+		for (int i = 0; i < 61; i++)
+		{
+			iGraphics* g = iGraphics::instance();
+			setRGBA(1, 0, 0, 1);
+			igImage* ig = g->createIgImage("assets/stage/hero/knight/skill2/tile%03d.png", i);
+			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 2.0, g->getIgImageHeight(ig) * 2.0);
+			g->init(skillsize);
+			g->drawImage(ig, 0, 0, 2.0, 2.0, TOP | LEFT);
+
+			tex = g->getTexture();
+			img3->addObject(tex);
+			freeImage(tex);
+		}
+		img3->aniDt = 0.0f;
+		img3->_aniDt = 0.01f;
+		img3->_repeatNum = 0; // on / off skill임
+		img3->position = iPointMake(-30, -100);
+		imgBuff = img3;
+
+		setRGBA(1, 1, 1, 1);
 	}
 
 	
@@ -174,6 +201,10 @@ void Player::setBehave(PlayerBehave be, int dir)
 
 void Player::paint(float dt, iPoint offset)
 {
+	if(imgBuff->animation)
+	{
+		imgBuff->paint(dt, iPointMake(position.x -55, position.y -50)+ offset, direction);
+	}
 	if (direction == 0 && behave == PlayerBehave_jumpAndFall)
 	{
 		printf("left direction Jumping!\n");
@@ -191,6 +222,7 @@ void Player::paint(float dt, iPoint offset)
 	{
 		imgSKillHit->paint(dt, offset, direction);
 	}
+
 }
 
 //iImage* skill;// = new iImage();
@@ -209,6 +241,8 @@ void Player::cbSkill(void* cb)
 void Player::Skill1()
 {
 	printf("skill1! on!\n");
+
+	audioPlay(4);
 	iPoint targetPos;
 	if (direction == 1)
 		targetPos = iPointMake(position.x + 10, position.y - 100);
@@ -222,6 +256,19 @@ void Player::Skill1()
 
 void Player::Skill2()
 {
+	printf("skill2! on!\n");
+
+	//imgBuff->position = iPointMake(position.x -50, position.y-50);
+	if (imgBuff->animation)
+	{
+		imgBuff->animation = false;
+		damage -= 5.0f;
+	}
+	else
+	{
+		imgBuff->startAnimation();
+		damage += 5.0f;
+	}
 }
 
 void Player::Skill3()

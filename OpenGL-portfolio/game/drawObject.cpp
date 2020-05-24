@@ -17,6 +17,9 @@ extern Monster** orcs;
 extern int orcNum;
 extern iStrTex* killIndicator;
 
+extern iStrTex* hpIndicator;
+extern iStrTex* mpIndicator;
+extern iStrTex* staminaIndicator;
 
 
 void drawMapTile(float dt)
@@ -144,7 +147,7 @@ void drawHero(float dt)
 				be = PlayerBehave_meleeAttack;
 
 				hero->Skill1();
-
+				hero->setMP(hero->getMp() - 5.0f);
 				zoomCamera(hero->getPosition() + offMt, 1.5);
 				shakeCamera(30);
 
@@ -160,12 +163,12 @@ void drawHero(float dt)
 						{
 				
 							
-							((Orc*)orcs[i])->setDmg(5.f);
+							((Orc*)orcs[i])->setDmg(hero->getDamage());
 							((Orc*)orcs[i])->hitEffect = hero->imgSKillHit->copy();
-				
 							((Orc*)orcs[i])->hitEffect->position = iPointMake(orcs[i]->getPosition().x - 16, orcs[i]->getPosition().y -30);
 							((Orc*)orcs[i])->hitEffect->startAnimation();
-							
+
+							orcs[i]->setPosition(iPointMake(orcs[i]->getPosition().x, orcs[i]->getPosition().y - 50.0f));
 						
 							
 						}
@@ -176,6 +179,12 @@ void drawHero(float dt)
 
 					break;
 				}
+			}
+			else if(keyDown & keyboard_num2)
+			{
+				be = PlayerBehave_idle;
+
+				hero->Skill2();
 			}
 
 
@@ -257,6 +266,38 @@ void drawHero(float dt)
 	hero->paint(dt, offMt);
 	setRGBA(1, 1, 1, 1);
 
+	if(hero->imgBuff->animation)
+	{
+		hero->setMP(hero->getMp() - 0.25f);
+
+		if (hero->getMp() < 1)
+		{
+			hero->imgBuff->animation = false;
+			hero->setDamage(hero->getDamage() - 5.0f);
+		}
+	}
+
+
+	//MP charge
+	if (hero->getMp() != hero->getMaxMP())
+	{
+		hero->setMP(hero->getMp() + 0.1f);
+		mpIndicator->setString("%0.1f", (hero->getMp()));
+
+		if (hero->getMp() > hero->getMaxMP())
+			hero->setMP(hero->getMaxMP());
+	}
+
+
+	//stamina charge
+	if (hero->getStamina() != hero->getMaxStamina())
+	{
+		hero->setStamina(hero->getStamina() + 0.1f);
+		staminaIndicator->setString("%f", (hero->getStamina()));
+
+		if (hero->getStamina() > hero->getMaxStamina())
+			hero->setStamina(hero->getMaxStamina());
+	}
 	//printf("%f %f || ", offMt.x, offMt.y);
 	//printf("%f %f\n", hero->getPosition().x - offMt.x, hero->getPosition().y - offMt.y);
 }

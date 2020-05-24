@@ -249,6 +249,8 @@ void loadStage()
 		// hero Stamina Initialize
 		hero->setMaxStamina(100.0);
 		hero->setStamina(100.0);
+
+		hero->setDamage(5.0f);
 	
 
 	}
@@ -364,14 +366,7 @@ void drawStage(float dt)
 		}
 	}
 
-	if (hero->getStamina() != hero->getMaxStamina())
-	{
-		hero->setStamina(hero->getStamina()+ 0.1f);
-		staminaIndicator->setString("%f", (hero->getStamina()));
-
-		if (hero->getStamina() > hero->getMaxStamina())
-			hero->setStamina(hero->getMaxStamina());
-	}
+	
 }
 
 void keyStage(iKeyState stat, iPoint point)

@@ -166,6 +166,7 @@ void Orc::setDmg(float dmg)
 	setBehave(be, dir);
 
 	addNumber(dmg, position + iPointMake(0, -50));
+
 }
 void Orc::setBehave(EnermyBehave be, int dir)
 {
