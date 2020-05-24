@@ -80,8 +80,8 @@ Player::Player()
 	iImage* img = new iImage();
 
 	{// 근거리 스킬 불러오는 부분
-		
-		for (int i = 0; i < 4; i++) 
+
+		for (int i = 0; i < 4; i++)
 		{
 			iGraphics* g = iGraphics::instance();
 			//Texture* tex = createImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
@@ -98,13 +98,39 @@ Player::Player()
 		img->aniDt = 0.0f;
 		img->_aniDt = 0.15f;
 		img->_repeatNum = 1;
-		
+
 		iPoint p = iPointMake(-128, -128);
 		img->position = p;
 
 		imgSkill = img;
-
 	}
+
+	iImage* img2 = new iImage();
+	{
+		for(int i = 0; i<31; i++)
+		{
+			iGraphics* g = iGraphics::instance();
+
+			igImage* ig = g->createIgImage("assets/stage/hero/knight/skill/hit/tile%03d.png", i);
+			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 1.0, g->getIgImageHeight(ig) * 1.0);
+			g->init(skillsize);
+			g->drawImage(ig, 0, 0, 1.0, 1.0, TOP | LEFT);
+
+			tex = g->getTexture();
+			img2->addObject(tex);
+			freeImage(tex);
+		}
+		img2->aniDt = 0.0f;
+		img2->_aniDt = 0.01f;
+		img2->_repeatNum = 1;
+		
+
+		imgSKillHit = img2;
+
+		
+	}
+
+	
 
 	{// 원거리 스킬 불러오는 부분
 		
@@ -160,6 +186,11 @@ void Player::paint(float dt, iPoint offset)
 	{
 		imgSkill->paint(dt, offset, direction);
 	}
+
+	if(imgSKillHit->animation)
+	{
+		imgSKillHit->paint(dt, offset, direction);
+	}
 }
 
 //iImage* skill;// = new iImage();
@@ -185,6 +216,8 @@ void Player::Skill1()
 		targetPos = iPointMake(position.x - 128, position.y - 100);
 	imgSkill->position = targetPos;
 	imgSkill->startAnimation();
+
+	
 }
 
 void Player::Skill2()

@@ -9,6 +9,14 @@
 
 #define PlayerColor 0,0,1,1
 
+struct ObjInfo
+{
+	const char* path;
+	int num;
+	float sizeRate;
+	iPoint p; // 축 조절하는 거
+
+};
 
 
 class Object
@@ -82,6 +90,7 @@ public:
 public:
 	//function
 	bool moveForMouse(float dt);
+	void move(iPoint movement);
 	void move(iPoint movement, MapTile* maptile);
 	void jump();
 	void applyJump(iPoint& movement, float dt);

@@ -37,3 +37,10 @@ void freePopGameOverUI();
 void drawPopGameOverUI(float dt);
 bool keyPopGameOverUI(iKeyState stat, iPoint point);
 void showPopGameOverUI(bool show);
+
+//-------------PopStageNPCMenuUI----------------//
+void createPopStageNPCMenuUI();
+void freePopStageNPCMenuUI();
+void drawPopStageNPCMenuUI(float dt);
+bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point);
+void showPopStageNPCMenuUI(bool show);

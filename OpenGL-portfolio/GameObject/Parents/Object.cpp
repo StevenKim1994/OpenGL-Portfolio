@@ -358,6 +358,13 @@ bool Object::moveForMouse(float dt)
 	return false;
 }
 
+void Object::move(iPoint movement)
+{
+	position.x += movement.x;
+	position.y += movement.y;
+
+}
+
 
 void Object::jump()
 {

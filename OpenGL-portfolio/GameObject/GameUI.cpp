@@ -854,6 +854,163 @@ void showPopGameOverUI(bool show)
 	PopGameOver->show(show);
 }
 
+//-----------------PopStageNPCMenuUI---------------------//
+
+iPopup* PopStageNPCMenuUI;
+iImage** PopStageNPCMenuUIImgs;
+
+const char* StageNPCStr[2] = { "Yes", "No" };
+
+void createPopStageNPCMenuUI()
+{
+	iPopup* pop = new iPopup(iPopupStyleAlpha);
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(700, 300);
+
+	PopStageNPCMenuUIImgs = (iImage**)malloc(sizeof(iImage*) * 2);
+
+	setStringBorder(0);
+	setStringBorderRGBA(0, 0, 0, 1);
+	setStringRGBA(0, 0, 0, 1);
+	setStringSize(30);
+
+	
+	// Background //
+	{
+		iImage* img = new iImage();
+		Texture* tex;
+		setRGBA(0, 1, 1, 1);
+		g->init(size);
+		g->fillRect(0, 0, size.width, size.height);
+		g->drawString(size.width / 2, 30, HCENTER | VCENTER, "Would you like to enter the village?");
+		
+		tex = g->getTexture();
+		img->addObject(tex);
+		freeImage(tex);
+		img->position = iPointMake(0, 0);
+
+		pop->addObject(img);
+	}
+
+	// button //
+	{
+		setRGBA(1, 0, 0, 1);
+		setStringSize(15);
+
+		iSize btnSize = iSizeMake(150, 30);
+
+		for(int i = 0; i<2; i++)
+		{
+			iImage* answerBtn = new iImage();
+			Texture* btnTex;
+
+			for(int j =0; j<2;j++)
+			{
+				if (j == 0) // btnoff
+				{
+					setRGBA(0, 1, 0, 1);
+					g->init(btnSize);
+					g->fillRect(0, 0, btnSize.width, btnSize.height);
+					g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, StageNPCStr[i]);
+					btnTex = g->getTexture();
+				}
+
+				else // btnon
+				{
+					setRGBA(1, 0, 0, 1);
+					g->init(btnSize);
+					g->fillRect(0, 0, btnSize.width, btnSize.height);
+					g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, StageNPCStr[i]);
+					btnTex = g->getTexture();
+				}
+				answerBtn->addObject(btnTex);
+				answerBtn->position=  iPointMake(200 * i + 150, size.height / 2 + 20);
+				freeImage(btnTex);
+			}
+
+			pop->addObject(answerBtn);
+
+			PopStageNPCMenuUIImgs[i] = answerBtn;
+			
+		}
+		
+	}
+	
+
+	pop->openPosition = iPointMake(devSize.width / 2 - size.width/2, devSize.height/2 - size.height/2);
+	pop->closePosition = pop->openPosition;
+
+
+	PopStageNPCMenuUI = pop;
+}
+
+void freePopStageNPCMenuUI()
+{
+	
+	free(PopStageNPCMenuUIImgs);
+	
+	// iPopup delete시 안에 있는 Img들 다 메모리 해제함
+
+	delete PopStageNPCMenuUI;
+	
+}
+
+void drawPopStageNPCMenuUI(float dt)
+{
+	PopStageNPCMenuUI->paint(dt);
+}
+
+bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point)
+{
+	if (PopStageNPCMenuUI->bShow == false)
+		return false;
+
+	if (PopStageNPCMenuUI->stat != iPopupStatProc)
+		return true;
+
+	int i, j = -1;
+
+	switch(stat)
+	{
+	case iKeyStateBegan:
+		{
+			i = PopStageNPCMenuUI->selected;
+
+			if (i == -1)
+				break;
+
+			if( i==0)
+			{
+				printf("마을안으로!\n");
+			}
+			else if( i == 1)
+			{
+				printf("취소!!\n");
+				PopStageNPCMenuUI->show(false);
+			}
+			break;
+		}
+	case iKeyStateMoved:
+		{
+			for(i = 0; i<2; i++)
+			{
+				if(containPoint(point, PopStageNPCMenuUIImgs[i]->touchRect(PopStageNPCMenuUI->closePosition)))
+				{
+					j = i;
+					break;
+				}
+			}
+			PopStageNPCMenuUI->selected = j;
+			break;
+		}
+	}
+}
+
+void showPopStageNPCMenuUI(bool show)
+{
+	PopStageNPCMenuUI->show(show);
+}
+
 Texture* methodStDamage(const char* str)
 {
 	iGraphics* g = iGraphics::instance();

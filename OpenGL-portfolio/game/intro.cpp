@@ -7,6 +7,7 @@
 
 #include "menu.h"
 
+#include "Flyeye.h"
 
 
 iImage* next = (iImage*)malloc(sizeof(iImage));
@@ -14,6 +15,12 @@ Texture* bg;
 Texture* title;
 Texture* enter;
 
+Flyeye** flyeyes;
+Flyeye* flyeye;
+
+float mr = -0.35f;
+float mmr = 0.05f;
+static float mm = 0.0f;
 
 void loadIntro()
 {
@@ -42,6 +49,27 @@ void loadIntro()
 
 	createTitle();
 	audioPlay(2);
+
+
+	// create Flyeyes
+
+	flyeyes = (Flyeye**)malloc(sizeof(Flyeye*) * 5);
+	
+	for(int i = 0; i<5; i++)
+	{
+		
+		flyeye = new Flyeye();
+		if (i % 2 == 0)
+			flyeye->direction = 0;
+		else
+			flyeye->direction = 1;
+		flyeye->setPosition(iPointMake(i * 300 + 100, i * 100 + 50));
+		flyeyes[i] = flyeye;
+		
+	}
+
+	//flyeyes[1]->direction = 1;
+
 	
 
 }
@@ -49,6 +77,11 @@ void loadIntro()
 void freeIntro()
 {
 	//printf("freeIntro()n\n");
+
+	for (int i = 0; i < 5; i++)
+		delete flyeyes[i];
+
+	free(flyeyes);
 
 	free(bg);
 	free(title);
@@ -61,6 +94,9 @@ float resolutionRate = 200; // 1920x1080 : 300;
 
 void drawIntro(float dt)
 {
+	
+
+	
 	static float r = 0.0f;
 	
 
@@ -78,7 +114,40 @@ void drawIntro(float dt)
 
 	drawImage(bg, 0, 0, TOP | LEFT);
 	//fillRect(0, 0, devSize.width, devSize.height); // Intro Background
+
 	
+	
+	mm += mmr;
+
+	printf("%f\n", mm);
+	
+	if (mm > 100.0f)
+	{
+		mr = -mr;
+		mm = 0.0f;
+		for (int i = 0; i < 5; i++)
+		{
+			if (flyeyes[i]->direction == 1)
+				flyeyes[i]->direction = 0;
+			else
+				flyeyes[i]->direction = 1;
+		}
+	}
+	
+	//paint flyeyes
+	for (int i = 0; i < 5; i++)
+	{
+		if (i % 2 == 0)
+			flyeyes[i]->setPosition(iPointMake(flyeyes[i]->getPosition().x + mr, flyeyes[i]->getPosition().y));
+
+		else
+			flyeyes[i]->setPosition(iPointMake(flyeyes[i]->getPosition().x - mr, flyeyes[i]->getPosition().y));
+
+	}
+
+	
+	for (int i = 0; i < 5; i++)
+		flyeyes[i]->paint(dt, iPointZero);
 
 	drawTitle(dt);
 
@@ -99,6 +168,8 @@ void drawIntro(float dt)
 		audioPlay(1); // 버튼음 재생
 		setLoading(gs_menu, freeMenu, loadMenu);
 	}
+
+
 	
 }
 

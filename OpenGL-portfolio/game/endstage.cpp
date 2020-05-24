@@ -124,6 +124,7 @@ void loadEndStage()
 	createPopMenuUI();
 	createPopQuitAnswerUI();
 	createPopGameOverUI();
+	createPopStageNPCMenuUI();
 	loadNumber();
 	
 }
@@ -140,6 +141,7 @@ void freeEndStage()
 	freePopMenuUI();
 	freePopQuitAnswerUI();
 	freePopGameOverUI();
+	freePopStageNPCMenuUI();
 	freeNumber();
 }
 void drawEndStage(float dt)
@@ -159,7 +161,7 @@ void drawEndStage(float dt)
 	drawPopQuitAnswerUI(dt);
 
 	drawPopGameOverUI(dt);
-
+	drawPopStageNPCMenuUI(dt);
 	drawNumber(dt, offMt);
 
 
@@ -218,6 +220,7 @@ void drawEndStage(float dt)
 }
 void keyEndStage(iKeyState stat, iPoint point)
 {
+	
 	if (keyPopGameOverUI(stat, point))
 		return;
 
@@ -227,6 +230,9 @@ void keyEndStage(iKeyState stat, iPoint point)
 	if (keyPopMenuUI(stat, point))
 		return;
 
+	if (keyPopStageNPCMenuUI(stat, point))
+		return;
+	
 	keyPopPlayerUI(stat, point);
 
 	if (stat == iKeyStateBegan)
@@ -234,6 +240,7 @@ void keyEndStage(iKeyState stat, iPoint point)
 		if (containPoint(point, iRectMake(stagenpc->getPosition().x+ offMt.x, stagenpc->getPosition().y+offMt.y, 32, 32))) // 엔피씨를 클릭한다면
 		{
 			printf("NPC Click!\n");
+			showPopStageNPCMenuUI(true);
 		
 		}
 

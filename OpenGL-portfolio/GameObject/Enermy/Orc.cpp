@@ -14,6 +14,7 @@
 
 Orc::Orc(int number)
 {
+	hitEffect = new iImage();
 	orc_number = number;
 	
 	HP = Orc_HP;
@@ -96,6 +97,8 @@ Orc::Orc(int number)
 	jumpNum = 0;
 	_jumpNum = 2;
 
+	
+	iImage* imgHit = new iImage();
 
 }
 
@@ -121,7 +124,10 @@ void Orc::cbDeath(void* cb)
 void Orc::cbHurt(void* cb)
 {
 	Orc* o = (Orc*)cb;
+	o->hitEffect->position = o->position;
+	o->hitEffect->startAnimation();
 	o->setBehave(EnermyBehave_idle, o->direction);
+
 }
 
 void Orc::cbBehave(void* cb)
@@ -143,6 +149,7 @@ void Orc::cbSkill(void* cb)
 #include "../game/stage.h"
 void Orc::setDmg(float dmg)
 {
+	hitEffect->startAnimation();
 	EnermyBehave be = behave;
 	int dir = direction;
 
@@ -160,7 +167,6 @@ void Orc::setDmg(float dmg)
 
 	addNumber(dmg, position + iPointMake(0, -50));
 }
-
 void Orc::setBehave(EnermyBehave be, int dir)
 {
 	if (behave != be || direction != dir)
@@ -170,7 +176,10 @@ void Orc::setBehave(EnermyBehave be, int dir)
 		if (be == EnermyBehave_death)
 			img->startAnimation(cbDeath, this);
 		else if (be == EnermyBehave_hurt)
+		{
+			hitEffect->startAnimation();
 			img->startAnimation(cbHurt, this);
+		}
 		else if (be == EnermyBehave_meleeAttack)
 			img->startAnimation(cbSkill, this);
 		else
@@ -265,18 +274,27 @@ void Orc::paint(float dt, iPoint offset)
 		setBehave(EnermyBehave_move, direction);
 
 	}
+
+	if(hitEffect->animation && hitEffect != NULL)
+	{
+		hitEffect->paint(dt, offset, direction);
+	}
 }
 
 void Orc::Skill1()
 {
 	
 	extern Player* hero;
+	
 	if (hero->getPosition().x > position.x)
 		hero->setPosition(hero->getPosition() - iPointMake(-10, 0)); // 넉백
+	
 
 	else
 		hero->setPosition(hero->getPosition() - iPointMake(+10, 0));
-	
+
+	//zoomCamera(hero->getPosition(), 1.3);
+	shakeCamera(25, 0.5);
 	hero->setHP(hero->getHp() - 5.0);
 	extern iStrTex* hpIndicator;
 	hpIndicator->setString("%f", hero->getHp());

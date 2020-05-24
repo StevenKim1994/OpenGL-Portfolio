@@ -158,7 +158,16 @@ void drawHero(float dt)
 						//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
 						if (containPoint(orcs[i]->getPosition(), hero->imgSkill->touchRect()))
 						{
+				
+							
 							((Orc*)orcs[i])->setDmg(5.f);
+							((Orc*)orcs[i])->hitEffect = hero->imgSKillHit->copy();
+				
+							((Orc*)orcs[i])->hitEffect->position = iPointMake(orcs[i]->getPosition().x - 16, orcs[i]->getPosition().y -30);
+							((Orc*)orcs[i])->hitEffect->startAnimation();
+							
+						
+							
 						}
 					}
 					break;

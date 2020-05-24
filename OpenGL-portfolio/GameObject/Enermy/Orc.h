@@ -26,7 +26,7 @@ public:
 	
 	int orc_number;
 	static void cbDeath(void* cb);
-	static void cbHurt(void* cb);
+	static void cbHurt(void* cb); 
 	static void cbBehave(void* cb);
 	static void cbSkill(void* cb);
 
@@ -36,6 +36,8 @@ public:
 
 	iImage** imgs;
 	iImage* img;
+
+	iImage* hitEffect; // = new iImage();
 
 	void Skill1();
 	void Skill2();

@@ -174,7 +174,7 @@ Texture* methodPlayerStaminaIndicator(const char* str)
 
 void loadStage()
 {
-
+	orcNum = _orcNum;
 	
 	playerPortrait = createImage("assets/stage/hero/Knight/KnightPortrait.png");
 	texFboStage = createTexture(devSize.width, devSize.height);
@@ -294,6 +294,8 @@ void loadStage()
 	createPopQuitAnswerUI();
 	createPopGameOverUI();
 	loadNumber();
+
+	logoDt = 0.0f;
 	
 }
 
