@@ -207,7 +207,7 @@ void Object::move(iPoint movement, MapTile* maptile, int NumX, int NumY)
 			bool col = false;
 			for (int y = tly; y < bly + 1; y++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == canNotMove)
+				if (maptile[NumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;

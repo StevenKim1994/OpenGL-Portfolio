@@ -22,9 +22,9 @@ extern iStrTex* staminaIndicator;
 
 extern int gameState;
 
-void drawMapTile(float dt, MapTile* tileInfo,Texture** tileset, int NumX, int NumY)
+void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, int NumX, int NumY)
 {
-	int i, num = MapTileNumX * MapTileNumY;
+	int i, num = NumX * NumY;
 
 	setRGBA(1, 1, 1, 1);
 	{ // MapTilePaint
@@ -33,8 +33,8 @@ void drawMapTile(float dt, MapTile* tileInfo,Texture** tileset, int NumX, int Nu
 		{
 			MapTile* t = &tileInfo[i];
 
-			float x = offMt.x + MapTileWidth * (i % MapTileNumX);
-			float y = offMt.y + MapTileHeight * (i / MapTileNumX);
+			float x = offMt.x + MapTileWidth * (i % NumX);
+			float y = offMt.y + MapTileHeight * (i / NumX);
 
 			if (gameState < gs_villege)
 			{
@@ -71,7 +71,7 @@ void drawMapTile(float dt, MapTile* tileInfo,Texture** tileset, int NumX, int Nu
 
 }
 
-void drawHero(float dt, MapTile* tile, int NumX, int NumY)
+void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 {
 	uint32 keyStat = 0;
 	uint32 keyDown = 0;
@@ -110,7 +110,7 @@ void drawHero(float dt, MapTile* tile, int NumX, int NumY)
 		sy /= MapTileHeight;
 		sy += 2;// 아랫칸인덱스
 
-		if (tiles[sy * MapTileNumX + sx] == canMove)
+		if (tiledata[sy * NumX + sx] == canMove)
 		{
 			iPoint jumpVector = iPointMake(hero->getPosition().x, hero->getPosition().y + 1);
 			hero->setPosition(jumpVector);
@@ -137,7 +137,7 @@ void drawHero(float dt, MapTile* tile, int NumX, int NumY)
 
 		if (mouseMove) // 마우스 입력이 있을때
 		{
-			if (hero->moveForMouse(dt))
+			if (hero->moveForMouse(dt, NumX, NumY))
 				mouseMove = false;
 
 			if (v != iPointZero)
@@ -247,8 +247,8 @@ void drawHero(float dt, MapTile* tile, int NumX, int NumY)
 
 				// 오른쪽으로 넘어갔을 경우
 				offMt.x += (maxX - vp.x) * dt;
-				if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
-					offMt.x = devSize.width - MapTileWidth * MapTileNumX;
+				if (offMt.x < devSize.width - MapTileWidth * NumX)
+					offMt.x = devSize.width - MapTileWidth * NumX;
 			}
 			if (vp.y < minY)
 			{
@@ -261,8 +261,8 @@ void drawHero(float dt, MapTile* tile, int NumX, int NumY)
 			{
 				// 아래로 넘어갔을 경우
 				offMt.y += (maxY - vp.y) * dt;
-				if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
-					offMt.y = devSize.height - MapTileHeight * MapTileNumY;
+				if (offMt.y < devSize.height - MapTileHeight * NumY)
+					offMt.y = devSize.height - MapTileHeight * NumY;
 			}
 		}
 	}
@@ -306,7 +306,7 @@ void drawHero(float dt, MapTile* tile, int NumX, int NumY)
 	
 }
 
-void drawOrc(float dt, MapTile* tile, int NumX, int NumY)
+void drawOrc(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)
 { // paint Orc
 	for (int i = 0; i < orcNum; i++)
 	{
@@ -323,8 +323,10 @@ void drawOrc(float dt, MapTile* tile, int NumX, int NumY)
 	killIndicator->setString("%d", hero->kill);
 }
 
+
+
 #if _DEBUG
-void debugHitbox(float dt, MapTile* tile, int NumX, int NumY)
+void debugHitbox(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 {
 	//hitbox orc
 	for (int i = 0; i < orcNum; i++)

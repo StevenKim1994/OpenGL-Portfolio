@@ -8,7 +8,7 @@
 
 Player::Player()
 {
-	memset(path, 0x00, sizeof(int) * MapTileNumX * MapTileNumY);
+	memset(path, 0x00, sizeof(int) * 1024);
 	pathIndex = pathNum;
 	HP = Player_HP;
 	MP = Player_MP;
@@ -276,7 +276,7 @@ void Player::Skill3()
 }
 
 //Override
-bool Player::moveForMouse(float dt)
+bool Player::moveForMouse(float dt, int NumX, int NumY)
 {
 	
 	if (position.x < targetPosition.x)
@@ -322,8 +322,8 @@ bool Player::moveForMouse(float dt)
 		if (pathIndex < pathNum)
 		{
 			int index = path[pathIndex];
-			targetPosition.x = MapTileWidth * (index % MapTileNumX) + MapTileWidth / 2;
-			targetPosition.y = MapTileHeight * (index / MapTileNumX) + MapTileHeight / 2;
+			targetPosition.x = MapTileWidth * (index % NumX) + MapTileWidth / 2;
+			targetPosition.y = MapTileHeight * (index / NumX) + MapTileHeight / 2;
 			pathIndex++;
 		}
 		else

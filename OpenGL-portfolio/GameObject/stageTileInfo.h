@@ -16,9 +16,11 @@ struct MapTile
 
 #define nextStagePortal 77
 
-#define MapTileNumX 80
-#define MapTileNumY 30
+#define stageMapTileNumX 80
+#define stageMapTileNumY 30
 
+#define endStageMapTileNumX 80
+#define endStageMapTileNumY 30
 
 
 #define MapTileWidth 32

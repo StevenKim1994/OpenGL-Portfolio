@@ -88,7 +88,7 @@ void loadVillege()
 	for(i = 0; i<num; i++)
 	{
 		MapTile* t = &maptile[i];
-		t->attr = tiles[i];
+		t->attr = Vilegetiles[i];
 	}
 
 	hero->setPosition(iPointZero);
@@ -120,7 +120,7 @@ void drawVillege(float dt)
 		drawImage(tileset[i], x, y, TOP | LEFT);
 	}
 
-	drawHero(dt, maptile, MapTileNumX, MapTileNumY);
+	//drawHero(dt, maptile, MapTileNumX, MapTileNumY);
 
 	fbo->unbind();
 	showCamera(texFboVilege, dt);

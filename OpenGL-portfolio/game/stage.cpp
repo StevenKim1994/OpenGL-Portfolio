@@ -55,7 +55,7 @@ static float logoDt = 0.0;
 
 
 
-int tiles[MapTileNumX * MapTileNumY] =
+int tiles[stageMapTileNumX * stageMapTileNumY] =
 {
 01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,
 01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,
@@ -138,7 +138,7 @@ void loadStage()
 	setRGBA(1, 1, 1, 1);
 
 
-	int i, num = MapTileNumX * MapTileNumY;
+	int i, num = stageMapTileNumX * stageMapTileNumY;
 	maptile = (MapTile*)malloc(sizeof(MapTile) * num);
 	for (i = 0; i < num; i++)
 	{
@@ -194,7 +194,7 @@ void loadStage()
 	
 
 	sp = new iShortestPath();
-	sp->init(tiles, MapTileNumX, MapTileNumY);
+	sp->init(tiles, stageMapTileNumX, stageMapTileNumY);
 
 	killIndicator = new iStrTex(methodKillIndicator);
 	killIndicator->setString("%d", hero->kill);
@@ -244,13 +244,13 @@ void freeStage()
 void drawStage(float dt)
 {
 	fbo->bind(texFboStage);
-	drawMapTile(dt, maptile,tileset, MapTileNumX, MapTileNumY);
-	drawOrc(dt, maptile, MapTileNumX, MapTileNumY);
-	drawHero(dt, maptile, MapTileNumX, MapTileNumY);
+	drawMapTile(dt, tiles,maptile,tileset, stageMapTileNumX, stageMapTileNumY);
+	drawOrc(dt, tiles,maptile, stageMapTileNumX, stageMapTileNumY);
+	drawHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);
 #if _DEBUG
-	debugHitbox(dt, maptile, MapTileNumX, MapTileNumY);
+	debugHitbox(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 #endif
 	fbo->unbind();
 	showCamera(texFboStage, dt);
@@ -334,7 +334,7 @@ void keyStage(iKeyState stat, iPoint point)
 		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
 			return;
 
-		sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
+		sp->dijkstra(sy * stageMapTileNumX + sx, ey * stageMapTileNumX + ex, hero->path, hero->pathNum);
 		
 		sp->removeDuplicate(hero->path, hero->pathNum);
 		hero->setTargetPosition(hero->getPosition());

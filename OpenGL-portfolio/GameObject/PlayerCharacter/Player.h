@@ -27,7 +27,7 @@ public:
 	
 
 	//override func
-	bool moveForMouse(float dt);
+	bool moveForMouse(float dt, int NumX, int NumY);
 	
 public:
 	iImage* imgSkill; // 근접 스킬

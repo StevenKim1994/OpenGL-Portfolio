@@ -228,7 +228,7 @@ void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 
 			if (sy == ey) //세로 위치가 같을떄만 !
 			{
-				sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, path, pathNum);
+				sp->dijkstra(sy * NumX + sx, ey * NumX + ex, path, pathNum);
 				sp->removeDuplicate(path, pathNum);
 
 
