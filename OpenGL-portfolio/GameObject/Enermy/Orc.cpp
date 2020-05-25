@@ -83,13 +83,13 @@ Orc::Orc(int number)
 
 	float ai[5] = orcAiTime;
 	aiTime = _aiTime = ai[number];
- 	
+
 	// super class
 	this->size = iSizeMake(Orc_Width, Orc_Height);
 
 	HP = Orc_HP;
 	MP = Orc_MP;
-	
+
 	Stamina = Orc_Stamina;
 	speed = 0.0;
 	_speed = Orc_Speed;
@@ -119,7 +119,7 @@ Orc::~Orc()
 		delete imgs[i];
 	free(imgs);
 
-	
+
 }
 
 #include "../PlayerCharacter/Player.h"
@@ -141,17 +141,17 @@ void Orc::cbHurt(void* cb)
 void Orc::cbBehave(void* cb)
 {
 	iImage* i = (iImage*)cb;
-		
+
 }
 
 void Orc::cbSkill(void* cb)
 {
 	Orc* o = (Orc*)cb;
 	o->Skill1();
-	o->setBehave(EnermyBehave_idle, o -> direction);
+	o->setBehave(EnermyBehave_idle, o->direction);
 
-	
-	
+
+
 }
 
 #include "../game/stage.h"
@@ -208,7 +208,7 @@ void Orc::paint(float dt, iPoint offset)
 	direction = (position.x < targetPosition.x);
 
 	// 플레이어 발견 했을때!
-	if (iPointLength(hero->getPosition() -position) < 150)
+	if (iPointLength(hero->getPosition() - position) < 150)
 	{
 		if (detected_Player == false)
 		{
@@ -229,7 +229,7 @@ void Orc::paint(float dt, iPoint offset)
 
 			if (sy == ey) //세로 위치가 같을떄만 !
 			{
-				sp->dijkstra(sy * StageMapTileNumX + sx, ey * StageMapTileNumX + ex, path, pathNum);
+				sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, path, pathNum);
 				sp->removeDuplicate(path, pathNum);
 
 
@@ -250,7 +250,7 @@ void Orc::paint(float dt, iPoint offset)
 			speed += 0.05f;
 
 		}
-		
+
 		moveForMouse(dt);
 
 	}
@@ -266,16 +266,16 @@ void Orc::paint(float dt, iPoint offset)
 
 		float rateOrcV = _sin(r);
 		float orcDir;
-		
+
 
 		v = iPointMake(rateOrcV, 0);
 
 		if (v.x > 0)
 			direction = 1;
-		
+
 		else
 			direction = 0;
-		
+
 		setBehave(EnermyBehave_move, direction);
 
 	}
@@ -283,12 +283,12 @@ void Orc::paint(float dt, iPoint offset)
 
 void Orc::Skill1()
 {
-	
+
 	extern Player* hero;
-	
+
 	if (hero->getPosition().x > position.x)
 		hero->setPosition(hero->getPosition() - iPointMake(-10, 0)); // 넉백
-	
+
 
 	else
 		hero->setPosition(hero->getPosition() - iPointMake(+10, 0));

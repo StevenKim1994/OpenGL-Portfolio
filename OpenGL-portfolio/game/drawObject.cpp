@@ -21,11 +21,10 @@ extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
 
-//extern int tiles[StageMapTileNumX * StageMapTileNumY];
 
 void drawMapTile(float dt)
 {
-	int i, num = StageMapTileNumX * StageMapTileNumY;
+	int i, num = MapTileNumX * MapTileNumY;
 
 	setRGBA(1, 1, 1, 1);
 	{ // MapTilePaint
@@ -34,8 +33,8 @@ void drawMapTile(float dt)
 		{
 			MapTile* t = &maptile[i];
 
-			float x = offMt.x + MapTileWidth * (i % StageMapTileNumX);
-			float y = offMt.y + MapTileHeight * (i / StageMapTileNumX);
+			float x = offMt.x + MapTileWidth * (i % MapTileNumX);
+			float y = offMt.y + MapTileHeight * (i / MapTileNumX);
 
 			if (i > 879)
 			{
@@ -103,7 +102,7 @@ void drawHero(float dt)
 		sy /= MapTileHeight;
 		sy += 2;// 아랫칸인덱스
 
-		if (tiles[sy * StageMapTileNumX + sx] == canMove)
+		if (tiles[sy * MapTileNumX + sx] == canMove)
 		{
 			iPoint jumpVector = iPointMake(hero->getPosition().x, hero->getPosition().y + 1);
 			hero->setPosition(jumpVector);
@@ -162,10 +161,13 @@ void drawHero(float dt)
 						//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
 						if (containPoint(orcs[i]->getPosition(), hero->imgSkill->touchRect()))
 						{
+				
 							((Orc*)orcs[i])->setDmg(hero->getDamage());
 							addEffectHit(0, orcs[i]->getPosition());
 
 							orcs[i]->setPosition(iPointMake(orcs[i]->getPosition().x, orcs[i]->getPosition().y - 50.0f));
+						
+							
 						}
 					}
 					break;
@@ -237,8 +239,8 @@ void drawHero(float dt)
 
 				// 오른쪽으로 넘어갔을 경우
 				offMt.x += (maxX - vp.x) * dt;
-				if (offMt.x < devSize.width - MapTileWidth * StageMapTileNumX)
-					offMt.x = devSize.width - MapTileWidth * StageMapTileNumX;
+				if (offMt.x < devSize.width - MapTileWidth * MapTileNumX)
+					offMt.x = devSize.width - MapTileWidth * MapTileNumX;
 			}
 			if (vp.y < minY)
 			{
@@ -251,8 +253,8 @@ void drawHero(float dt)
 			{
 				// 아래로 넘어갔을 경우
 				offMt.y += (maxY - vp.y) * dt;
-				if (offMt.y < devSize.height - MapTileHeight * StageMapTileNumY)
-					offMt.y = devSize.height - MapTileHeight * StageMapTileNumY;
+				if (offMt.y < devSize.height - MapTileHeight * MapTileNumY)
+					offMt.y = devSize.height - MapTileHeight * MapTileNumY;
 			}
 		}
 	}
@@ -304,8 +306,8 @@ void drawOrc(float dt)
 		if (orcs[i]->alive == false)
 		{
 			orcNum--;
+			delete orcs[i];
 			orcs[i] = orcs[orcNum];
-			i--;
 			continue;
 		}
 		orcs[i]->paint(dt, offMt);
@@ -328,11 +330,11 @@ void debugHitbox(float dt)
 
 #endif
 
-extern int endStagetiles[StageMapTileNumX * StageMapTileNumY];
+extern int endStagetiles[MapTileNumX * MapTileNumY];
 void drawEndStageMapTile(float dt)
 {
 
-	int i, num = StageMapTileNumX * StageMapTileNumY;
+	int i, num = MapTileNumX * MapTileNumY;
 
 	setRGBA(1, 1, 1, 1);
 	{ // MapTilePaint
@@ -341,8 +343,8 @@ void drawEndStageMapTile(float dt)
 		{
 			MapTile* t = &maptile[i];
 			t->attr = endStagetiles[i];
-			float x = offMt.x + MapTileWidth * (i % StageMapTileNumX);
-			float y = offMt.y + MapTileHeight * (i / StageMapTileNumX);
+			float x = offMt.x + MapTileWidth * (i % MapTileNumX);
+			float y = offMt.y + MapTileHeight * (i / MapTileNumX);
 
 			if (i > 879)
 			{

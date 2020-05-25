@@ -13,5 +13,3 @@ void freeStage();
 void drawStage(float dt);
 void keyStage(iKeyState stat, iPoint point);
 
-
-

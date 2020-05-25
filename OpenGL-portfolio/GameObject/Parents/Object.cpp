@@ -169,12 +169,9 @@ const char* Object::getName()
 
 
 
-void Object::move(iPoint movement, MapTile* maptile )
+void Object::move(iPoint movement, MapTile* maptile)
 {
 	iPoint mp = movement;
-	
-	int NumX;
-	int NumY;
 
 	if (mp.x < 0)
 	{
@@ -188,14 +185,14 @@ void Object::move(iPoint movement, MapTile* maptile )
 			bool col = false;
 			for (int y = tly; y < bly + 1; y++)
 			{
-				if (maptile[StageMapTileNumX * y + x].attr == canNotMove)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
 					min = MapTileWidth * (x + 1);
 					break;
 				}
-				else if (maptile[StageMapTileNumX * y + x].attr == deadZone)
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
 				
 				}
@@ -214,13 +211,13 @@ void Object::move(iPoint movement, MapTile* maptile )
 		int TRX = position.x + size.width / 2; TRX /= MapTileWidth;
 		int TRY = position.y - size.height / 2; TRY /= MapTileHeight;
 		int BRY = position.y + size.height / 2; BRY /= MapTileHeight;
-		int min = MapTileWidth * StageMapTileNumX;
-		for (int x = TRX + 1; x < StageMapTileNumX; x++)
+		int min = MapTileWidth * MapTileNumX;
+		for (int x = TRX + 1; x < MapTileNumX; x++)
 		{
 			bool col = false;
 			for (int y = TRY; y < BRY + 1; y++)
 			{
-				if (maptile[StageMapTileNumX * y + x].attr == canNotMove)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -228,7 +225,7 @@ void Object::move(iPoint movement, MapTile* maptile )
 					break;
 				}
 
-				else if (maptile[StageMapTileNumX * y + x].attr == deadZone)
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
 					printf("you die!\n");
 					this->alive = false;
@@ -256,7 +253,7 @@ void Object::move(iPoint movement, MapTile* maptile )
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (maptile[StageMapTileNumX * y + x].attr == canNotMove)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -264,7 +261,7 @@ void Object::move(iPoint movement, MapTile* maptile )
 					break;
 				}
 
-				else if (maptile[StageMapTileNumX * y + x].attr == deadZone)
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
 					
 				}
@@ -283,20 +280,20 @@ void Object::move(iPoint movement, MapTile* maptile )
 		int TLY = position.y + size.height / 2; TLY /= MapTileHeight;
 		int TLX = position.x - size.width / 2; TLX /= MapTileWidth;
 		int TRX = position.x + size.width / 2; TRX /= MapTileWidth;
-		int min = MapTileHeight * StageMapTileNumY;
-		for (int y = TLY + 1; y < StageMapTileNumY; y++)
+		int min = MapTileHeight * MapTileNumY;
+		for (int y = TLY + 1; y < MapTileNumY; y++)
 		{
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (maptile[StageMapTileNumX * y + x].attr == canNotMove)
+				if (maptile[MapTileNumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
 					min = MapTileHeight * y - 1;
 					break;
 				}
-				else if (maptile[StageMapTileNumX * y + x].attr == deadZone)
+				else if (maptile[MapTileNumX * y + x].attr == deadZone)
 				{
 					
 				}
@@ -351,8 +348,8 @@ bool Object::moveForMouse(float dt)
 		if (pathIndex < pathNum)
 		{
 			int index = path[pathIndex];
-			targetPosition.x = MapTileWidth * (index % StageMapTileNumX) + MapTileWidth / 2;
-			targetPosition.y = MapTileHeight * (index / StageMapTileNumX) + MapTileHeight / 2;
+			targetPosition.x = MapTileWidth * (index % MapTileNumX) + MapTileWidth / 2;
+			targetPosition.y = MapTileHeight * (index / MapTileNumX) + MapTileHeight / 2;
 			pathIndex++;
 		}
 		else

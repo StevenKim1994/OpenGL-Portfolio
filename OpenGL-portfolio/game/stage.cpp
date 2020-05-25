@@ -50,7 +50,7 @@ float logoDt = 0.0;
 
 
 
-int tiles[StageMapTileNumX * StageMapTileNumY] =
+int tiles[MapTileNumX * MapTileNumY] =
 {
 01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,
 01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,01,
@@ -218,7 +218,7 @@ void loadStage()
 	setRGBA(1, 1, 1, 1);
 
 
-	int i, num = StageMapTileNumX * StageMapTileNumY;
+	int i, num = MapTileNumX * MapTileNumY;
 	maptile = (MapTile*)malloc(sizeof(MapTile) * num);
 	for (i = 0; i < num; i++)
 	{
@@ -251,6 +251,8 @@ void loadStage()
 		hero->setStamina(100.0);
 
 		hero->setDamage(5.0f);
+	
+
 	}
 
 	// camera positioning Initialize
@@ -259,6 +261,8 @@ void loadStage()
 		offMt = iPointMake(0, -2000 + 500);
 	}
 
+
+	
 	orcs = (Monster**)malloc(sizeof(Monster) * orc_Num);
 	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
 	{
@@ -268,12 +272,16 @@ void loadStage()
 		orcs[i] = orc;
 	}
 	
+
 	sp = new iShortestPath();
-	sp->init(tiles, StageMapTileNumX, StageMapTileNumY);
+	sp->init(tiles, MapTileNumX, MapTileNumY);
 
 	killIndicator = new iStrTex(methodKillIndicator);
 	killIndicator->setString("%d", hero->kill);
 	
+	//timeIndicator = new iStrTex(methodTimeIndicator);
+	//timeIndicator->setString("TIME : %0.2f", gameTime);
+
 	hpIndicator = new iStrTex(methodPlayerHPIndicator);
 	hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
 
@@ -287,17 +295,15 @@ void loadStage()
 	createPopMenuUI();
 	createPopQuitAnswerUI();
 	createPopGameOverUI();
-	loadEffectHit();
 	loadNumber();
-
+	loadEffectHit();
 	logoDt = 0.0f;
+	
 }
 
 void freeStage()
 {
-	//for (int i = 0; i < StageMapTileNumX * StageMapTileNumY; i++)
-		//free(tileset[i]);
-
+	freeImage(texFboStage);
 	free(maptile);
 	free(orcs);
 
@@ -305,6 +311,7 @@ void freeStage()
 //
 //hero는 다음Stage에서 사용되므로 delete 하지 않음!
 //UI는 여기서 생성되고 게임오버할떄 까지 계속쓰이므로 게임오버할떄 지운다
+
 }
 
 void drawStage(float dt)
@@ -313,14 +320,17 @@ void drawStage(float dt)
 	drawMapTile(dt);
 	drawOrc(dt);
 	drawHero(dt);
-
+	drawEffectHit(dt, offMt);
+	drawNumber(dt, offMt);
 #if _DEBUG
 	debugHitbox(dt);
 #endif
-	drawEffectHit(dt, offMt);
-	drawNumber(dt, offMt);
 	fbo->unbind();
 	showCamera(texFboStage, dt);
+
+	//gameTime += dt;
+	//timeIndicator->setString("TIME : %0.2f",gameTime);
+
 
 	drawPopPlayerUI(dt);
 	drawPopMenuUI(dt);
@@ -357,6 +367,7 @@ void drawStage(float dt)
 		}
 	}
 
+	
 }
 
 void keyStage(iKeyState stat, iPoint point)
@@ -398,7 +409,7 @@ void keyStage(iKeyState stat, iPoint point)
 		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
 			return;
 
-		sp->dijkstra(sy * StageMapTileNumX + sx, ey * StageMapTileNumX + ex, hero->path, hero->pathNum);
+		sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, hero->path, hero->pathNum);
 		
 		sp->removeDuplicate(hero->path, hero->pathNum);
 		hero->setTargetPosition(hero->getPosition());
@@ -409,5 +420,3 @@ void keyStage(iKeyState stat, iPoint point)
 
 
 }
-
-

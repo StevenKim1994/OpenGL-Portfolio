@@ -10,7 +10,7 @@ class Orc : public Monster
 public: Orc(int number);
 	  virtual ~Orc();
 
-public: 
+public:
 	void paint(float dt, iPoint offset);
 
 	void setBehave(EnermyBehave be, int direction);
@@ -19,14 +19,14 @@ public:
 	void setDmg(float dmg);
 
 	static void cbDeath(void* cb);
-	static void cbHurt(void* cb); 
+	static void cbHurt(void* cb);
 	static void cbBehave(void* cb);
 	static void cbSkill(void* cb);
 
 public:
 	//settter
 	void setDetected_Player(bool check);
-	void setTarget(Object* obj); 
+	void setTarget(Object* obj);
 
 	//getter
 	bool getDetected_Player();

@@ -20,7 +20,7 @@ extern iStrTex* staminaIndicator;
 iPopup* PopPlayerUI;
 iImage** PopPlayerUIImgs;
 Texture* Poptex;
-iPopup * PopMenuUI;
+iPopup* PopMenuUI;
 
 //const char* slotString[5] = { "Name", "HP", "MP", "Stamina", "Menu" };
 
@@ -814,11 +814,11 @@ bool keyPopGameOverUI(iKeyState stat, iPoint point)
 			{
 			case gs_stage:
 				setLoading(gs_menu, freeStage, loadMenu);
-			break;
+				break;
 
 			case gs_endStage:
 				setLoading(gs_menu, freeEndStage, loadMenu);
-			break;
+				break;
 
 			}
 		}
@@ -879,7 +879,7 @@ void createPopStageNPCMenuUI()
 	setStringRGBA(0, 0, 0, 1);
 	setStringSize(30);
 
-	
+
 	// Background //
 	{
 		iImage* img = new iImage();
@@ -888,7 +888,7 @@ void createPopStageNPCMenuUI()
 		g->init(size);
 		g->fillRect(0, 0, size.width, size.height);
 		g->drawString(size.width / 2, 30, HCENTER | VCENTER, "Would you like to enter the village?");
-		
+
 		tex = g->getTexture();
 		img->addObject(tex);
 		freeImage(tex);
@@ -904,12 +904,12 @@ void createPopStageNPCMenuUI()
 
 		iSize btnSize = iSizeMake(150, 30);
 
-		for(int i = 0; i<2; i++)
+		for (int i = 0; i < 2; i++)
 		{
 			iImage* answerBtn = new iImage();
 			Texture* btnTex;
 
-			for(int j =0; j<2;j++)
+			for (int j = 0; j < 2; j++)
 			{
 				if (j == 0) // btnoff
 				{
@@ -929,20 +929,20 @@ void createPopStageNPCMenuUI()
 					btnTex = g->getTexture();
 				}
 				answerBtn->addObject(btnTex);
-				answerBtn->position=  iPointMake(200 * i + 150, size.height / 2 + 20);
+				answerBtn->position = iPointMake(200 * i + 150, size.height / 2 + 20);
 				freeImage(btnTex);
 			}
 
 			pop->addObject(answerBtn);
 
 			PopStageNPCMenuUIImgs[i] = answerBtn;
-			
-		}
-		
-	}
-	
 
-	pop->openPosition = iPointMake(devSize.width / 2 - size.width/2, devSize.height/2 - size.height/2);
+		}
+
+	}
+
+
+	pop->openPosition = iPointMake(devSize.width / 2 - size.width / 2, devSize.height / 2 - size.height / 2);
 	pop->closePosition = pop->openPosition;
 
 
@@ -951,13 +951,13 @@ void createPopStageNPCMenuUI()
 
 void freePopStageNPCMenuUI()
 {
-	
+
 	free(PopStageNPCMenuUIImgs);
-	
+
 	// iPopup delete시 안에 있는 Img들 다 메모리 해제함
 
 	delete PopStageNPCMenuUI;
-	
+
 }
 
 void drawPopStageNPCMenuUI(float dt)
@@ -975,41 +975,41 @@ bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point)
 
 	int i, j = -1;
 
-	switch(stat)
+	switch (stat)
 	{
 	case iKeyStateBegan:
-		{
-			i = PopStageNPCMenuUI->selected;
+	{
+		i = PopStageNPCMenuUI->selected;
 
-			if (i == -1)
-				break;
-
-			if( i==0)
-			{
-				printf("마을안으로!\n");
-				setLoading(gs_villege, freeEndStage, loadVillege);
-				
-			}
-			else if( i == 1)
-			{
-				printf("취소!!\n");
-				PopStageNPCMenuUI->show(false);
-			}
+		if (i == -1)
 			break;
+
+		if (i == 0)
+		{
+			printf("마을안으로!\n");
+			setLoading(gs_villege, freeEndStage, loadVillege);
+
 		}
+		else if (i == 1)
+		{
+			printf("취소!!\n");
+			PopStageNPCMenuUI->show(false);
+		}
+		break;
+	}
 	case iKeyStateMoved:
+	{
+		for (i = 0; i < 2; i++)
 		{
-			for(i = 0; i<2; i++)
+			if (containPoint(point, PopStageNPCMenuUIImgs[i]->touchRect(PopStageNPCMenuUI->closePosition)))
 			{
-				if(containPoint(point, PopStageNPCMenuUIImgs[i]->touchRect(PopStageNPCMenuUI->closePosition)))
-				{
-					j = i;
-					break;
-				}
+				j = i;
+				break;
 			}
-			PopStageNPCMenuUI->selected = j;
-			break;
 		}
+		PopStageNPCMenuUI->selected = j;
+		break;
+	}
 	}
 }
 

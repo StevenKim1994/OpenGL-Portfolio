@@ -34,4 +34,3 @@ void Monster::Skill1()
 void Monster::Skill2()
 {
 }
-

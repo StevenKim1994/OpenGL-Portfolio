@@ -184,18 +184,26 @@ iRect iImage::touchRect(iPoint p)
 
 iImage* iImage::copy()
 {
+#if 0
+	iArray* array = new iArray(freeTex);
+	for (int i = 0; i < arrayTex->count; i++)
+	{
+		//array->addObject(arrayTex->objectAtIndex(i));
+		Texture* tex = (Texture*)arrayTex->objectAtIndex(i);
+		array->addObject(tex);
+		tex->retainCount++;
+	}
+
 	iImage* img = new iImage();
 	memcpy(img, this, sizeof(iImage));
-
-	//iArray* array = new iArray(freeTex);
-	//for (int i = 0; i < arrayTex->count; i++)
-	//	array->addObject(arrayTex->objectAtIndex(i));
-	//
-	//img->arrayTex = array;
+	img->arrayTex = array;
+#else
+	iImage* img = new iImage();
+	memcpy(img, this, sizeof(iImage));
 	img->arrayTex = new iArray(freeTex);
 	for (int i = 0; i < arrayTex->count; i++)
 		img->addObject((Texture*)arrayTex->objectAtIndex(i));
-
+#endif
 
 	return img;
 }
