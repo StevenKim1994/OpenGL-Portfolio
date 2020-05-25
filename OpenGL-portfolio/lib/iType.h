@@ -24,7 +24,7 @@ typedef unsigned short uint16;
 typedef signed int int32;
 typedef unsigned int uint32;
 
-enum iKeyState
+enum class iKeyState
 {
 	iKeyStateBegan = 0,
 	iKeyStateMoved,

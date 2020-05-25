@@ -2,67 +2,86 @@
 
 #include "Flyeye.h"
 
+static iImage** imgFlyeye = NULL;
 
 
 Flyeye::Flyeye()
 {
-	
-	ObjInfo _oi[1] = {
-		"assets/intro/flyeye/tile%03d.png",8, 1.5f, {0, 0},
+	if (imgFlyeye == NULL)
+	{
+
+		ObjInfo _oi[1] = {
+			"assets/intro/flyeye/tile%03d.png",8, 1.5f, {0, 0},
 		}; // 0: idle
 
-	iGraphics* g = iGraphics::instance();
-	iSize size;
+		iGraphics* g = iGraphics::instance();
+		iSize size;
 
-	imgs = (iImage**)malloc(sizeof(iImage*) * 1);
+		imgFlyeye = (iImage**)malloc(sizeof(iImage*) * 1);
 
-	for(int i = 0 ; i <1; i++)
-	{
-		ObjInfo* oi = &_oi[i];
-
-		iImage* img = new iImage();
-
-		for (int j = 0; j < oi->num; j++)
+		for (int i = 0; i < 1; i++)
 		{
-			igImage* ig = g->createIgImage(oi->path, j);
-			size = iSizeMake(g->getIgImageWidth(ig) * oi->sizeRate,
-				g->getIgImageHeight(ig) * oi->sizeRate);
 
-			g->init(size);
-			g->drawImage(ig, 0, 0, oi->sizeRate, oi->sizeRate, TOP | LEFT);
+			iImage* img = new iImage();
+			ObjInfo* oi = &_oi[i];
 
-			Texture* tex = g->getTexture();
-			img->addObject(tex);
-			freeImage(tex);
+			for (int j = 0; j < oi->num; j++)
+			{
+				igImage* ig = g->createIgImage(oi->path, j);
+				size = iSizeMake(g->getIgImageWidth(ig) * oi->sizeRate,
+					g->getIgImageHeight(ig) * oi->sizeRate);
+
+				g->init(size);
+				g->drawImage(ig, 0, 0, oi->sizeRate, oi->sizeRate, TOP | LEFT);
+
+				Texture* tex = g->getTexture();
+				img->addObject(tex);
+				freeImage(tex);
+			}
+
+
+			switch (i)
+			{
+			case 0:
+				img->_repeatNum = 0;
+				break;
+
+			default:
+				img->_repeatNum = 1;
+
+				break;
+			}
+
+			img->_aniDt = 0.1f;
+			img->position = oi->p * 2;
+
+			imgFlyeye[i] = img;
 		}
-
-		img->_aniDt = 0.1f;
-
-		switch(i)
-		{
-		case 0:
-			img->_repeatNum = 0;
-			break;
-
-		default:
-			img->_repeatNum = 1;
-
-			break;
-		}
-
-		img->position = oi->p * 2;
-
-		imgs[i] = img;
-		
 	}
-	behave = (EnermyBehave)-1;
-	setBehave(EnermyBehave_idle, 0);
-	movement = 100;
-	direction = 0;
-}
 
+		imgs = (iImage**)malloc(sizeof(iImage*) * 1);
+		for (int i = 0; i < 1; i++)
+			imgs[i] = imgFlyeye[i]->copy();
+
+		img = imgs[0];
+
+		behave = EnermyBehave::EnermyBehave_NULL;
+		setBehave(EnermyBehave::EnermyBehave_idle, 0);
+		movement = 100;
+		direction = 0;
+	
+}
 Flyeye::~Flyeye()
 {
+	if(imgFlyeye)
+	{
+		for (int i = 0; i < 1; i++)
+			delete imgFlyeye[i];
+
+		free(imgFlyeye);
+		imgFlyeye = NULL;
+	}
+	
 	for (int i = 0; i < 1; i++)
 		delete imgs[i];
 
@@ -80,8 +99,8 @@ void Flyeye::setBehave(EnermyBehave be, int direction)
 	if(behave != be || direction != direction)
 	{
 		behave = be;
-		img = imgs[be];
-		if (be == EnermyBehave_idle)
+		img = imgs[(int)be];
+		if (be == EnermyBehave::EnermyBehave_idle)
 			img->startAnimation(cbBehave, img);
 
 		this->direction = direction;

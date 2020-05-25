@@ -135,3 +135,9 @@ bool containRect(iRect src, iRect dst); // src의 rect가 dst의 rect에 충돌�
 char* loadFile(const char* filePath, int& length);
 void saveFile(const char* filePath, char* buf, int bufLength);
 
+
+// 한점에서 직선까지의 거리
+float getDistanceLine0(iPoint p, iPoint sp, iPoint ep);
+// 한점에서 선분까지의 거리
+float getDistanceLine1(iPoint p, iPoint sp, iPoint ep);
+

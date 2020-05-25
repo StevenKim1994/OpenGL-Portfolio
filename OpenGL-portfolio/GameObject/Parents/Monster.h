@@ -2,8 +2,9 @@
 #include "Object.h"
 
 
-enum EnermyBehave
+enum class EnermyBehave
 {
+	EnermyBehave_NULL = -1,
 	EnermyBehave_idle = 0,
 	EnermyBehave_meleeAttack,
 	EnermyBehave_move,
@@ -56,8 +57,9 @@ public:
 	static void cbBehave(iImage* img);
 	static void cbSkill(iImage* skillimg);
 
-	virtual void setBehave(EnermyBehave be, int direction) = 0;
-	virtual void paint(float dt, iPoint offset) = 0;
+	void setBehave(EnermyBehave be, int direction);
+	void paint(float dt, iPoint offset);
+	void paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY);
 
 	iImage** imgs;
 	iImage* img;

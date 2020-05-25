@@ -3,6 +3,18 @@
 
 Monster::Monster()
 {
+	Target = NULL;
+	Target_Pos = iPointZero;
+	_aiTime = 5.0f;
+	alive = false;
+	behave = EnermyBehave::EnermyBehave_NULL;
+	detected_Player = NULL;
+	direction = 0;
+	imgs = NULL;
+	img = NULL;
+	rateV = NULL;
+	roamingDt = NULL;
+	_roamingDt = NULL;
 }
 
 Monster::~Monster()
@@ -25,6 +37,18 @@ bool Monster::getDetected_Player()
 Object* Monster::getTarget()
 {
 	return nullptr;
+}
+
+void Monster::setBehave(EnermyBehave be, int direction)
+{
+}
+
+void Monster::paint(float dt, iPoint offset)
+{
+}
+
+void Monster::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
+{
 }
 
 void Monster::Skill1()

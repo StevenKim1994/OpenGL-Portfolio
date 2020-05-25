@@ -1,6 +1,5 @@
 #pragma once
 
-
 #include "intro.h"
 #include "main.h"
 #include "sceneManager.h"
@@ -9,8 +8,6 @@
 
 #include "Flyeye.h"
 
-
-iImage* next = (iImage*)malloc(sizeof(iImage));
 Texture* bg;
 Texture* title;
 Texture* enter;
@@ -18,25 +15,18 @@ Texture* enter;
 Flyeye** flyeyes;
 Flyeye* flyeye;
 
-float mr = -0.35f;
-float mmr = 0.05f;
+static float mr = -0.35f;
+static float mmr = 0.05f;
 static float mm = 0.0f;
+static float rate = 0.0f;
+static float r = 0.0f;
 
 void loadIntro()
 {
-	static float rate = 0.0f;
 	rate += 0.1f;
-	
-	
-	//printf("loadIntro()\n");
-	
 	bg = createImage("assets/intro/introbackground.png");
-
-	//title = createImage("assets/intro/title.png");
-
 	iGraphics* g = iGraphics::instance();
 	igImage* ig = g->createIgImage("assets/intro/enter.png");
-
 	iSize size = iSizeMake(g->getIgImageWidth(ig),  g->getIgImageHeight(ig));
 	g->init(size);
 
@@ -44,12 +34,7 @@ void loadIntro()
 	g->freeIgImage(ig);
 
 	enter = g->getTexture();
-
 	
-
-	createTitle();
-	audioPlay(2);
-
 
 	// create Flyeyes
 
@@ -68,16 +53,13 @@ void loadIntro()
 		
 	}
 
-	//flyeyes[1]->direction = 1;
-
-	
-
+	audioPlay(2);
+	createTitle();
+	showTitle(true);
 }
 
 void freeIntro()
 {
-	//printf("freeIntro()n\n");
-
 	for (int i = 0; i < 5; i++)
 		delete flyeyes[i];
 
@@ -88,39 +70,22 @@ void freeIntro()
 	free(enter);
 
 	freeTitle();
-	
 }
 float resolutionRate = 200; // 1920x1080 : 300;
 
 void drawIntro(float dt)
 {
-	
-
-	
-	static float r = 0.0f;
-	
-
 	r += 0.3f;
-
 	float rateSize = _sin(r);
 
 	if (rateSize < 0.4f)
 		rateSize = 0.4f;
-	
-	
-	//printf("%f\n", r);
-	//printf("drawIntro()\n");
+
 	setRGBA(1, 1, 1, 1);
-
 	drawImage(bg, 0, 0, TOP | LEFT);
-	//fillRect(0, 0, devSize.width, devSize.height); // Intro Background
-
-	
 	
 	mm += mmr;
 
-	printf("%f\n", mm);
-	
 	if (mm > 100.0f)
 	{
 		mr = -mr;
@@ -149,19 +114,12 @@ void drawIntro(float dt)
 	for (int i = 0; i < 5; i++)
 		flyeyes[i]->paint(dt, iPointZero);
 
-	drawTitle(dt);
+	
 
-	showTitle(true);
+	drawImage(enter, devSize.width / 2, devSize.height / 2 + resolutionRate, 0, 0, enter->potWidth, enter->potHeight, VCENTER|HCENTER, rateSize, rateSize, 0,1, REVERSE_NONE );
 
-	drawImage(
-		enter, devSize.width / 2, devSize.height / 2 + resolutionRate, 0, 0, enter->potWidth, enter->potHeight, VCENTER|HCENTER, rateSize, rateSize, 0,1, REVERSE_NONE );
-	//drawImage(enter, devSize.width / 2 , devSize.height /2 + 300, HCENTER | VCENTER);
 	setRGBA(1, 1, 1, 1);
 	
-	
-	
-	
-
 	if (getKeyDown() & keyboard_enter)
 	{
 		audioStop(0); // Intro BGM stop
@@ -169,7 +127,7 @@ void drawIntro(float dt)
 		setLoading(gs_menu, freeMenu, loadMenu);
 	}
 
-
+	drawTitle(dt);
 	
 }
 
@@ -222,14 +180,8 @@ void createTitle()
 
 	pop->closePosition = cp;
 
-
-
 	popTitle = pop;
 
-	
-
-
-	
 }
 
 void freeTitle()

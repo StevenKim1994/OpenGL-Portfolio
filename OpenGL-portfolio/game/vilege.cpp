@@ -5,6 +5,8 @@
 #include "Player.h"
 #include "drawObject.h"
 
+// 게임 씬 관련
+extern int gameState;
 
 int Vilegetiles[32 * 32] =
 {
@@ -118,7 +120,7 @@ void drawVillege(float dt)
 		drawImage(tileset[i], x, y, TOP | LEFT);
 	}
 
-	drawHero(dt);
+	drawHero(dt, maptile, MapTileNumX, MapTileNumY);
 
 	fbo->unbind();
 	showCamera(texFboVilege, dt);

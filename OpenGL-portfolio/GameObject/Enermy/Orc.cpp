@@ -101,8 +101,8 @@ Orc::Orc(int number)
 	_jumpNum = 2;
 
 
-	behave = (EnermyBehave)-1;
-	setBehave(EnermyBehave_idle, 0);
+	behave = EnermyBehave::EnermyBehave_NULL;
+	setBehave(EnermyBehave::EnermyBehave_idle, 0);
 }
 
 Orc::~Orc()
@@ -134,7 +134,7 @@ void Orc::cbDeath(void* cb)
 void Orc::cbHurt(void* cb)
 {
 	Orc* o = (Orc*)cb;
-	o->setBehave(EnermyBehave_idle, o->direction);
+	o->setBehave(EnermyBehave::EnermyBehave_idle, o->direction);
 
 }
 
@@ -148,7 +148,7 @@ void Orc::cbSkill(void* cb)
 {
 	Orc* o = (Orc*)cb;
 	o->Skill1();
-	o->setBehave(EnermyBehave_idle, o->direction);
+	o->setBehave(EnermyBehave::EnermyBehave_idle, o->direction);
 
 
 
@@ -163,12 +163,12 @@ void Orc::setDmg(float dmg)
 	HP -= dmg;
 	if (HP > 0)
 	{
-		be = EnermyBehave_hurt;
+		be = EnermyBehave::EnermyBehave_hurt;
 	}
 	else
 	{
 		HP = 0;
-		be = EnermyBehave_death;
+		be = EnermyBehave::EnermyBehave_death;
 	}
 	setBehave(be, dir);
 
@@ -180,12 +180,12 @@ void Orc::setBehave(EnermyBehave be, int dir)
 	if (behave != be || direction != dir)
 	{
 		behave = be;
-		img = imgs[be];
-		if (be == EnermyBehave_death)
+		img = imgs[(int)be];
+		if (be == EnermyBehave::EnermyBehave_death)
 			img->startAnimation(cbDeath, this);
-		else if (be == EnermyBehave_hurt)
+		else if (be == EnermyBehave::EnermyBehave_hurt)
 			img->startAnimation(cbHurt, this);
-		else if (be == EnermyBehave_meleeAttack)
+		else if (be == EnermyBehave::EnermyBehave_meleeAttack)
 			img->startAnimation(cbSkill, this);
 		else
 			img->startAnimation(cbBehave, img);
@@ -194,14 +194,13 @@ void Orc::setBehave(EnermyBehave be, int dir)
 }
 
 #include "stageTileInfo.h"
-extern MapTile* maptile;
 
 extern iShortestPath* sp;
 
-void Orc::paint(float dt, iPoint offset)
+void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 {
 	iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
-	move(v + orcMovement, maptile);
+	move(v + orcMovement, tile, NumX, NumY);
 
 	img->paint(dt, position + offset, direction);
 
@@ -244,21 +243,20 @@ void Orc::paint(float dt, iPoint offset)
 		{
 			if (speed > _speed)
 			{
-				setBehave(EnermyBehave_meleeAttack, direction);
+				setBehave(EnermyBehave::EnermyBehave_meleeAttack, direction);
 				speed = 0;
 			}
 			speed += 0.05f;
 
 		}
 
-		moveForMouse(dt);
+		moveForMouse(dt, NumX, NumY);
 
 	}
 	else // 발견하지 못하였을때 또는 멀어졌을떄
 	{
 
 		pathNum = pathIndex;
-		//setBehave(EnermyBehave_idle, direction);
 		targetPosition = iPointZero;
 		detected_Player = false;
 
@@ -276,7 +274,7 @@ void Orc::paint(float dt, iPoint offset)
 		else
 			direction = 0;
 
-		setBehave(EnermyBehave_move, direction);
+		setBehave(EnermyBehave::EnermyBehave_move, direction);
 
 	}
 }

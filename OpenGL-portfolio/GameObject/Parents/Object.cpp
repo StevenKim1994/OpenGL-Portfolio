@@ -8,6 +8,28 @@
 
 Object::Object()
 {
+	HP = 0;
+	MP = 0;
+	Stamina = 0;
+	_Stamina = 0;
+	_MP = 0;
+	_HP = 0;
+	speed = 0;
+	_speed = 0;
+	alive = false;
+	jumpNum = 0;
+	jumpment = iPointZero;
+	movement = 0;
+	pathIndex = 0;
+	position = iPointZero;
+	range = 0;
+	size = iSizeZero;
+	_jumpNum = 0;
+	damage = 0;
+	targetPosition = iPointZero;
+	tex = NULL;
+	
+	
 	
 }
 
@@ -169,7 +191,7 @@ const char* Object::getName()
 
 
 
-void Object::move(iPoint movement, MapTile* maptile)
+void Object::move(iPoint movement, MapTile* maptile, int NumX, int NumY)
 {
 	iPoint mp = movement;
 
@@ -192,7 +214,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 					min = MapTileWidth * (x + 1);
 					break;
 				}
-				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				else if (maptile[NumX * y + x].attr == deadZone)
 				{
 				
 				}
@@ -211,13 +233,13 @@ void Object::move(iPoint movement, MapTile* maptile)
 		int TRX = position.x + size.width / 2; TRX /= MapTileWidth;
 		int TRY = position.y - size.height / 2; TRY /= MapTileHeight;
 		int BRY = position.y + size.height / 2; BRY /= MapTileHeight;
-		int min = MapTileWidth * MapTileNumX;
-		for (int x = TRX + 1; x < MapTileNumX; x++)
+		int min = MapTileWidth * NumX;
+		for (int x = TRX + 1; x < NumX; x++)
 		{
 			bool col = false;
 			for (int y = TRY; y < BRY + 1; y++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == canNotMove)
+				if (maptile[NumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -225,7 +247,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 					break;
 				}
 
-				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				else if (maptile[NumX * y + x].attr == deadZone)
 				{
 					printf("you die!\n");
 					this->alive = false;
@@ -253,7 +275,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == canNotMove)
+				if (maptile[NumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
@@ -261,7 +283,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 					break;
 				}
 
-				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				else if (maptile[NumX * y + x].attr == deadZone)
 				{
 					
 				}
@@ -280,20 +302,20 @@ void Object::move(iPoint movement, MapTile* maptile)
 		int TLY = position.y + size.height / 2; TLY /= MapTileHeight;
 		int TLX = position.x - size.width / 2; TLX /= MapTileWidth;
 		int TRX = position.x + size.width / 2; TRX /= MapTileWidth;
-		int min = MapTileHeight * MapTileNumY;
-		for (int y = TLY + 1; y < MapTileNumY; y++)
+		int min = MapTileHeight * NumY;
+		for (int y = TLY + 1; y < NumY; y++)
 		{
 			bool col = false;
 			for (int x = TLX; x < TRX + 1; x++)
 			{
-				if (maptile[MapTileNumX * y + x].attr == canNotMove)
+				if (maptile[NumX * y + x].attr == canNotMove)
 				{
 					//printf("!!!\n");
 					col = true;
 					min = MapTileHeight * y - 1;
 					break;
 				}
-				else if (maptile[MapTileNumX * y + x].attr == deadZone)
+				else if (maptile[NumX * y + x].attr == deadZone)
 				{
 					
 				}
@@ -311,7 +333,7 @@ void Object::move(iPoint movement, MapTile* maptile)
 	}
 }
 
-bool Object::moveForMouse(float dt)
+bool Object::moveForMouse(float dt, int NumX, int NumY)
 {
 	if (position != targetPosition)
 	{
@@ -348,8 +370,8 @@ bool Object::moveForMouse(float dt)
 		if (pathIndex < pathNum)
 		{
 			int index = path[pathIndex];
-			targetPosition.x = MapTileWidth * (index % MapTileNumX) + MapTileWidth / 2;
-			targetPosition.y = MapTileHeight * (index / MapTileNumX) + MapTileHeight / 2;
+			targetPosition.x = MapTileWidth * (index % NumX) + MapTileWidth / 2;
+			targetPosition.y = MapTileHeight * (index / NumX) + MapTileHeight / 2;
 			pathIndex++;
 		}
 		else
@@ -385,27 +407,3 @@ void Object::applyJump(iPoint& movement, float dt)
 	jumpment -= mp;
 }
 
-float getDistanceLine0(iPoint p, iPoint sp, iPoint ep)
-{
-	iPoint n = ep - sp;
-	float len = sqrtf(n.x * n.x + n.y * n.y);
-	n /= len;
-
-	iPoint m = p - sp;
-	iPoint proj = n * (m.x * n.x + m.y * n.y);
-
-	return iPointLength(m - proj);
-}
-
-float getDistanceLine1(iPoint p, iPoint sp, iPoint ep)
-{
-	iPoint n = ep - sp;
-	float len = sqrtf(n.x * n.x + n.y * n.y);
-
-	n /= len;
-
-	iPoint m = p - sp;
-	iPoint proj = n * max(0.0f, min((m.x * n.x + m.y * n.y), len));
-
-	return iPointLength(m - proj);
-}

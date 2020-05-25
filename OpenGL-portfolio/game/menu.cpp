@@ -9,33 +9,20 @@ Texture* tex;
 
 void loadMenu()
 {
-	printf("loadMenu()\n");
 
 	menuBg = createImage("assets/menu/menuBg.jpg");
 	menuBanner = createImage("assets/menu/Banner.png");
-	audioPlay(3);
-
-	iGraphics* g = iGraphics::instance();
+	tex = createImage("assets/menu/mainlogo.png");
 	
-
-
-	/*
-	g->init(450, 150);
-	g->fillRect(0,0 , 450, 150, 10);
-	setStringRGBA(0, 0, 0, 1);
-	setStringSize(30);
-	g->drawString(450/2, 150/2, HCENTER|VCENTER, "김시윤 포트폴리오\n 임시텍스처! \n");
-	*/
-	tex = createImage("assets/menu/mainlogo.png");//g->getTexture();
-
 	createPopMenuBtn();
 	createPopSettings();
 	createPopQuitAnswer();
+	
+	audioPlay(3);
 }
 
 void freeMenu()
 {
-
 	free(menuBg);
 	free(menuBanner);
 	free(tex);
@@ -48,7 +35,6 @@ void drawMenu(float dt)
 
 	drawImage(menuBg, 0, 0, TOP | LEFT);
 	drawImage(tex, devSize.width / 2 , 150, VCENTER | HCENTER); // banner
-
 
 	drawPopMenuBtn(dt);
 	showPopMenuBtn(true);
@@ -155,7 +141,7 @@ void drawPopMenuBtn(float dt)
 	int key = PopMenuBtn->selected;
 	if (getKeyDown() & keyboard_up)
 	{
-		printf("up!!\n");
+		
 		key--;
 		if (key < 0)
 			key = 0;
@@ -164,12 +150,30 @@ void drawPopMenuBtn(float dt)
 	}
 	else if (getKeyDown() & keyboard_down)
 	{
-		printf("donw!!\n");
+	
 		key++;
 		if (key > 2)
 			key = 2;
 	}
 	PopMenuBtn->selected = key;
+
+	if(getKeyDown() & keyboard_enter)
+	{
+		if (key == 0)
+		{
+			setLoading(gs_stage, freeMenu, loadStage);
+		}
+
+		else if (key == 1)
+		{
+			showPopSettings(true);
+		}
+
+		else
+		{
+			showPopQuitAnswer(true);
+		}
+	}
 }
 
 
@@ -187,22 +191,18 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-	case iKeyStateBegan :
+	case iKeyState::iKeyStateBegan :
 		i = PopMenuBtn->selected;
 		if (i == -1)
 			break;
 
 		if (i == 0)
 		{
-			printf("selectd = %d\n", i);
-			METHOD m = loadStage;
-			setLoading(gs_stage, freeMenu, m);
-			
+			setLoading(gs_stage, freeMenu, loadStage);
 		}
 
 		else if (i == 1)
 		{
-			//printf("selected popsettings\n");
 			showPopSettings(true);
 		}
 
@@ -213,7 +213,7 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 
 		break;
 
-	case iKeyStateMoved:
+	case iKeyState::iKeyStateMoved:
 		for (i = 0; i < 3; i++)
 		{
 			if (containPoint(point, imgMenuBtn[i]->touchRect(PopMenuBtn->closePosition)))
@@ -225,7 +225,7 @@ bool keyPopMenuBtn(iKeyState stat, iPoint point)
 		PopMenuBtn->selected = j;
 		break;
 
-	case iKeyStateEnded:
+	case iKeyState::iKeyStateEnded:
 		break;
 	}
 
@@ -241,26 +241,6 @@ void showPopMenuBtn(bool show)
 
 
 //----------- PopMenuSettings ------------------------
-
-bool touching = false;
-iPoint prevPoint;
-
-void moveTable(iPoint& off, iPoint mp, const iRect& rt, const iSize& size)
-{
-	off += mp;
-
-	float minX = rt.origin.x + rt.size.width - size.width;
-	float minY = rt.origin.y + rt.size.height - size.height;
-	float maxX = rt.origin.x;
-	float maxY = rt.origin.y;
-
-	if (off.x < minX) off.x = minX;
-	else if (off.x > maxX) off.x = maxX;
-
-	if (off.y < minY) off.y = minY;
-	else if (off.y > maxY) off.y = maxY;
-}
-
 
 iPopup* PopMenuSettings;
 iImage** PopMenuSettingsBtn;
@@ -419,53 +399,31 @@ bool keyPopSettings(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-	case iKeyStateBegan:
+	case iKeyState::iKeyStateBegan:
 	
-		//printf("%f, %f \n", point.x, point.y);
+	
 		i = PopMenuSettings->selected;
-		printf("setting = %d\n", i);
+	
 
 		if (i == 0)
 		{
-			printf("seletec == %d", i);
 			PopMenuSettings->show(false);
 		}
 		else if ( i > 0 && i < 3)
 		{
-			touching = true;
-			prevPoint = point;
+		
 
 		}
 		break;
 	
 
-	case iKeyStateMoved:
-	
-		if (touching)
-		{
-			i = PopMenuSettings->selected;
-			if (i > 0 && i < 3)
-			{
-				iImage* img = PopMenuSettingsBtn[i];
-				img->position.x += (point - prevPoint).x;
-
-				if (img->position.x < 150)
-					img->position.x = 150;
-
-				else if (img->position.x > 630)
-					img->position.x = 630;
-
-				prevPoint = point;
-			}
-		}
-
-		else
+	case iKeyState::iKeyStateMoved:
 		{
 			for (i = 0; i < 3; i++)
 			{
 				if (containPoint(point, PopMenuSettingsBtn[i]->touchRect(PopMenuSettings->closePosition)))
 				{
-					printf("%d\n", i);
+				
 					j = i;
 					break;
 				}
@@ -476,20 +434,18 @@ bool keyPopSettings(iKeyState stat, iPoint point)
 	
 
 		
-	case iKeyStateEnded:
-		touching = false;
+	case iKeyState::iKeyStateEnded:
+
 		i = PopMenuSettings->selected;
 		if (i == 1) // bgm sound
 		{
 			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
-			printf("bgm %f\n", r);
 			bgmPop = r;
 			audioVolume(bgmPop, sfxPop, 2);
 		}
 		else if (i == 2) // effect sound
 		{
 			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
-			printf("sfx %f\n", r);
 			sfxPop = r;
 			audioVolume(bgmPop, sfxPop, 2);
 
@@ -573,7 +529,7 @@ void createPopQuitAnswer()
 				g->drawImage(bg, 0, 0, menuBtnSizeRateW, menuBtnSizeRateH, TOP | LEFT);
 				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnSlot[i]);
 				btnTex = g->getTexture();
-				printf("white\n");
+
 			}
 
 			else //on
@@ -586,7 +542,6 @@ void createPopQuitAnswer()
 				g->drawImage(bg, 0, 0, menuBtnSizeRateW, menuBtnSizeRateH, TOP | LEFT);
 				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnSlot[i]);
 				btnTex = g->getTexture();
-				printf("red\n");
 			}
 
 			answerBtn->addObject(btnTex);
@@ -633,11 +588,10 @@ bool keyPopQuitAnswer(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-		case iKeyStateBegan:
+		case iKeyState::iKeyStateBegan:
 		{
 			i = PopQuitAnswer->selected;
 
-			printf("selectd = %d\n", i);
 			if (i == -1)
 				break;
 
@@ -653,7 +607,7 @@ bool keyPopQuitAnswer(iKeyState stat, iPoint point)
 			break;
 		}
 	
-		case iKeyStateMoved:
+		case iKeyState::iKeyStateMoved:
 		{
 			for (i = 0; i < 2; i++)
 			{
@@ -668,7 +622,7 @@ bool keyPopQuitAnswer(iKeyState stat, iPoint point)
 
 		}
 
-		case iKeyStateEnded:
+		case iKeyState::iKeyStateEnded:
 			break;
 	}
 

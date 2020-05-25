@@ -174,7 +174,7 @@ void drawLib(Method_Paint method)
 
 static void keyLib(uint32& key, iKeyState stat, int c)
 {
-    if (stat == iKeyStateBegan)
+    if (stat == iKeyState::iKeyStateBegan)
     {
         switch (c) {
         case 'a':case 'A':
@@ -197,7 +197,7 @@ static void keyLib(uint32& key, iKeyState stat, int c)
         case 51: key |= keyboard_num3; break;
         }
     }
-    else if (stat == iKeyStateEnded)
+    else if (stat == iKeyState::iKeyStateEnded)
     {
         switch (c) {
         case 'a':case 'A':
@@ -227,7 +227,7 @@ static void keyLib(uint32& key, iKeyState stat, int c)
 
 void keyLib(iKeyState stat, int c)
 {
-    if (stat == iKeyStateBegan)
+    if (stat == iKeyState::iKeyStateBegan)
     {
         takeScreenshot = true;
         xprintf("%d\n", c);
@@ -235,7 +235,7 @@ void keyLib(iKeyState stat, int c)
             keyLib(keyDown, stat, c);
         keys[c] = true;
     }
-    else if (stat == iKeyStateEnded)
+    else if (stat == iKeyState::iKeyStateEnded)
     {
         keys[c] = false;
     }
@@ -1389,4 +1389,29 @@ void saveFile(const char* filePath, char* buf, int bufLength)
     fwrite(buf, bufLength, 1, pf);
 
     fclose(pf);
+}
+
+float getDistanceLine0(iPoint p, iPoint sp, iPoint ep)
+{
+    iPoint n = ep - sp;
+    float len = sqrtf(n.x * n.x + n.y * n.y);
+    n /= len;
+
+    iPoint m = p - sp;
+    iPoint proj = n * (m.x * n.x + m.y * n.y);
+
+    return iPointLength(m - proj);
+}
+
+float getDistanceLine1(iPoint p, iPoint sp, iPoint ep)
+{
+    iPoint n = ep - sp;
+    float len = sqrtf(n.x * n.x + n.y * n.y);
+
+    n /= len;
+
+    iPoint m = p - sp;
+    iPoint proj = n * max(0.0f, min((m.x * n.x + m.y * n.y), len));
+
+    return iPointLength(m - proj);
 }

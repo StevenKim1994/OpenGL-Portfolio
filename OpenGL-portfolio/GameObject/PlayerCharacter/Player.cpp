@@ -71,8 +71,8 @@ Player::Player()
 		imgs[i] = img;
 	}
 	
-	behave = (PlayerBehave)-1;
-	setBehave(PlayerBehave_idle, 0);
+	behave = PlayerBehave::PlayerBehave_NULL;
+	setBehave(PlayerBehave::PlayerBehave_idle, 0);
 	direction = 0;
 	jumpNum = 0;
 	_jumpNum = 2;
@@ -182,8 +182,8 @@ void Player::cbBehave(void* cb)
 
 	printf("End Animation!\n");
 	extern Player* hero;
-	if(hero->behave != PlayerBehave_idle)
-		hero->setBehave(PlayerBehave_idle, hero->direction);
+	if(hero->behave != PlayerBehave::PlayerBehave_idle)
+		hero->setBehave(PlayerBehave::PlayerBehave_idle, hero->direction);
 }
 
 void Player::setBehave(PlayerBehave be, int dir)
@@ -193,7 +193,7 @@ void Player::setBehave(PlayerBehave be, int dir)
 	{
 		printf("income\n");
 		behave = be;
-		img = imgs[be];
+		img = imgs[(int)be];
 		img->startAnimation(cbBehave);
 		direction = dir;
 	}
@@ -205,7 +205,7 @@ void Player::paint(float dt, iPoint offset)
 	{
 		imgBuff->paint(dt, iPointMake(position.x -55, position.y -50)+ offset, direction);
 	}
-	if (direction == 0 && behave == PlayerBehave_jumpAndFall)
+	if (direction == 0 && behave == PlayerBehave::PlayerBehave_jumpAndFall)
 	{
 		printf("left direction Jumping!\n");
 		img->paint(dt, (position + offset) - iPointMake(100,0), direction);
@@ -243,7 +243,7 @@ void Player::Skill1()
 	printf("skill1! on!\n");
 
 	audioPlay(4);
-	iPoint targetPos;
+	iPoint targetPos = iPointZero;
 	if (direction == 1)
 		targetPos = iPointMake(position.x + 10, position.y - 100);
 	else if (direction == 0)
@@ -280,10 +280,10 @@ bool Player::moveForMouse(float dt)
 {
 	
 	if (position.x < targetPosition.x)
-		setBehave(PlayerBehave_move, 1);
+		setBehave(PlayerBehave::PlayerBehave_move, 1);
 
 	else
-		setBehave(PlayerBehave_move, 0);
+		setBehave(PlayerBehave::PlayerBehave_move, 0);
 	
 
 	

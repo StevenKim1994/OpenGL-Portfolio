@@ -9,7 +9,7 @@
 #include "ending.h"
 #include "endstage.h"
 #include "vilege.h"
-#define SOUND_NUM 32
+#define SOUND_NUM 16
 
 
 void loadGame()

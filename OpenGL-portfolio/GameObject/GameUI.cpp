@@ -15,6 +15,88 @@ extern Texture* playerPortrait;
 extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
+
+Texture* methodTimeIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(500, 50);
+
+	setRGBA(1, 1, 1, 0);
+	g->init(size);
+	g->fillRect(0, 0, size.width, size.height);
+
+	setRGBA(1, 1, 1, 1);
+	setStringSize(50);
+	setStringRGBA(1, 1, 0, 1);
+	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER | VCENTER, str);
+
+
+	return g->getTexture();
+}
+
+Texture* methodKillIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(100, 50);
+
+	setRGBA(1, 1, 1, 0);
+	g->init(size);
+	g->fillRect(0, 0, size.width, size.height);
+
+	setRGBA(1, 1, 1, 1);
+	setStringSize(50);
+	setStringRGBA(1, 1, 0, 1);
+	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER | VCENTER, str);
+
+	return g->getTexture();
+}
+
+Texture* methodPlayerHPIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(200, 50);
+
+	setRGBA(1, 0, 0, 1);
+	setStringSize(15);
+
+	g->init(size);
+	g->fillRect(0, 0, size.width * (hero->getHp() / hero->getMaxHp()), size.height);
+	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
+
+	return g->getTexture();
+}
+
+Texture* methodPlayerMPIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(200, 50);
+
+	setRGBA(0, 0, 1, 1);
+	setStringSize(15);
+
+	g->init(size);
+	g->fillRect(0, 0, size.width * (hero->getMp() / hero->getMaxMP()), size.height);
+	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
+
+	return g->getTexture();
+}
+
+Texture* methodPlayerStaminaIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(200, 50);
+
+	setRGBA(1, 1, 0, 1);
+	setStringSize(15);
+
+	g->init(size);
+	g->fillRect(0, 0, size.width * (hero->getStamina() / hero->getMaxStamina()), size.height);
+	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
+
+	return g->getTexture();
+}
+
+
 //----------------PopPlayerUI------------------------//
 
 iPopup* PopPlayerUI;
@@ -173,7 +255,7 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-	case iKeyStateBegan:
+	case iKeyState::iKeyStateBegan:
 		i = PopPlayerUI->selected;
 
 		if (i == -1)
@@ -195,7 +277,7 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 			printf("seletecd = %d\n", i);
 		break;
 
-	case iKeyStateMoved:
+	case iKeyState::iKeyStateMoved:
 
 		for (i = 0; i < 5; i++)
 		{
@@ -208,7 +290,7 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 		PopPlayerUI->selected = j;
 		break;
 
-	case iKeyStateEnded:
+	case iKeyState::iKeyStateEnded:
 
 		break;
 
@@ -320,7 +402,7 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-	case iKeyStateBegan:
+	case iKeyState::iKeyStateBegan:
 	{
 		i = PopMenuUI->selected;
 
@@ -346,7 +428,7 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 		break;
 	}
 
-	case iKeyStateMoved:
+	case iKeyState::iKeyStateMoved:
 	{
 
 		for (i = 0; i < 3; i++)
@@ -361,7 +443,7 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 
 		break;
 	}
-	case iKeyStateEnded:
+	case iKeyState::iKeyStateEnded:
 	{
 		break;
 	}
@@ -488,7 +570,7 @@ bool keyPopQuitAnswerUI(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-	case iKeyStateBegan:
+	case iKeyState::iKeyStateBegan:
 	{
 		i = PopQuitAnswerUI->selected;
 
@@ -508,7 +590,7 @@ bool keyPopQuitAnswerUI(iKeyState stat, iPoint point)
 		break;
 	}
 
-	case iKeyStateMoved:
+	case iKeyState::iKeyStateMoved:
 	{
 		for (i = 0; i < 2; i++)
 		{
@@ -522,7 +604,7 @@ bool keyPopQuitAnswerUI(iKeyState stat, iPoint point)
 		break;
 	}
 
-	case iKeyStateEnded:
+	case iKeyState::iKeyStateEnded:
 		break;
 	}
 
@@ -801,7 +883,7 @@ bool keyPopGameOverUI(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-	case iKeyStateBegan:
+	case iKeyState::iKeyStateBegan:
 	{
 		i = PopGameOver->selected;
 
@@ -831,7 +913,7 @@ bool keyPopGameOverUI(iKeyState stat, iPoint point)
 		break;
 	}
 
-	case iKeyStateMoved:
+	case iKeyState::iKeyStateMoved:
 	{
 		for (i = 0; i < 2; i++)
 		{
@@ -846,7 +928,7 @@ bool keyPopGameOverUI(iKeyState stat, iPoint point)
 		break;
 	}
 
-	case iKeyStateEnded:
+	case iKeyState::iKeyStateEnded:
 		break;
 
 	}
@@ -977,7 +1059,7 @@ bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point)
 
 	switch (stat)
 	{
-	case iKeyStateBegan:
+	case iKeyState::iKeyStateBegan:
 	{
 		i = PopStageNPCMenuUI->selected;
 
@@ -986,18 +1068,18 @@ bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point)
 
 		if (i == 0)
 		{
-			printf("마을안으로!\n");
+			
 			setLoading(gs_villege, freeEndStage, loadVillege);
 
 		}
 		else if (i == 1)
 		{
-			printf("취소!!\n");
+			
 			PopStageNPCMenuUI->show(false);
 		}
 		break;
 	}
-	case iKeyStateMoved:
+	case iKeyState::iKeyStateMoved:
 	{
 		for (i = 0; i < 2; i++)
 		{
@@ -1011,6 +1093,7 @@ bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point)
 		break;
 	}
 	}
+	return true;
 }
 
 void showPopStageNPCMenuUI(bool show)

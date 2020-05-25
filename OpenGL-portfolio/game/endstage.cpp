@@ -5,29 +5,33 @@
 #include "vilege.h"
 #include "../GameObject/NPC/stageNPC.h"
 
+// 게임 씬 관련
+extern int gameState;
+
+
 extern Player* hero;
 extern iPoint offMt;
 extern iPoint vp;
 extern iShortestPath* sp;
 
 extern iStrTex* killIndicator;
-//extern iStrTex* timeIndicator;
+extern iStrTex* timeIndicator;
 extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
 
-extern float logoDt;
-extern Texture* stageLogo;
+static float logoDt;
+static Texture* stageLogo;
+static Texture* texFboStage;
 
 
-Texture* endStageTileset[1521];
+static Texture* endStageTileset[1521];
 
-extern Texture* texFboStage;
-MapTile* endStagemaptile;
+static MapTile* endStagemaptile;
 stageNPC* stagenpc;
+
 extern float gameTime;
 extern float _gameTime;
-
 extern bool mouseMove;
 
 
@@ -133,24 +137,28 @@ void freeEndStage()
 {
 	freeImage(texFboStage);
 
+	for (int i = 0; i < 1520; i++)
+		delete endStageTileset[i];
 	free(endStagemaptile);
 
 	delete sp;
+	delete stagenpc;
 
 
-	freePopPlayerUI();
-	freePopMenuUI();
-	freePopQuitAnswerUI();
-	freePopGameOverUI();
-	freePopStageNPCMenuUI();
 	freeNumber();
+	//freePopPlayerUI();
+	//freePopMenuUI();
+	//freePopQuitAnswerUI();
+	//freePopGameOverUI();
+	//freePopStageNPCMenuUI();
+	// UI는 게임오버때 까지 계속쓰임
 }
 void drawEndStage(float dt)
 {
 	
 	fbo->bind(texFboStage);
-	drawEndStageMapTile(dt);
-	drawHero(dt);
+	drawMapTile(dt, endStagemaptile,endStageTileset, MapTileNumX, MapTileNumY);
+	drawHero(dt, endStagemaptile, MapTileNumX, MapTileNumY);
 	drawRect(hero->getPosition().x+offMt.x, hero->getPosition().y+offMt.y, hero->getSize().width, hero->getSize().height);
 	stagenpc->paint(dt, offMt);
 	fbo->unbind();
@@ -257,7 +265,7 @@ void keyEndStage(iKeyState stat, iPoint point)
 	
 	keyPopPlayerUI(stat, point);
 
-	if (stat == iKeyStateBegan)
+	if (stat == iKeyState::iKeyStateBegan)
 	{
 		if (containPoint(point, iRectMake(stagenpc->getPosition().x+ offMt.x, stagenpc->getPosition().y+offMt.y, 32, 32))) // 엔피씨를 클릭한다면
 		{
@@ -296,7 +304,7 @@ void keyEndStage(iKeyState stat, iPoint point)
 			mouseMove = true;
 		}
 	}
-	else if(stat == iKeyStateMoved)
+	else if(stat == iKeyState::iKeyStateMoved)
 	{
 		if (containPoint(point, iRectMake(stagenpc->getPosition().x + offMt.x, stagenpc->getPosition().y + offMt.y, 32, 32))) // 엔피씨를 마우스 오버한다면
 		{

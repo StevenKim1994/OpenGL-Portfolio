@@ -10,11 +10,10 @@ struct NPCInfo
 };
 
 
-enum NPCBehave
+enum class NPCBehave
 {
-	
+	NPCBehave_NULL = -1,
 	NPCBehave_idle = 0,
-
 	NPCBehave_num,
 };
 

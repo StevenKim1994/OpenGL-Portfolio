@@ -2,62 +2,72 @@
 
 #include "stageNPC.h"
 
+static iImage** imgstageNPC = NULL;
+
 stageNPC::stageNPC()
 {
-	
-
-	NPCInfo _ni[1] = {
-		
-			"assets/stage/stageNPC/stageNPC (%d).png", 8, 1.5f, {-16,-42},
-		
-	};
-
-	iGraphics* g = iGraphics::instance();
-	iSize size;
-
-	imgs = (iImage**)malloc(sizeof(iImage*) * 1);
-	
-	for (int i = 0; i < 1; i++)
+	if(imgstageNPC == NULL)
 	{
-		NPCInfo* ni = &_ni[i];
+		NPCInfo _ni[1] = {
+			
+				"assets/stage/stageNPC/stageNPC (%d).png", 8, 1.5f, {-16,-42},
+			
+		};
 
-		iImage* img = new iImage();
+		iGraphics* g = iGraphics::instance();
+		iSize size;
 
-		for (int j = 0; j < ni->num; j++)
-		{
-			igImage* ig = g->createIgImage(ni->path, j + 1);
-			size = iSizeMake(g->getIgImageWidth(ig) * ni->sizeRate, g->getIgImageHeight(ig) * ni->sizeRate);
-			g->init(size);
-			g->drawImage(ig, 0, 0, ni->sizeRate, ni->sizeRate, TOP | LEFT);
-
-			Texture* tex = g->getTexture();
-			img->addObject(tex);
-			freeImage(tex);
+		imgstageNPC = (iImage**)malloc(sizeof(iImage*) * 1);
 		
-		}
-		img->_aniDt = 0.15f;
-
-		switch (i)
+		for (int i = 0; i < 1; i++)
 		{
-		case 0:
-			img->_repeatNum = 0; // infinity
-			break;
+
+			iImage* img = new iImage();
+			NPCInfo* ni = &_ni[i];
+			for (int j = 0; j < ni->num; j++)
+			{
+				igImage* ig = g->createIgImage(ni->path, j + 1);
+				size = iSizeMake(g->getIgImageWidth(ig) * ni->sizeRate, g->getIgImageHeight(ig) * ni->sizeRate);
+				g->init(size);
+				g->drawImage(ig, 0, 0, ni->sizeRate, ni->sizeRate, TOP | LEFT);
+
+				Texture* tex = g->getTexture();
+				img->addObject(tex);
+				freeImage(tex);
+			}
+			switch (i)
+			{
+			case 0:
+				img->_repeatNum = 0; // infinity
+				break;
+			}
+			img->_aniDt = 0.15f;
+			img->position = ni->p;
+			imgstageNPC[i] = img;
 		}
-		
-		img->position = ni->p;
-		imgs[i] = img;
 	}
 
-	behave = (NPCBehave)-1;
-	direction = 1;
-	setBehave(NPCBehave_idle, direction);
+	imgs = (iImage**)malloc(sizeof(iImage*) * 1);
+	for (int i = 0; i < 1; i++)
+		imgs[i] = imgstageNPC[i]->copy();
 
-	
+	img = imgs[0];
+
+	behave = NPCBehave::NPCBehave_NULL;
+	direction = 1;
+	setBehave(NPCBehave::NPCBehave_idle, direction);
+
 }
 
 stageNPC::~stageNPC()
 {
-	for (int i = 0; i < NPCBehave_num; i++)
+	if (imgstageNPC)
+	{
+		for (int i = 0; i < 1; i++)
+			delete imgstageNPC[i];
+	}
+	
+	for (int i = 0; i < (int)NPCBehave::NPCBehave_num; i++)
 		delete imgs[i];
 	free(imgs);
 
@@ -76,7 +86,7 @@ void stageNPC::setBehave(NPCBehave be, int dir)
 	if (behave != be || direction != dir)
 	{
 		behave = be;
-		img = imgs[be];
+		img = imgs[(int)be];
 		img->startAnimation(cbBehave);
 		direction = dir;
 	}

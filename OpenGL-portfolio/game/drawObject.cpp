@@ -7,8 +7,7 @@
 #include "sceneManager.h"
 
 extern iPoint offMt;
-extern Texture* tileset[1521];
-extern Texture* endStageTileset[1521];
+
 extern MapTile* maptile;
 extern Player* hero;
 extern bool mouseMove;
@@ -21,8 +20,9 @@ extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
 
+extern int gameState;
 
-void drawMapTile(float dt)
+void drawMapTile(float dt, MapTile* tileInfo,Texture** tileset, int NumX, int NumY)
 {
 	int i, num = MapTileNumX * MapTileNumY;
 
@@ -31,29 +31,37 @@ void drawMapTile(float dt)
 
 		for (i = 0; i < num; i++) // layer 0
 		{
-			MapTile* t = &maptile[i];
+			MapTile* t = &tileInfo[i];
 
 			float x = offMt.x + MapTileWidth * (i % MapTileNumX);
 			float y = offMt.y + MapTileHeight * (i / MapTileNumX);
 
-			if (i > 879)
+			if (gameState < gs_villege)
 			{
-				setRGBA(1, 1, 1, 1);
-				drawImage(tileset[i - 880], x, y, TOP | LEFT);
+				if (i > 879)
+				{
+					setRGBA(1, 1, 1, 1);
+					drawImage(tileset[i - 880], x, y, TOP | LEFT);
+				}
+				else
+				{
+					setRGBA(0.63137, 0.94901, 0.92549, 1);
+					fillRect(x, y, 32, 32);
+				}
 			}
 			else
 			{
-				setRGBA(0.63137, 0.94901, 0.92549, 1);
-				fillRect(x, y, 32, 32);
+				setRGBA(1, 1, 1, 1);
+				drawImage(tileset[i], x, y, TOP | LEFT);
 			}
 
 #if _DEBUG // tileHitbox
 			switch (t->attr)
 			{
-				//case canMove: break;
-				//case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				//case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				//case nextStagePortal: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				case canMove: break;
+				case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				case nextStagePortal: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
 			}
 #endif
 
@@ -63,7 +71,7 @@ void drawMapTile(float dt)
 
 }
 
-void drawHero(float dt)
+void drawHero(float dt, MapTile* tile, int NumX, int NumY)
 {
 	uint32 keyStat = 0;
 	uint32 keyDown = 0;
@@ -78,7 +86,7 @@ void drawHero(float dt)
 			hero->setStamina(hero->getStamina() - 50.0f);
 			hero->jump();
 
-			if (hero->behave != PlayerBehave_meleeAttack)
+			if (hero->behave != PlayerBehave::PlayerBehave_meleeAttack)
 			{
 				keyStat = getKeyStat();
 				keyDown = getKeyDown();
@@ -109,7 +117,7 @@ void drawHero(float dt)
 		}
 	}
 
-	if (hero->behave != PlayerBehave_meleeAttack)
+	if (hero->behave != PlayerBehave::PlayerBehave_meleeAttack)
 	{
 		keyStat = getKeyStat();
 		keyDown = getKeyDown();
@@ -144,7 +152,7 @@ void drawHero(float dt)
 
 			if (keyDown & keyboard_num1)
 			{
-				be = PlayerBehave_meleeAttack;
+				be = PlayerBehave::PlayerBehave_meleeAttack;
 
 				hero->Skill1();
 				hero->setMP(hero->getMp() - 5.0f);
@@ -179,27 +187,27 @@ void drawHero(float dt)
 			}
 			else if(keyDown & keyboard_num2)
 			{
-				be = PlayerBehave_idle;
+				be = PlayerBehave::PlayerBehave_idle;
 
 				hero->Skill2();
 			}
 
 
 			else if (keyDown & keyboard_space)
-				be = PlayerBehave_jumpAndFall;
+				be = PlayerBehave::PlayerBehave_jumpAndFall;
 			else if (keyDown & keyboard_down)
-				be = PlayerBehave_idle;
+				be = PlayerBehave::PlayerBehave_idle;
 			else if (keyDown & keyboard_up)
-				be = PlayerBehave_jumpAndFall;
+				be = PlayerBehave::PlayerBehave_jumpAndFall;
 			else
-				be = (v == iPointZero ? PlayerBehave_idle : PlayerBehave_move);
+				be = (v == iPointZero ? PlayerBehave::PlayerBehave_idle : PlayerBehave::PlayerBehave_move);
 			int dir = hero->direction;
 
 
 			if (v.x < 0) dir = 0;
 			else if (v.x > 0) dir = 1;
 
-			if (hero->behave != PlayerBehave_meleeAttack && hero->behave != PlayerBehave_jumpAndFall)
+			if (hero->behave != PlayerBehave::PlayerBehave_meleeAttack && hero->behave != PlayerBehave::PlayerBehave_jumpAndFall)
 				hero->setBehave(be, dir);
 			float minX, maxX, minY, maxY;
 
@@ -207,7 +215,7 @@ void drawHero(float dt)
 			{
 				v /= iPointLength(v);
 				iPoint mp = v * (hero->getMovement() * dt);
-				hero->move(mp + movement, maptile);
+				hero->move(mp + movement, tile, NumX, NumY);
 
 				minX = devSize.width * 0.333333f;
 				maxX = devSize.width * 0.666667f;
@@ -216,7 +224,7 @@ void drawHero(float dt)
 			}
 			else// if(v == iPointZero)
 			{
-				hero->move(movement * 3, maptile);
+				hero->move(movement * 3, tile, NumX, NumY);
 
 				minX = devSize.width / 2;
 				maxX = devSize.width / 2;
@@ -295,11 +303,10 @@ void drawHero(float dt)
 		if (hero->getStamina() > hero->getMaxStamina())
 			hero->setStamina(hero->getMaxStamina());
 	}
-	//printf("%f %f || ", offMt.x, offMt.y);
-	//printf("%f %f\n", hero->getPosition().x - offMt.x, hero->getPosition().y - offMt.y);
+	
 }
 
-void drawOrc(float dt)
+void drawOrc(float dt, MapTile* tile, int NumX, int NumY)
 { // paint Orc
 	for (int i = 0; i < orcNum; i++)
 	{
@@ -310,14 +317,14 @@ void drawOrc(float dt)
 			orcs[i] = orcs[orcNum];
 			continue;
 		}
-		orcs[i]->paint(dt, offMt);
+		((Orc*)orcs[i])->paint(dt, offMt, tile, NumX, NumY);
 	}
 
 	killIndicator->setString("%d", hero->kill);
 }
 
 #if _DEBUG
-void debugHitbox(float dt)
+void debugHitbox(float dt, MapTile* tile, int NumX, int NumY)
 {
 	//hitbox orc
 	for (int i = 0; i < orcNum; i++)
@@ -329,48 +336,3 @@ void debugHitbox(float dt)
 }
 
 #endif
-
-extern int endStagetiles[MapTileNumX * MapTileNumY];
-void drawEndStageMapTile(float dt)
-{
-
-	int i, num = MapTileNumX * MapTileNumY;
-
-	setRGBA(1, 1, 1, 1);
-	{ // MapTilePaint
-
-		for (i = 0; i < num; i++) // layer 0
-		{
-			MapTile* t = &maptile[i];
-			t->attr = endStagetiles[i];
-			float x = offMt.x + MapTileWidth * (i % MapTileNumX);
-			float y = offMt.y + MapTileHeight * (i / MapTileNumX);
-
-			if (i > 879)
-			{
-				setRGBA(1, 1, 1, 1);
-				drawImage(endStageTileset[i - 880], x, y, TOP | LEFT);
-			}
-			else
-			{
-				setRGBA(0.63137, 0.94901, 0.92549, 1);
-				fillRect(x, y, 32, 32);
-			}
-
-#if _DEBUG // tileHitbox
-			switch (t->attr)
-			{
-				case canMove: break;
-				case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				
-			}
-#endif
-
-		}
-
-	}
-
-
-
-}

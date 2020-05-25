@@ -174,15 +174,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     case WM_LBUTTONDOWN:
         cursor = convertCoordinate(LOWORD(lParam), HIWORD(lParam));
-        keyGame(iKeyStateBegan, cursor);
+        keyGame(iKeyState::iKeyStateBegan, cursor);
         break;
     case WM_MOUSEMOVE:
         cursor = convertCoordinate(LOWORD(lParam), HIWORD(lParam));
-        keyGame(iKeyStateMoved, cursor);
+        keyGame(iKeyState::iKeyStateMoved, cursor);
         break;
     case WM_LBUTTONUP:
         cursor = convertCoordinate(LOWORD(lParam), HIWORD(lParam));
-        keyGame(iKeyStateEnded, cursor);
+        keyGame(iKeyState::iKeyStateEnded, cursor);
         break;
     case WM_SETCURSOR:
         if (updateCursor(LOWORD(lParam) == HTCLIENT))
@@ -195,10 +195,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
        
 
-        keyLib(iKeyStateBegan, wParam);
+        keyLib(iKeyState::iKeyStateBegan, wParam);
         break;
     case WM_KEYUP:
-        keyLib(iKeyStateEnded, wParam);
+        keyLib(iKeyState::iKeyStateEnded, wParam);
         break;
 
     case WM_CLOSE:

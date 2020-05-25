@@ -1,8 +1,9 @@
 #pragma once
 #include "Object.h"
 
-enum PlayerBehave
+enum class PlayerBehave
 {
+	PlayerBehave_NULL = -1,
 	PlayerBehave_idle = 0,
 	PlayerBehave_meleeAttack,
 	PlayerBehave_move,

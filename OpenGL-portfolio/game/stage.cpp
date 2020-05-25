@@ -12,41 +12,46 @@
 
 #define ON_HITBOX 0
 
-Player* hero;
-MapTile* maptile;
-iPoint offMt;
+// 게임 씬 관련
+extern int gameState;
+
+// 좌표 및 카메라관련
+iPoint offMt; // 카메라 오프셋
 iPoint vp;
-
-Monster** orcs;
-//Orc* orc;
-
-
-
-
-int _orcNum = orc_Num;
-int orcNum = _orcNum;
-
- Texture* tileset[1521];
-Texture* map;
- Texture* texFboStage;
-Texture* playerPortrait;
 iShortestPath* sp;
 bool mouseMove = false;
 
+
+//object
+Monster** orcs;
+Player* hero;
+
+
+// 오브젝트 풀 관련
+int _orcNum = orc_Num;
+int orcNum = _orcNum;
+
+//맵 관련
+static MapTile* maptile;
+static Texture* tileset[1521];
+static Texture* texFboStage;
+static Texture* stageLogo;
+
+
+// UI 관련
 iStrTex* killIndicator;
 iStrTex* timeIndicator;
 iStrTex* hpIndicator;
 iStrTex* mpIndicator;
 iStrTex* staminaIndicator;
-
-
-
-
+Texture* playerPortrait;
 float gameTime = 0;
 float _gameTime = 100000000000;
+static float logoDt = 0.0;
 
-float logoDt = 0.0;
- Texture* stageLogo;
+
+
+
 
 
 
@@ -87,91 +92,6 @@ int tiles[MapTileNumX * MapTileNumY] =
    // 44 : deadZone
 
 
-
-Texture* methodTimeIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(500, 50);
-
-	setRGBA(1, 1, 1, 0);
-	g->init(size);
-	g->fillRect(0, 0, size.width, size.height);
-
-	setRGBA(1, 1, 1, 1);
-	setStringSize(50);
-	setStringRGBA(1, 1, 0, 1);
-	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER | VCENTER, str);
-
-
-	return g->getTexture();
-}
-
-Texture* methodKillIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(100, 50);
-
-	setRGBA(1, 1, 1, 0);
-	g->init(size);
-	g->fillRect(0, 0, size.width, size.height);
-
-	setRGBA(1, 1, 1, 1);
-	setStringSize(50);
-	setStringRGBA(1, 1, 0, 1);
-	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER | VCENTER, str);
-
-
-	return g->getTexture();
-
-
-}
-
-Texture* methodPlayerHPIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(200, 50);
-	
-	setRGBA(1, 0, 0, 1);
-	setStringSize(15);
-
-	g->init(size);
-	g->fillRect(0, 0, size.width * (hero->getHp() / hero->getMaxHp()), size.height);
-	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
-
-	return g->getTexture();
-}
-
-Texture* methodPlayerMPIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(200, 50);
-
-	setRGBA(0,0,1,1);
-	setStringSize(15);
-
-	g->init(size);
-	g->fillRect(0, 0, size.width * (hero->getMp() / hero->getMaxMP()), size.height);
-	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
-
-	return g->getTexture();
-}
-
-Texture* methodPlayerStaminaIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(200, 50);
-
-	setRGBA(1, 1, 0, 1);
-	setStringSize(15);
-
-	g->init(size);
-	g->fillRect(0, 0, size.width * (hero->getStamina() / hero->getMaxStamina()), size.height);
-	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
-
-	return g->getTexture();
-}
-
-
 void loadStage()
 {
 	orcNum = _orcNum;
@@ -198,21 +118,21 @@ void loadStage()
 
 	for (int i = 0; i < 1520; i++)
 	{
-#if 0
-		iGraphics* g = iGraphics::instance();
-		igImage* ig = g->createIgImage("assets/stage/tileset/mapsplit/tile%03d.png", i);
-		iSize igSize = iSizeMake(g->getIgImageWidth(ig) * 2.0, g->getIgImageHeight(ig) * 2.0);
-		g->init(igSize);
-		g->drawImage(ig, 0, 0, 2.0, 2.0, TOP | LEFT);
-		tileset[i] = g->getTexture(); // GDI+ 사용 확대 이러면 사이 간격이 생김
-#else
+
+//		iGraphics* g = iGraphics::instance();
+//		igImage* ig = g->createIgImage("assets/stage/tileset/mapsplit/tile%03d.png", i);
+//		iSize igSize = iSizeMake(g->getIgImageWidth(ig) * 2.0, g->getIgImageHeight(ig) * 2.0);
+//		g->init(igSize);
+//		g->drawImage(ig, 0, 0, 2.0, 2.0, TOP | LEFT);
+//		tileset[i] = g->getTexture(); // GDI+ 사용 확대 이러면 사이 간격이 생김
+
 		Texture* tex = createImage("assets/stage/tileset/mapsplit/tile%03d.png", i);
 		tex->width *= 2;
 		tex->height *= 2;
 		tex->potWidth *= 2;
 		tex->potHeight *= 2;
 		tileset[i] = tex;
-#endif
+
 	}
 	
 	setRGBA(1, 1, 1, 1);
@@ -304,11 +224,18 @@ void loadStage()
 void freeStage()
 {
 	freeImage(texFboStage);
+	for (int i = 0; i < 1520; i++)
+		delete tileset[i];
+	
 	free(maptile);
+
+	for (int i = 0; i < orcNum; i++)
+		delete orcs[i];
+	
 	free(orcs);
 
 	delete sp;
-//
+
 //hero는 다음Stage에서 사용되므로 delete 하지 않음!
 //UI는 여기서 생성되고 게임오버할떄 까지 계속쓰이므로 게임오버할떄 지운다
 
@@ -317,13 +244,13 @@ void freeStage()
 void drawStage(float dt)
 {
 	fbo->bind(texFboStage);
-	drawMapTile(dt);
-	drawOrc(dt);
-	drawHero(dt);
+	drawMapTile(dt, maptile,tileset, MapTileNumX, MapTileNumY);
+	drawOrc(dt, maptile, MapTileNumX, MapTileNumY);
+	drawHero(dt, maptile, MapTileNumX, MapTileNumY);
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);
 #if _DEBUG
-	debugHitbox(dt);
+	debugHitbox(dt, maptile, MapTileNumX, MapTileNumY);
 #endif
 	fbo->unbind();
 	showCamera(texFboStage, dt);
@@ -387,11 +314,9 @@ void keyStage(iKeyState stat, iPoint point)
 		
 
 		
-	if (stat == iKeyStateBegan)
+	if (stat == iKeyState::iKeyStateBegan)
 	{
-		printf("!!\n");
-		
-		
+
 		int sx = hero->getPosition().x;
 		sx /= MapTileWidth;
 

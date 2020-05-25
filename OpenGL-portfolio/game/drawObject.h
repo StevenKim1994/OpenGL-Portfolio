@@ -6,17 +6,15 @@
 
 #define _logoDt 1.0f
 // drawMapTile
-void drawMapTile(float dt);
+void drawMapTile(float dt, MapTile* tile, Texture** tileset, int NumX, int NumY);
 
 // ctrl - hero
-void drawHero(float dt);
+void drawHero(float dt, MapTile* tile, int NumX, int NumY);
 // ctrl - orc
-void drawOrc(float dt);
+void drawOrc(float dt, MapTile* tile, int NumX, int NumY);
 
 // debugHitbox
 #if _DEBUG
-void debugHitbox(float dt);
+void debugHitbox(float dt, MapTile* tile, int NumX, int NumY);
 #endif
 
-
-void drawEndStageMapTile(float dt);
