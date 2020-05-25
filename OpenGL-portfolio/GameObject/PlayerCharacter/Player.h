@@ -31,7 +31,6 @@ public:
 	
 public:
 	iImage* imgSkill; // 근접 스킬
-	iImage* imgSKillHit; // 타격시 이펙트
 	iImage* imgRange; // 원거리 스킬
 	iImage* imgBuff; // 버프 스킬
 	iImage* Ultimate; // 궁극기

@@ -11,12 +11,82 @@
 
 #define Orc_Speed 3.0
 
+static iImage** imgOrc = NULL;
 
 Orc::Orc(int number)
 {
-	hitEffect = new iImage();
+	if (imgOrc == NULL)
+	{
+		struct OrcInfo
+		{
+			const char* path;
+			int num;
+			float sizeRate;
+			iPoint p; // 축 조절하는 거
+
+		};
+
+		OrcInfo _oi[6] = {
+			"assets/stage/goblin/goblin idle (%d).png", 4, 2.0f, {-75, -90} ,
+			"assets/stage/goblin/goblin attack (%d).png", 8, 2.0f, {-75,-90},
+			"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
+			"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
+			"assets/stage/goblin/goblin hurt (%d).png", 4, 2.0f, {-75, -90},
+			"assets/stage/goblin/goblin death (%d).png", 4, 2.0f, {-75, -90},
+
+		};
+		iGraphics* g = iGraphics::instance();
+		iSize size;
+
+		imgOrc = (iImage**)malloc(sizeof(iImage*) * 6);
+		for (int i = 0; i < 6; i++)
+		{
+			iImage* img = new iImage();
+			OrcInfo* oi = &_oi[i];
+			for (int j = 0; j < oi->num; j++)
+			{
+				igImage* ig = g->createIgImage(oi->path, j + 1);
+				size = iSizeMake(g->getIgImageWidth(ig) * oi->sizeRate,
+					g->getIgImageHeight(ig) * oi->sizeRate);
+
+				g->init(size);
+				g->drawImage(ig, 0, 0, oi->sizeRate, oi->sizeRate, TOP | LEFT);
+				g->freeIgImage(ig);
+
+				Texture* tex = g->getTexture();
+				img->addObject(tex);
+				freeImage(tex);
+			}
+
+			switch (i)
+			{
+			case 0:
+			case 2:
+				img->_repeatNum = 0; // 무한반복
+				break;
+
+			default:
+				img->_repeatNum = 1;
+				break;
+			}
+			img->_aniDt = 0.1f;
+			img->position = oi->p * 2;
+			imgOrc[i] = img;
+		}
+	}
+
 	orc_number = number;
-	
+	imgs = (iImage**)malloc(sizeof(iImage*) * 6);
+	for (int i = 0; i < 6; i++)
+		imgs[i] = imgOrc[i]->copy();
+	img = imgs[0];
+
+	float ai[5] = orcAiTime;
+	aiTime = _aiTime = ai[number];
+ 	
+	// super class
+	this->size = iSizeMake(Orc_Width, Orc_Height);
+
 	HP = Orc_HP;
 	MP = Orc_MP;
 	
@@ -24,89 +94,29 @@ Orc::Orc(int number)
 	speed = 0.0;
 	_speed = Orc_Speed;
 
-	size = iSizeMake(Orc_Width, Orc_Height);
-	struct OrcInfo
-	{
-		const char* path;
-		int num;
-		float sizeRate;
-		iPoint p; // 축 조절하는 거
+	movement = 100;
 
-	};
-
-	OrcInfo _oi[6] = {
-		"assets/stage/goblin/goblin idle (%d).png", 4, 2.0f, {-75, -90} ,
-		"assets/stage/goblin/goblin attack (%d).png", 8, 2.0f, {-75,-90},
-		"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
-		"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
-		"assets/stage/goblin/goblin hurt (%d).png", 4, 2.0f, {-75, -90},
-		"assets/stage/goblin/goblin death (%d).png", 4, 2.0f, {-75, -90},
-
-	};
-
-	iGraphics* g = iGraphics::instance();
-	iSize size;
-
-	imgs = (iImage**)malloc(sizeof(iImage*) * 6);
-
-	for (int i = 0; i < 6; i++)
-	{
-		OrcInfo* oi = &_oi[i];
-
-		iImage* img = new iImage();
-
-		for (int j = 0; j < oi->num; j++)
-		{
-			igImage* ig = g->createIgImage(oi->path, j + 1);
-			size = iSizeMake(g->getIgImageWidth(ig) * oi->sizeRate,
-				g->getIgImageHeight(ig) * oi->sizeRate);
-
-			g->init(size);
-			g->drawImage(ig, 0, 0, oi->sizeRate, oi->sizeRate, TOP | LEFT);
-
-			Texture* tex = g->getTexture();
-			img->addObject(tex);
-			freeImage(tex);
-		}
-
-		img->_aniDt = 0.1f;
-
-		switch (i)
-		{
-		case 0:
-		case 2:
-			img->_repeatNum = 0; // 무한반복
-			break;
-
-		default:
-			img->_repeatNum = 1;
-
-			break;
-		}
-
-		img->position = oi->p * 2;
-
-		imgs[i] = img;
-
-		movement = 100;
-	}
-
-	behave = (EnermyBehave)-1;
-	setBehave(EnermyBehave_idle, 0);
 	direction = 0;
 	jumpNum = 0;
 	_jumpNum = 2;
 
-	
-	iImage* imgHit = new iImage();
 
+	behave = (EnermyBehave)-1;
+	setBehave(EnermyBehave_idle, 0);
 }
 
 Orc::~Orc()
 {
+	if (imgOrc)
+	{
+		for (int i = 0; i < 6; i++)
+			delete imgOrc[i];
+		free(imgOrc);
+		imgOrc = NULL;
+	}
+
 	for (int i = 0; i < 6; i++)
 		delete imgs[i];
-
 	free(imgs);
 
 	
@@ -124,8 +134,6 @@ void Orc::cbDeath(void* cb)
 void Orc::cbHurt(void* cb)
 {
 	Orc* o = (Orc*)cb;
-	o->hitEffect->position = o->position;
-	o->hitEffect->startAnimation();
 	o->setBehave(EnermyBehave_idle, o->direction);
 
 }
@@ -149,7 +157,6 @@ void Orc::cbSkill(void* cb)
 #include "../game/stage.h"
 void Orc::setDmg(float dmg)
 {
-	hitEffect->startAnimation();
 	EnermyBehave be = behave;
 	int dir = direction;
 
@@ -177,10 +184,7 @@ void Orc::setBehave(EnermyBehave be, int dir)
 		if (be == EnermyBehave_death)
 			img->startAnimation(cbDeath, this);
 		else if (be == EnermyBehave_hurt)
-		{
-			hitEffect->startAnimation();
 			img->startAnimation(cbHurt, this);
-		}
 		else if (be == EnermyBehave_meleeAttack)
 			img->startAnimation(cbSkill, this);
 		else
@@ -225,7 +229,7 @@ void Orc::paint(float dt, iPoint offset)
 
 			if (sy == ey) //세로 위치가 같을떄만 !
 			{
-				sp->dijkstra(sy * MapTileNumX + sx, ey * MapTileNumX + ex, path, pathNum);
+				sp->dijkstra(sy * StageMapTileNumX + sx, ey * StageMapTileNumX + ex, path, pathNum);
 				sp->removeDuplicate(path, pathNum);
 
 
@@ -274,11 +278,6 @@ void Orc::paint(float dt, iPoint offset)
 		
 		setBehave(EnermyBehave_move, direction);
 
-	}
-
-	if(hitEffect->animation && hitEffect != NULL)
-	{
-		hitEffect->paint(dt, offset, direction);
 	}
 }
 

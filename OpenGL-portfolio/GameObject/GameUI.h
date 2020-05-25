@@ -30,6 +30,12 @@ void freeNumber();
 void drawNumber(float dt, iPoint off);
 void addNumber(int dmg, iPoint position);
 
+//------------EffectHit------------------//
+void loadEffectHit();
+void freeEffectHit();
+void drawEffectHit(float dt, iPoint off);
+void addEffectHit(int index, iPoint p);
+
 
 //-------------PopGameOverUI---------------------//
 void createPopGameOverUI();

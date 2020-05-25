@@ -8,7 +8,7 @@
 
 Player::Player()
 {
-	memset(path, 0x00, sizeof(int) * MapTileNumX * MapTileNumY);
+	memset(path, 0x00, sizeof(int) * StageMapTileNumX * StageMapTileNumY);
 	pathIndex = pathNum;
 	HP = Player_HP;
 	MP = Player_MP;
@@ -105,33 +105,6 @@ Player::Player()
 		imgSkill = img;
 	}
 
-	
-	//근거리 타격이펙트 (Monster 오브젝트에 copy용)
-	iImage* img2 = new iImage();
-	{
-		for(int i = 0; i<31; i++)
-		{
-			iGraphics* g = iGraphics::instance();
-			setRGBA(1, 0, 0, 1);
-			igImage* ig = g->createIgImage("assets/stage/hero/knight/skill/hit/tile%03d.png", i);
-			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 1.0, g->getIgImageHeight(ig) * 1.0);
-			g->init(skillsize);
-			g->drawImage(ig, 0, 0, 1.0, 1.0, TOP | LEFT);
-
-			tex = g->getTexture();
-			img2->addObject(tex);
-			freeImage(tex);
-		}
-		img2->aniDt = 0.0f;
-		img2->_aniDt = 0.01f;
-		img2->_repeatNum = 1;
-		
-
-		imgSKillHit = img2;
-		setRGBA(1, 1, 1, 1);	
-	}
-
-
 	//버프스킬
 	iImage* img3 = new iImage();
 	{
@@ -217,12 +190,6 @@ void Player::paint(float dt, iPoint offset)
 	{
 		imgSkill->paint(dt, offset, direction);
 	}
-
-	if(imgSKillHit->animation)
-	{
-		imgSKillHit->paint(dt, offset, direction);
-	}
-
 }
 
 //iImage* skill;// = new iImage();
@@ -322,8 +289,8 @@ bool Player::moveForMouse(float dt)
 		if (pathIndex < pathNum)
 		{
 			int index = path[pathIndex];
-			targetPosition.x = MapTileWidth * (index % MapTileNumX) + MapTileWidth / 2;
-			targetPosition.y = MapTileHeight * (index / MapTileNumX) + MapTileHeight / 2;
+			targetPosition.x = MapTileWidth * (index % StageMapTileNumX) + MapTileWidth / 2;
+			targetPosition.y = MapTileHeight * (index / StageMapTileNumX) + MapTileHeight / 2;
 			pathIndex++;
 		}
 		else

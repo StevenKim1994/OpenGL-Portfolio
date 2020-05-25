@@ -31,6 +31,6 @@ public:
 };
 
 
-extern int tiles[MapTileNumX * MapTileNumY];
+extern int tiles[StageMapTileNumX * StageMapTileNumY];
 
 

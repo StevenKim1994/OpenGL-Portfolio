@@ -37,7 +37,6 @@ void createPopPlayerUI()
 
 	// Stage Title
 	{
-
 		g->init(size);
 		setStringRGBA(0, 0, 0, 1);
 		setRGBA(1, 1, 1, 0);// alpha값은 0 투명한 사이즈의 화면크기의 상자를 만드는거니까
@@ -50,7 +49,6 @@ void createPopPlayerUI()
 		img->addObject(Poptex);
 		freeImage(Poptex);
 		pop->addObject(img);
-
 	}
 
 	// kill indicator
@@ -61,16 +59,6 @@ void createPopPlayerUI()
 		kill_indicator->position = iPointMake(devSize.width / 2, 90);
 		pop->addObject(kill_indicator);
 	}
-
-	// time indicator
-	//{
-	//	setRGBA(1, 1, 1, 1);
-	//	iImage* time_indicator = new iImage();
-	//	time_indicator->addObject(timeIndicator->tex);
-	//	time_indicator->position = iPointMake(devSize.width / 2 - 200, 130);
-	//	pop->addObject(time_indicator);
-	//}
-
 
 	{ // 미니맵
 		setRGBA(1, 1, 0, 1);
@@ -86,7 +74,6 @@ void createPopPlayerUI()
 		pop->addObject(minimap);
 
 	}
-
 
 	// Stage Menu
 	{
@@ -159,65 +146,7 @@ void createPopPlayerUI()
 		PopPlayerUIImgs[4] = playerStamina;
 		pop->addObject(playerStamina);
 
-
-
-		/*
-		infoSize = iSizeMake(200, 50);
-		setRGBA(1, 0, 0, 1);
-		setStringSize(15);
-		// HP Indicator
-		g->init(infoSize);
-		g->fillRect(0, 0, infoSize.width * (hero->getHp() / hero->getMaxHp()), infoSize.height);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "HP: %.1f / %.1f", hero->getHp(), hero->getMaxHp());
-
-		infoTex = g->getTexture();
-		playerHP->addObject(infoTex);
-		freeImage(infoTex);
-
-		playerHP->position = iPointMake(0, 110);
-
-		PopPlayerUIImgs[2] = playerHP;
-		pop->addObject(playerHP);
-
-
-		// MP Indicator
-		setRGBA(0, 0, 1, 1);
-		g->init(infoSize);
-		g->fillRect(0, 0, infoSize.width * (hero->getMp() / hero->getMaxMP()), infoSize.height);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "MP: %.1f / %.1f", hero->getMp(), hero->getMaxMP());
-
-		infoTex = g->getTexture();
-		playerMP->addObject(infoTex);
-		freeImage(infoTex);
-
-		playerMP->position = iPointMake(0, 160);
-
-		PopPlayerUIImgs[3] = playerMP;
-		pop->addObject(playerMP);
-
-		setRGBA(1, 1, 0, 1);
-
-		// Stamina Indicator
-		g->init(infoSize);
-		g->fillRect(0, 0, infoSize.width * (hero->getStamina() / hero->getMaxStamina()), infoSize.height);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "Stamina: %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
-
-		infoTex = g->getTexture();
-		playerStamina->addObject(infoTex);
-		freeImage(infoTex);
-
-		playerStamina->position = iPointMake(0, 210);
-
-		PopPlayerUIImgs[4] = playerStamina;
-		pop->addObject(playerStamina);
-		*/
-
-
-
-
-
 	}
-
 
 	pop->openPosition = iPointZero;
 	pop->closePosition = iPointZero;
@@ -295,8 +224,6 @@ void showPopPlayerUI(bool show)
 
 
 
-
-
 //--------------PopMenuUI---------------------/
 
 //iPopup* PopMenuUI; PlayerUI 위에 선언해놨음.
@@ -359,12 +286,7 @@ void createPopMenuUI()
 
 	}
 
-
 	// 메뉴창에 간단하게 게임 설명(목표) 넣는 부분
-
-
-
-
 
 	pop->openPosition = iPointMake((devSize.width - size.width) / 2, (devSize.height - size.height) / 2);
 	pop->closePosition = pop->openPosition;
@@ -372,7 +294,6 @@ void createPopMenuUI()
 	setRGBA(1, 1, 1, 1);
 
 	PopMenuUI = pop;
-
 
 }
 
@@ -408,11 +329,8 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 
 		else if (i == 0)
 		{
-			printf("selected = %d\n", i);
 			PopMenuUI->show(false);
-
 		}
-
 
 		else if (i == 1)
 		{
@@ -421,7 +339,6 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 
 		else if (i == 2)
 		{
-			printf("QuitANSWER?\n");
 			showPopQuitAnswerUI(true);
 		}
 
@@ -441,12 +358,11 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 			}
 		}
 		PopMenuUI->selected = j;
-		printf("seletecd = %d\n", PopMenuUI->selected);
+
 		break;
 	}
 	case iKeyStateEnded:
 	{
-
 		break;
 	}
 
@@ -459,7 +375,6 @@ void showPopMenuUI(bool show)
 {
 	PopMenuUI->show(show);
 }
-
 
 
 //----------------------PopQuitAnswerUI------------------------//
@@ -689,6 +604,97 @@ void addNumber(int dmg, iPoint position)
 	}
 }
 
+struct EffectHit
+{
+	iImage* img;
+	iPoint p;
+	int dir;
+
+	bool paint(float dt, iPoint off)
+	{
+		img->paint(dt, p + off, dir);
+		if (img->animation)
+			return false;
+		return true;
+	}
+};
+EffectHit** _ehEffectHit;
+EffectHit** ehEffectHit;
+int ehNum;
+#define _ehNum 100
+
+void loadEffectHit()
+{
+	int i;
+
+	_ehEffectHit = (EffectHit**)malloc(sizeof(EffectHit*) * 1);
+
+	iImage* img = new iImage();
+	for (i = 0; i < 31; i++)
+	{
+		Texture* tex = createImage("assets/stage/hero/Knight/skill/hit/tile%d.png", i);
+		img->addObject(tex);
+		freeImage(tex);
+	}
+	img->position = iPointMake(-48, -48);
+	img->_aniDt = 0.001f;
+	img->_repeatNum = 1;
+
+	_ehEffectHit[0] = (EffectHit*)malloc(sizeof(EffectHit) * _ehNum);
+	for (i = 0; i < _ehNum; i++)
+		_ehEffectHit[0][i].img = img->copy();
+
+	delete img;
+
+	ehEffectHit = (EffectHit**)malloc(sizeof(EffectHit*) * 1 * _ehNum);
+	ehNum = 0;
+}
+
+void freeEffectHit()
+{
+	for (int j = 0; j < 1; j++)
+	{
+		for (int i = 0; i < _ehNum; i++)
+			delete _ehEffectHit[j][i].img;
+		free(_ehEffectHit[j]);
+	}
+	free(_ehEffectHit);
+	free(ehEffectHit);
+}
+
+void drawEffectHit(float dt, iPoint off)
+{
+	setRGBA(1, 0, 0, 1);
+	for (int i = 0; i < ehNum; i++)
+	{
+		if (ehEffectHit[i]->paint(dt, off))
+		{
+			ehNum--;
+			for (int j = i; j < ehNum; j++)
+				ehEffectHit[j] = ehEffectHit[1 + j];
+		}
+	}
+	setRGBA(1, 1, 1, 1);
+}
+
+void addEffectHit(int index, iPoint p)
+{
+	for (int i = 0; i < _ehNum; i++)
+	{
+		EffectHit* eh = &_ehEffectHit[index][i];
+		if (eh->img->animation == false)
+		{
+			eh->p = p;
+			eh->dir = 0;
+			eh->img->startAnimation();
+
+			ehEffectHit[ehNum] = eh;
+			ehNum++;
+			return;
+		}
+	}
+}
+
 //------------PopGameOverUI---------------//
 
 iPopup* PopGameOver;
@@ -705,7 +711,6 @@ void createPopGameOverUI()
 
 
 	GameOverBtn = (iImage**)malloc(sizeof(iImage*) * 2); // 0 : 메인메뉴 1 : 게임종료
-
 
 	// gameOverTitle
 	{
@@ -725,7 +730,6 @@ void createPopGameOverUI()
 		freeImage(overTitleTex);
 
 		pop->addObject(overTitle);
-
 	}
 
 	for (int i = 0; i < 2; i++)

@@ -95,7 +95,7 @@ public:
 	void jump();
 	void applyJump(iPoint& movement, float dt);
 
-	int path[MapTileNumX * MapTileNumY];
+	int path[1024];
 	int pathNum;
 	int pathIndex;
 };
