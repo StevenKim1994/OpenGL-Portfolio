@@ -4,6 +4,7 @@
 #include "drawObject.h"
 #include "Player.h"
 #include "Orc.h"
+#include "../GameObject/Prop/Fire.h"
 #include "sceneManager.h"
 
 extern iPoint offMt;
@@ -328,11 +329,15 @@ void drawOrc(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)
 #if _DEBUG
 void debugHitbox(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 {
+
+
 	//hitbox orc
+	if(orcs != NULL)
 	for (int i = 0; i < orcNum; i++)
 		drawRect((orcs[i]->getPosition().x - orcs[i]->getSize().width / 2) + offMt.x, (orcs[i]->getPosition().y - orcs[i]->getSize().height) + offMt.y, orcs[i]->getSize().width, orcs[i]->getSize().height);
 
 	//hitbox player
+	if(hero != NULL)
 	drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
 		(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
 }

@@ -26,12 +26,11 @@ stageNPC::stageNPC()
 			NPCInfo* ni = &_ni[i];
 			for (int j = 0; j < ni->num; j++)
 			{
-				igImage* ig = g->createIgImage(ni->path, j + 1);
-				size = iSizeMake(g->getIgImageWidth(ig) * ni->sizeRate, g->getIgImageHeight(ig) * ni->sizeRate);
-				g->init(size);
-				g->drawImage(ig, 0, 0, ni->sizeRate, ni->sizeRate, TOP | LEFT);
-
-				Texture* tex = g->getTexture();
+				Texture* tex = createImage(ni->path, j + 1);
+				tex->width *= ni->sizeRate;
+				tex->height *= ni->sizeRate;
+				tex->potWidth *= ni->sizeRate;
+				tex->potHeight *= ni->sizeRate;
 				img->addObject(tex);
 				freeImage(tex);
 			}

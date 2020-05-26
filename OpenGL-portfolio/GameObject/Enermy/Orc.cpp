@@ -45,15 +45,11 @@ Orc::Orc(int number)
 			OrcInfo* oi = &_oi[i];
 			for (int j = 0; j < oi->num; j++)
 			{
-				igImage* ig = g->createIgImage(oi->path, j + 1);
-				size = iSizeMake(g->getIgImageWidth(ig) * oi->sizeRate,
-					g->getIgImageHeight(ig) * oi->sizeRate);
-
-				g->init(size);
-				g->drawImage(ig, 0, 0, oi->sizeRate, oi->sizeRate, TOP | LEFT);
-				g->freeIgImage(ig);
-
-				Texture* tex = g->getTexture();
+				Texture* tex = createImage(oi->path, j+1);
+				tex->width *= oi->sizeRate;
+				tex->height *= oi->sizeRate;
+				tex->potWidth *= oi->sizeRate;
+				tex->potHeight *= oi->sizeRate;
 				img->addObject(tex);
 				freeImage(tex);
 			}

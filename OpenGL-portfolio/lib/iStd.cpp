@@ -646,6 +646,46 @@ Texture* createGreyImage(const char* szFormat, ...)
     return tex;
 }
 
+void convertColor(iColor4f color, uint8* rgba, int width, int height, int potWidth)
+{
+    for (int j = 0; j < height; j++)
+    {
+        for (int i = 0; i < width; i++)
+        {
+            uint8* c = &rgba[potWidth * 4 * j + 4 * i];
+            c[0] *= color.r;
+            c[1] *= color.g;
+            c[2] *= color.b;
+            c[3] *= color.a;
+        }
+    }
+}
+
+Texture* createColorImage(iColor4f c, const char* szFormat, ...)
+{
+    va_list args;
+    va_start(args, szFormat);
+
+    char szText[1024];
+    _vsnprintf(szText, sizeof(szText), szFormat, args);
+    va_end(args);
+
+    wchar_t* ws = utf8_to_utf16(szText);
+    Bitmap* bmp = new Bitmap(ws);
+    free(ws);
+
+    int width, height;
+    uint8* rgba = bmp2rgba(bmp, width, height);
+    delete bmp;
+
+    convertColor(c, rgba, width, height, nextPot(width));
+
+    Texture* tex = createImageWithRGBA(rgba, width, height);
+    free(rgba);
+
+    return tex;
+}
+
 uint8* convertReflect(uint8* rgba, int width, int& height, int potWidth, float rateY)
 {
     int newHeight = height * rateY;

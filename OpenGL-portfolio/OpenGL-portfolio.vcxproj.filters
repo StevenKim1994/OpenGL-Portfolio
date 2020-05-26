@@ -156,6 +156,15 @@
     <ClInclude Include="game\vilege.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Prop\Fire.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Enermy\Mushroom.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Projectile\Spore.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL-portfolio.rc">
@@ -301,6 +310,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="game\vilege.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Prop\Fire.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Enermy\Mushroom.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Projectile\Spore.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

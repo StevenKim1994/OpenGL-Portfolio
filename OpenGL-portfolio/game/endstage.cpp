@@ -4,6 +4,8 @@
 
 #include "vilege.h"
 #include "../GameObject/NPC/stageNPC.h"
+#include "../GameObject/Prop/Fire.h"
+#include "../GameObject/Enermy/Mushroom.h"
 
 // 게임 씬 관련
 extern int gameState;
@@ -29,11 +31,22 @@ static Texture* endStageTileset[1521];
 
 static MapTile* endStagemaptile;
 stageNPC* stagenpc;
-
+Fire** fires;
+Monster** mushrooms;
 extern float gameTime;
 extern float _gameTime;
 extern bool mouseMove;
 
+static bool coli_fire = false;
+void cbShake()
+{
+	printf("cbShake\n");
+	if (coli_fire == true)
+	{
+		hero->setHP(hero->getHp() - 1.0f);
+		coli_fire = false;
+	}
+}
 
 
 int endStagetiles[endStageMapTileNumX * endStageMapTileNumY] =
@@ -124,6 +137,21 @@ void loadEndStage()
 	stagenpc->setPosition(iPointMake(MapTileWidth * 47, MapTileHeight * 13));
 	stagenpc->setSize(iSizeMake(32, 32));
 
+	fires = (Fire**)malloc(sizeof(Fire*) * 2);
+	for (int i = 0; i < 2; i++)
+	{
+		Fire* fire = new Fire();
+		fire->setPosition(iPointMake(MapTileWidth * 5 * (i+1), MapTileHeight * 19));
+		fires[i] = fire;
+	}
+
+	mushrooms = (Monster**)malloc(sizeof(Monster*) * 1);
+	for (int i = 0; i < 1; i++)
+	{
+		Mushroom* mush = new Mushroom(i + 1);
+		mush->setPosition(iPointMake(MapTileWidth* 27, MapTileHeight * 25));
+		mushrooms[i] = mush;
+	}
 
 	createPopPlayerUI();
 	createPopMenuUI();
@@ -131,6 +159,7 @@ void loadEndStage()
 	createPopGameOverUI();
 	createPopStageNPCMenuUI();
 	loadNumber();
+	loadEffectHit();
 	
 }
 void freeEndStage()
@@ -141,11 +170,23 @@ void freeEndStage()
 		delete endStageTileset[i];
 	free(endStagemaptile);
 
+	for (int i = 0; i < 2; i++)
+		delete fires[i];
+
+	free(fires);
+
+	for (int i = 0; i < 1; i++)
+		delete mushrooms[i];
+
+	free(mushrooms);
+
+
 	delete sp;
 	delete stagenpc;
 
 
 	freeNumber();
+	freeEffectHit();
 	//freePopPlayerUI();
 	//freePopMenuUI();
 	//freePopQuitAnswerUI();
@@ -160,7 +201,20 @@ void drawEndStage(float dt)
 	drawMapTile(dt, endStagetiles,endStagemaptile,endStageTileset, endStageMapTileNumX, endStageMapTileNumY);
 	drawHero(dt, endStagetiles, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
 	drawRect(hero->getPosition().x+offMt.x, hero->getPosition().y+offMt.y, hero->getSize().width, hero->getSize().height);
+	
+	//fires
+	for (int i = 0; i < 2; i++)
+		fires[i]->paint(dt, offMt);
+
+	//mushroom
+	for (int i = 0; i < 1; i++)
+		((Mushroom*)mushrooms[i])->paint(dt, offMt, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
+
+
 	stagenpc->paint(dt, offMt);
+
+	drawEffectHit(dt, offMt);
+	drawNumber(dt, offMt);
 	fbo->unbind();
 
 	showCamera(texFboStage, dt);
@@ -171,7 +225,6 @@ void drawEndStage(float dt)
 
 	drawPopGameOverUI(dt);
 	drawPopStageNPCMenuUI(dt);
-	drawNumber(dt, offMt);
 
 
 
@@ -185,6 +238,21 @@ void drawEndStage(float dt)
 
 	staminaIndicator->setString("Stamina : %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
 
+	
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (containPoint(hero->getPosition(), iRectMake(fires[i]->getPosition().x, fires[i]->getPosition().y+10, fires[i]->getSize().width, fires[i]->getSize().height)))
+		{
+			if (coli_fire == false)
+			{
+				coli_fire = true;
+				printf("fire!\n");
+				shakeCamera(25,0.5, cbShake);
+			}
+			
+		}
+	}
 
 
 	if (hero->getStamina() != hero->getMaxStamina())

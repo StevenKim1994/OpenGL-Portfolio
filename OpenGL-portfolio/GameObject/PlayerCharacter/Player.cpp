@@ -40,13 +40,11 @@ Player::Player()
 		iImage* img = new iImage();
 		for (int j = 0; j < pi->num; j++)
 		{
-			igImage* ig = g->createIgImage(pi->path, j + 1);
-			size = iSizeMake(	g->getIgImageWidth(ig) * pi->sizeRate,
-								g->getIgImageHeight(ig) * pi->sizeRate);
-			g->init(size);
-			g->drawImage(ig, 0, 0, pi->sizeRate, pi->sizeRate, TOP | LEFT);
-
-			Texture* tex = g->getTexture();
+			Texture* tex = createImage(pi->path, j + 1);
+			tex->width *= pi->sizeRate;
+			tex->height *= pi->sizeRate;
+			tex->potWidth *= pi->sizeRate;
+			tex->potHeight *= pi->sizeRate;
 			img->addObject(tex);
 			freeImage(tex);
 		}
@@ -84,14 +82,11 @@ Player::Player()
 		for (int i = 0; i < 4; i++)
 		{
 			iGraphics* g = iGraphics::instance();
-			//Texture* tex = createImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
-			igImage* ig = g->createIgImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
-			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 0.25, g->getIgImageHeight(ig) * 0.25);
-			g->init(skillsize);
-			g->drawImage(ig, 0, 0, 0.25, 0.25, TOP | LEFT);
-			tex = g->getTexture();
-
-
+			Texture* tex = createImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
+			tex->width *= 0.25;
+			tex->height *= 0.25;
+			tex->potHeight *= 0.25;
+			tex->potWidth *= 0.25;
 			img->addObject(tex);
 			freeImage(tex);
 		}
@@ -113,12 +108,7 @@ Player::Player()
 		{
 			iGraphics* g = iGraphics::instance();
 			setRGBA(1, 0, 0, 1);
-			igImage* ig = g->createIgImage("assets/stage/hero/knight/skill/hit/tile%03d.png", i);
-			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 1.0, g->getIgImageHeight(ig) * 1.0);
-			g->init(skillsize);
-			g->drawImage(ig, 0, 0, 1.0, 1.0, TOP | LEFT);
-
-			tex = g->getTexture();
+			Texture* tex = createImage("assets/stage/hero/knight/skill/hit/tile%03d.png", i);
 			img2->addObject(tex);
 			freeImage(tex);
 		}
@@ -138,13 +128,23 @@ Player::Player()
 		for (int i = 0; i < 61; i++)
 		{
 			iGraphics* g = iGraphics::instance();
-			setRGBA(1, 0, 0, 1);
+	
+			//Texture* tex = createImage("assets/stage/hero/knight/skill2/tile%03d.png", i);
+			Texture* tex = createColorImage(iColor4fMake(1, 0, 0, 1), "assets/stage/hero/knight/skill2/tile%03d.png", i);
+			tex->width *= 2.0;
+			tex->potWidth *= 2.0f;
+			tex->height *= 2.0f;
+			tex->potHeight *= 2.0f;
+
+			
+			/*
 			igImage* ig = g->createIgImage("assets/stage/hero/knight/skill2/tile%03d.png", i);
 			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 2.0, g->getIgImageHeight(ig) * 2.0);
 			g->init(skillsize);
 			g->drawImage(ig, 0, 0, 2.0, 2.0, TOP | LEFT);
 
 			tex = g->getTexture();
+			*/
 			img3->addObject(tex);
 			freeImage(tex);
 		}

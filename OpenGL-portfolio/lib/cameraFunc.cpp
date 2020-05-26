@@ -7,7 +7,7 @@ iPoint shakePosition;
 float _shakeDt;
 float shakeDt = _shakeDt;
 
-void shakeCamera(int range, float duration)
+void shakeCamera(int range, float duration, METHOD cb)
 {
 	int x = random() % range;
 		if (random() % 2) 
@@ -20,6 +20,9 @@ void shakeCamera(int range, float duration)
 		
 		_shakeDt = duration;
 		shakeDt = 0.0f;
+
+		if (cb)
+			cb();
 
 }
 

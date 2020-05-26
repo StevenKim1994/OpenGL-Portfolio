@@ -94,6 +94,7 @@ void setTexture(TextureWrap wrap, TextureFilter filter);
 
 Texture* createImage(const char* szFormat, ...);
 Texture* createGreyImage(const char* szFormat, ...);
+Texture* createColorImage(iColor4f c, const char* szFormat, ...);
 Texture* createReflectImage(float rateY, const char* szFormat, ...);
 Texture** createDivideImage(int wNum, int hNum, const char* szFormat, ...);
 void freeImage(Texture* tex);
