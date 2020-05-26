@@ -60,3 +60,10 @@ void freePopStageNPCMenuUI();
 void drawPopStageNPCMenuUI(float dt);
 bool keyPopStageNPCMenuUI(iKeyState stat, iPoint point);
 void showPopStageNPCMenuUI(bool show);
+
+//-------------PopPlayerInventory---------------//
+void createPopPlayerInventory();
+void freePopPlayerInventory();
+void drawPopPlayerInventory(float dt);
+bool keyPopPlayerInventory(iKeyState stat, iPoint point);
+void showPopPlayerInventory(bool show);

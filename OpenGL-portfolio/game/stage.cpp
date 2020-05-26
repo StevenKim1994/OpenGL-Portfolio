@@ -215,6 +215,8 @@ void loadStage()
 	createPopMenuUI();
 	createPopQuitAnswerUI();
 	createPopGameOverUI();
+	createPopPlayerInventory();
+
 	loadNumber();
 	loadEffectHit();
 	logoDt = 0.0f;
@@ -262,8 +264,8 @@ void drawStage(float dt)
 	drawPopPlayerUI(dt);
 	drawPopMenuUI(dt);
 	drawPopQuitAnswerUI(dt);
-	
 	drawPopGameOverUI(dt);
+	drawPopPlayerInventory(dt);
 	
 	if (hero->alive == false) // 플레이어가 죽으면 
 	{
@@ -303,10 +305,12 @@ void keyStage(iKeyState stat, iPoint point)
 	if (keyPopGameOverUI(stat, point))
 		return;
 
-
 	if(keyPopQuitAnswerUI(stat, point))
 		return;
 
+	if (keyPopPlayerInventory(stat, point))
+		return;
+	
 	if (keyPopMenuUI(stat, point))
 		return;
 	

@@ -141,7 +141,7 @@ void drawPopMenuBtn(float dt)
 	int key = PopMenuBtn->selected;
 	if (getKeyDown() & keyboard_up)
 	{
-		
+		audioPlay(1); // 버튼음 재생
 		key--;
 		if (key < 0)
 			key = 0;
@@ -150,7 +150,7 @@ void drawPopMenuBtn(float dt)
 	}
 	else if (getKeyDown() & keyboard_down)
 	{
-	
+		audioPlay(1); // 버튼음 재생
 		key++;
 		if (key > 2)
 			key = 2;
@@ -159,6 +159,7 @@ void drawPopMenuBtn(float dt)
 
 	if(getKeyDown() & keyboard_enter)
 	{
+		audioPlay(1); // 버튼음 재생
 		if (key == 0)
 		{
 			setLoading(gs_stage, freeMenu, loadStage);

@@ -1101,6 +1101,61 @@ void showPopStageNPCMenuUI(bool show)
 	PopStageNPCMenuUI->show(show);
 }
 
+//----------------PopPlayerInventory------------------//
+iPopup* PopPlayerInventory;
+iImage** PopPlayerInventoryImgs;
+void createPopPlayerInventory()
+{
+	iPopup* pop = new iPopup(iPopupStyleAlpha);
+	iGraphics* g = iGraphics::instance();
+
+	iSize bgSize = iSizeMake(700, 300);
+	PopPlayerInventoryImgs = (iImage**)malloc(sizeof(iImage*) * 20); // 임시로 20개 만듬
+
+	//Inventory background
+	{
+		iImage* img = new iImage();
+		Texture* tex; 
+		setRGBA(1, 1, 1, 1);
+		g->init(bgSize);
+		g->fillRect(0, 0, bgSize.width, bgSize.height);
+		g->drawString(bgSize.width / 2, 20, HCENTER | VCENTER, "%s Inventory", hero->getName());
+		tex = g->getTexture();
+		img->addObject(tex);
+		freeImage(tex);
+		img->position = iPointZero;
+		pop->addObject(img);	
+	}
+
+
+	
+
+	
+	pop->openPosition = iPointMake(devSize.width / 2 - bgSize.width / 2, devSize.height / 2 - bgSize.height / 2);
+	pop->closePosition = pop->openPosition;
+	PopPlayerInventory = pop;
+}
+
+void freePopPlayerInventory()
+{
+	delete PopPlayerInventory;
+}
+
+void drawPopPlayerInventory(float dt)
+{
+	PopPlayerInventory->paint(dt);
+}
+
+bool keyPopPlayerInventory(iKeyState stat, iPoint point)
+{
+	return true;
+}
+
+void showPopPlayerInventory(bool show)
+{
+	PopPlayerInventory->show(show);
+}
+
 Texture* methodStDamage(const char* str)
 {
 	iGraphics* g = iGraphics::instance();

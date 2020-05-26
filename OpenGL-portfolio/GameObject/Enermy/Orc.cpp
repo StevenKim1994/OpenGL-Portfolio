@@ -289,6 +289,7 @@ void Orc::Skill1()
 
 	//zoomCamera(hero->getPosition(), 1.3);
 	shakeCamera(25, 0.5);
+	audioPlay(5);
 	hero->setHP(hero->getHp() - 5.0);
 	extern iStrTex* hpIndicator;
 	hpIndicator->setString("%f", hero->getHp());
