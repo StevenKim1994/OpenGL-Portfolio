@@ -161,6 +161,7 @@ void loadEndStage()
 	createPopStageNPCMenuUI();
 	loadNumber();
 	loadEffectHit();
+	loadProjectile();
 	
 }
 void freeEndStage()
@@ -188,6 +189,7 @@ void freeEndStage()
 
 	freeNumber();
 	freeEffectHit();
+	freeProjectile();
 	//freePopPlayerUI();
 	//freePopMenuUI();
 	//freePopQuitAnswerUI();
@@ -216,6 +218,7 @@ void drawEndStage(float dt)
 
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);
+	drawProjectile(dt, offMt);
 	fbo->unbind();
 
 

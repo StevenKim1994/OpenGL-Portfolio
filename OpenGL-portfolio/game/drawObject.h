@@ -11,7 +11,7 @@ void drawMapTile(float dt, int* tiledata, MapTile* tile, Texture** tileset, int 
 // ctrl - hero
 void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);
 // ctrl - orc
-void drawOrc(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);
+void drawGoblin(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);
 
 // debugHitbox
 #if _DEBUG

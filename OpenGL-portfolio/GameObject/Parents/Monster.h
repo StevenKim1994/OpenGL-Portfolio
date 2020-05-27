@@ -25,7 +25,7 @@ public:
 	float rateV;
 	iPoint v = iPointZero;
 	int direction;
-	bool alive;
+	
 
 	float r = 0.0f;
 	float rValue = 1.0f; // 임시로 public...

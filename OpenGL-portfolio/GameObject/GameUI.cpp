@@ -8,7 +8,7 @@
 #include "../game/endstage.h"
 #include "../game/sceneManager.h"
 #include "../game/vilege.h"
-#include "Orc.h"
+#include "Goblin.h"
 
 extern iStrTex* killIndicator;
 extern iStrTex* timeIndicator;
@@ -16,6 +16,8 @@ extern Texture* playerPortrait;
 extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
+extern iStrTex* expIndicator;
+
 iPopup* PopPlayerInventory;
 Texture* methodTimeIndicator(const char* str)
 {
@@ -97,6 +99,21 @@ Texture* methodPlayerStaminaIndicator(const char* str)
 	return g->getTexture();
 }
 
+Texture* methodPlayerExpIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(200, 50);
+
+	setRGBA(0, 1, 0, 1);
+	setStringSize(15);
+	
+	g->init(size);
+	g->drawRect(0, 0, size.width, size.height);
+	g->fillRect(0, 0, size.width * (hero->getExp() / 100.0f), size.height);
+	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
+
+	return g->getTexture();
+}
 
 //----------------PopPlayerUI------------------------//
 
@@ -126,7 +143,7 @@ void createPopPlayerUI()
 		g->fillRect(0, 0, devSize.width, devSize.height);
 		g->drawString(devSize.width / 2, 10, HCENTER | VCENTER, "- Stage -");
 		g->drawString(devSize.width / 2, 35, HCENTER | VCENTER, mapTitle[0]);
-		g->drawString(devSize.width / 2, 65, HCENTER | VCENTER, "KILL:");
+		//g->drawString(devSize.width / 2, 65, HCENTER | VCENTER, "KILL:");
 
 		Poptex = g->getTexture();
 		img->addObject(Poptex);
@@ -136,20 +153,17 @@ void createPopPlayerUI()
 
 	// kill indicator
 	{
-		setRGBA(1, 1, 1, 1);
-		iImage* kill_indicator = new iImage();
-		kill_indicator->addObject(killIndicator->tex);
-		kill_indicator->position = iPointMake(devSize.width / 2, 90);
-		pop->addObject(kill_indicator);
+		//setRGBA(1, 1, 1, 1);
+		//iImage* kill_indicator = new iImage();
+		//kill_indicator->addObject(killIndicator->tex);
+		//kill_indicator->position = iPointMake(devSize.width / 2, 90);
+		//pop->addObject(kill_indicator);
 	}
 
 	{ // 미니맵
-		setRGBA(1, 1, 0, 1);
+		setRGBA(1, 1, 1, 1);
 		setStringSize(10);
-		iSize mapsize = iSizeMake(200, 200);
-		//g->init(mapsize);
-		//g->fillRect(0, 0, mapsize.width, mapsize.height);
-		//g->drawString(mapsize.width / 2, mapsize.height / 2, HCENTER | VCENTER, "Minimap position");
+		iSize mapsize = iSizeMake(200, 200);;
 		extern Texture* minimapFbo;
 		Texture* minimapTex = minimapFbo; // g->getTexture();
 
@@ -188,7 +202,8 @@ void createPopPlayerUI()
 		iImage* playerHP = new iImage();
 		iImage* playerMP = new iImage();
 		iImage* playerStamina = new iImage();
-
+		iImage* playerExp = new iImage();
+		
 		Texture* infoTex;
 		iSize infoSize = iSizeMake(200, 100);
 		setRGBA(0, 1, 0, 1);
@@ -203,9 +218,9 @@ void createPopPlayerUI()
 
 		// Player Name Indicator
 
-		setStringSize(30);
+		setStringSize(25);
 		g->init(infoSize);
-		g->drawString(infoSize.width / 2, infoSize.height / 2, HCENTER | VCENTER, "%s", hero->getName());
+		g->drawString(0,0,TOP|LEFT,"Lv %d %s", hero->getLevel(), hero->getName());
 		infoTex = g->getTexture();
 		playerName->addObject(infoTex);
 		freeImage(infoTex);
@@ -232,6 +247,12 @@ void createPopPlayerUI()
 		PopPlayerUIImgs[4] = playerStamina;
 		pop->addObject(playerStamina);
 
+		playerExp->addObject(expIndicator->tex);
+		freeImage(expIndicator->tex);
+		playerExp->position = iPointMake(0, 260);
+		PopPlayerUIImgs[5] = playerExp;
+		pop->addObject(playerExp);
+
 	}
 
 	//Inventory Btn
@@ -255,6 +276,45 @@ void createPopPlayerUI()
 		
 	}
 
+	//SkillBar
+	{
+		//BarBackground
+		setRGBA(0, 0, 1, 1);
+		iImage* SKBg = new iImage();
+		Texture* SKbgTex;
+		iSize SKbgSize = iSizeMake(500, 100);
+		g->init(SKbgSize);
+		g->fillRect(0, 0, SKbgSize.width, SKbgSize.height);
+
+		SKbgTex = g->getTexture();
+		SKBg->addObject(SKbgTex);
+		freeImage(SKbgTex);
+
+		SKBg->position = iPointMake(devSize.width/2- SKbgSize.width/2, devSize.height - SKbgSize.height);
+		pop->addObject(SKBg);
+
+		//BarBtn
+		for (int i = 0; i < 5; i++)
+		{
+			setStringSize(10);
+			setRGBA(1, 1, 1, 1);
+			iImage* Btn = new iImage();
+			Texture* bgTex;
+			iSize bgSize = iSizeMake(70, 70);
+			g->init(bgSize);
+			g->fillRect(0, 0, bgSize.width, bgSize.height);
+			g->drawString(0, 0, TOP | LEFT, "%d", i + 1);
+			bgTex = g->getTexture();
+			Btn->addObject(bgTex);
+			freeImage(bgTex);
+
+			Btn->position = iPointMake(devSize.width / 2 - SKbgSize.width / 2  + 15+ (i * 100), devSize.height - bgSize.height -15);
+			pop->addObject(Btn);
+		}
+
+	}
+
+	
 	pop->openPosition = iPointZero;
 	pop->closePosition = iPointZero;
 

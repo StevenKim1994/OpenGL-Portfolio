@@ -3,7 +3,7 @@
 #include "stageTileInfo.h"
 #include "Monster.h"
 #include "Player.h"
-#include "Orc.h"
+#include "Goblin.h"
 #include "sceneManager.h"
 
 #include "GameUI.h"
@@ -24,13 +24,13 @@ bool mouseMove = false;
 
 
 //object
-Monster** orcs;
+Object** goblins;
 Player* hero;
 
 
 // 오브젝트 풀 관련
-int _orcNum = orc_Num;
-int orcNum = _orcNum;
+int _goblinNum = goblin_Num;
+int goblinNum = _goblinNum;
 
 //맵 관련
 static MapTile* maptile;
@@ -46,6 +46,7 @@ iStrTex* timeIndicator;
 iStrTex* hpIndicator;
 iStrTex* mpIndicator;
 iStrTex* staminaIndicator;
+iStrTex* expIndicator;
 Texture* playerPortrait;
 float gameTime = 0;
 float _gameTime = 100000000000;
@@ -96,7 +97,7 @@ int tiles[stageMapTileNumX * stageMapTileNumY] =
 
 void loadStage()
 {
-	orcNum = _orcNum;
+	goblinNum = _goblinNum;
 	
 	playerPortrait = createImage("assets/stage/hero/Knight/KnightPortrait.png");
 	texFboStage = createTexture(devSize.width, devSize.height);
@@ -186,13 +187,13 @@ void loadStage()
 
 
 	
-	orcs = (Monster**)malloc(sizeof(Monster) * orc_Num);
-	for (int i = 0; i < orc_Num; i++) // 맵에 오크 생성
+	goblins = (Object**)malloc(sizeof(Object) * goblin_Num);
+	for (int i = 0; i < goblin_Num; i++) // 맵에 오크 생성
 	{
-		Orc* orc = new Orc(i);
-		orc->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth+30), MapTileHeight*17));
-		orc->alive = true;
-		orcs[i] = orc;
+		Goblin* goblin = new Goblin(i);
+		goblin->setPosition(iPointMake(MapTileWidth * 30 + (i * MapTileWidth+30), MapTileHeight*17));
+		goblin->alive = true;
+		goblins[i] = goblin;
 	}
     minimapHero = new Player();
 
@@ -214,6 +215,9 @@ void loadStage()
 	staminaIndicator = new iStrTex(methodPlayerStaminaIndicator);
 	staminaIndicator->setString("Stamina : %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
 
+	expIndicator = new iStrTex(methodPlayerExpIndicator);
+	expIndicator->setString("Exp : %.1f, / 100", hero->getExp());
+	
 	createPopPlayerUI();
 	createPopMenuUI();
 	createPopQuitAnswerUI();
@@ -241,10 +245,10 @@ void freeStage()
 	
 	free(maptile);
 
-	for (int i = 0; i < orcNum; i++)
-		delete orcs[i];
+	for (int i = 0; i < goblinNum; i++)
+		delete goblins[i];
 	
-	free(orcs);
+	free(goblins);
 
 	delete sp;
 
@@ -257,7 +261,7 @@ void drawStage(float dt)
 {
 	fbo->bind(texFboStage);
 	drawMapTile(dt, tiles,maptile,tileset, stageMapTileNumX, stageMapTileNumY);
-	drawOrc(dt, tiles,maptile, stageMapTileNumX, stageMapTileNumY);
+	drawGoblin(dt, tiles,maptile, stageMapTileNumX, stageMapTileNumY);
 	drawHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 	drawProjectile(dt, offMt);
 	drawEffectHit(dt, offMt);
@@ -271,6 +275,7 @@ void drawStage(float dt)
 	
 
 
+	setRGBA(1, 1, 1, 1);
 	//minimap drawing
 	fbo->bind(minimapFbo);
 	drawMinimapTile(dt, tiles, maptile, tileset, stageMapTileNumX, stageMapTileNumY);
@@ -281,7 +286,7 @@ void drawStage(float dt)
 
 
 
-
+	
 	//gameTime += dt;
 	//timeIndicator->setString("TIME : %0.2f",gameTime);
 

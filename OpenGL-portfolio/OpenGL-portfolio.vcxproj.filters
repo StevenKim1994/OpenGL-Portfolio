@@ -138,9 +138,6 @@
     <ClInclude Include="GameObject\NPC\stageNPC.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Enermy\Orc.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="lib\iCSVReader.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -156,9 +153,6 @@
     <ClInclude Include="GameObject\Enermy\Mushroom.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameObject\Projectile\Spore.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="GameObject\Prop\coin.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -166,6 +160,9 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="GameObject\NPC\PotionNPC.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject\Enermy\Goblin.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
@@ -297,9 +294,6 @@
     <ClCompile Include="GameObject\NPC\stageNPC.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\Enermy\Orc.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="lib\iCSVReader.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -315,9 +309,6 @@
     <ClCompile Include="GameObject\Enermy\Mushroom.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameObject\Projectile\Spore.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="GameObject\Prop\coin.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -325,6 +316,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="GameObject\NPC\PotionNPC.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Enermy\Goblin.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

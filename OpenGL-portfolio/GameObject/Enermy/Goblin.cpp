@@ -1,9 +1,9 @@
-#include "Orc.h"
+#include "Goblin.h"
 
 #include "GameUI.h"
 #include "GameEffect.h"
 
-#define Orc_HP 20
+#define Orc_HP 1
 #define Orc_MP 100
 #define Orc_Stamina 100
 
@@ -14,7 +14,7 @@
 
 static iImage** imgOrc = NULL;
 
-Orc::Orc(int number)
+Goblin::Goblin(int number)
 {
 	if (imgOrc == NULL)
 	{
@@ -74,7 +74,7 @@ Orc::Orc(int number)
 		}
 	}
 
-	orc_number = number;
+	goblin_number = number;
 	imgs = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
 	for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 		imgs[i] = imgOrc[i]->copy();
@@ -100,11 +100,11 @@ Orc::Orc(int number)
 	_jumpNum = 2;
 
 
-	behave = ObjectBehave::ObjectBehave_NULL;
-	setBehave(ObjectBehave::ObjectBehave_idle, 0);
+	behave = ObjectBehave::ObjectBehave_idle;
+	setBehave(behave, 0);
 }
 
-Orc::~Orc()
+Goblin::~Goblin()
 {
 	if (imgOrc)
 	{
@@ -122,24 +122,23 @@ Orc::~Orc()
 }
 
 #include "../PlayerCharacter/Player.h"
-void Orc::cbDeath(void* cb)
+void Goblin::cbDeath(void* cb)
 {
-	Orc* o = (Orc*)cb;
+	Object* o = (Object*)cb;
 	o->alive = false;
-
-	hero->kill++;
+	
 }
 
-void Orc::cbBehave(void* cb)
+void Goblin::cbBehave(void* cb)
 {
 	iImage* i = (iImage*)cb;
 
 }
 
-void Orc::cbSkill(void* cb)
+void Goblin::cbSkill(void* cb)
 {
 	
-	Orc* o = (Orc*)cb;
+	Goblin* o = (Goblin*)cb;
 	o->Skill1();
 	o->setBehave(ObjectBehave::ObjectBehave_idle, o->direction);
 
@@ -148,27 +147,28 @@ void Orc::cbSkill(void* cb)
 }
 
 #include "../game/stage.h"
-void Orc::setDmg(float dmg)
+
+void Goblin::setDmg(float dmg)
 {
 	ObjectBehave be = behave;
 	int dir = direction;
 
-	HP -= dmg;
 	if (HP > 0)
 	{
+	    HP -= dmg;
 		be = ObjectBehave::ObjectBehave_hurt;
 	}
 	else
 	{
 		HP = 0;
+		hero->setExp(hero->getExp() + 5.0f);
 		be = ObjectBehave::ObjectBehave_death;
 	}
 	setBehave(be, dir);
-
 	addNumber(dmg, position + iPointMake(0, -50));
 
 }
-void Orc::setBehave(ObjectBehave be, int dir)
+void Goblin::setBehave(ObjectBehave be, int dir)
 {
 	if (behave != be || direction != dir)
 	{
@@ -190,7 +190,7 @@ void Orc::setBehave(ObjectBehave be, int dir)
 
 extern iShortestPath* sp;
 
-void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
+void Goblin::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 {
 	iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
 	move(v + orcMovement, tile, NumX, NumY);
@@ -205,7 +205,7 @@ void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 	{
 		if (detected_Player == false)
 		{
-			printf("orcs[%d] player detected!\n", orc_number);
+			printf("orcs[%d] player detected!\n",goblin_number);
 
 			int sx = position.x;
 			sx /= MapTileWidth;
@@ -254,7 +254,7 @@ void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 		targetPosition = iPointZero;
 		detected_Player = false;
 
-		r += rValue * (1 + orc_number); // 오크인덱스
+		r += rValue * (1 + goblin_number); // 고블린인덱스
 
 		float rateOrcV = _sin(r);
 		float orcDir;
@@ -268,13 +268,13 @@ void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 		else
 			direction = 0;
 
-		if(behave != ObjectBehave::ObjectBehave_hurt)
+		if(behave != ObjectBehave::ObjectBehave_hurt && behave != ObjectBehave::ObjectBehave_death)
 			setBehave(ObjectBehave::ObjectBehave_move, direction);
 
 	}
 }
 
-void Orc::Skill1()
+void Goblin::Skill1()
 {
 
 	extern Player* hero;
@@ -298,27 +298,27 @@ void Orc::Skill1()
 		hero->alive = false;
 }
 
-void Orc::Skill2()
+void Goblin::Skill2()
 {
 }
 
-void Orc::setDetected_Player(bool check)
+void Goblin::setDetected_Player(bool check)
 {
 	detected_Player = check;
 }
 
-void Orc::setTarget(Object* obj)
+void Goblin::setTarget(Object* obj)
 {
 	Target = obj;
 	Target_Pos = obj->getPosition();
 }
 
-bool Orc::getDetected_Player()
+bool Goblin::getDetected_Player()
 {
 	return detected_Player;
 }
 
-Object* Orc::getTarget()
+Object* Goblin::getTarget()
 {
 	return Target;
 }

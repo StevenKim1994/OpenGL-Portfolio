@@ -163,9 +163,8 @@
     <ClInclude Include="GameObject\Parents\Monster.h" />
     <ClInclude Include="GameObject\Parents\NPC.h" />
     <ClInclude Include="GameObject\Parents\Object.h" />
-    <ClInclude Include="GameObject\Enermy\Orc.h" />
+    <ClInclude Include="GameObject\Enermy\Goblin.h" />
     <ClInclude Include="GameObject\PlayerCharacter\Player.h" />
-    <ClInclude Include="GameObject\Projectile\Spore.h" />
     <ClInclude Include="GameObject\Prop\coin.h" />
     <ClInclude Include="GameObject\Prop\Fire.h" />
     <ClInclude Include="GameObject\Prop\FirePlace.h" />
@@ -222,9 +221,8 @@
     <ClCompile Include="GameObject\Parents\Monster.cpp" />
     <ClCompile Include="GameObject\Parents\NPC.cpp" />
     <ClCompile Include="GameObject\Parents\Object.cpp" />
-    <ClCompile Include="GameObject\Enermy\Orc.cpp" />
+    <ClCompile Include="GameObject\Enermy\Goblin.cpp" />
     <ClCompile Include="GameObject\PlayerCharacter\Player.cpp" />
-    <ClCompile Include="GameObject\Projectile\Spore.cpp" />
     <ClCompile Include="GameObject\Prop\coin.cpp" />
     <ClCompile Include="GameObject\Prop\Fire.cpp" />
     <ClCompile Include="GameObject\Prop\FirePlace.cpp" />

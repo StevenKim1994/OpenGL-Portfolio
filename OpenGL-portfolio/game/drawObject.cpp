@@ -3,7 +3,7 @@
 #include "iStd.h"
 #include "drawObject.h"
 #include "Player.h"
-#include "Orc.h"
+#include "Goblin.h"
 #include "../GameObject/Prop/Fire.h"
 #include "sceneManager.h"
 
@@ -15,14 +15,14 @@ extern MapTile* maptile;
 extern Player* hero;
 extern bool mouseMove;
 
-extern Monster** orcs;
-extern int orcNum;
+extern Object** goblins;
+extern int goblinNum;
 extern iStrTex* killIndicator;
 
 extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
-
+extern iStrTex* expIndicator;
 extern int gameState;
 
 void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, int NumX, int NumY)
@@ -61,10 +61,10 @@ void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, in
 #if _DEBUG // tileHitbox
 			switch (t->attr)
 			{
-				case canMove: break;
-				case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				case nextStagePortal: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				//case canMove: break;
+				//case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				//case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				//case nextStagePortal: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
 			}
 #endif
 
@@ -97,9 +97,9 @@ void drawMinimapTile(float dt, int* tiledata, MapTile* tileInfo, Texture** tiles
 			switch (t->attr)
 			{
 			case canMove: break;
-			case canNotMove: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			case deadZone:	setRGBA(1, 0, 0, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			case nextStagePortal: setRGBA(0, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+			case canNotMove: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+			case deadZone:	setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+			case nextStagePortal: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
 			}
 #endif
 
@@ -368,22 +368,17 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				shakeCamera(30);
 
 				extern int gameState;
-				//printf("%f %f \n", imgSkill->touchRect().origin.x, imgSkill->touchRect().origin.y); // 스킬 출력 위치
+			
 				switch (gameState)
 				{
 				case gs_stage:
-					for (int i = 0; i < orc_Num; i++)
+					for (int i = 0; i < goblin_Num; i++)
 					{
-						//printf("orc %d : x: %f, y : %f\n",i, enermy[i]->getPosition().x, enermy[i]->getPosition().y); // 몬스터 충돌 위치
-						if (containPoint(orcs[i]->getPosition(), hero->imgSkill->touchRect()))
+				
+						if (containPoint(goblins[i]->getPosition(), hero->imgSkill->touchRect()))
 						{
-
-							((Orc*)orcs[i])->setDmg(hero->getDamage());
-							addEffectHit(0, orcs[i]->getPosition());
-
-							//orcs[i]->setPosition(iPointMake(orcs[i]->getPosition().x, orcs[i]->getPosition().y - 50.0f));
-
-
+							goblins[i]->setDmg(hero->getDamage());
+							addEffectHit(0, goblins[i]->getPosition());
 						}
 					}
 					break;
@@ -398,7 +393,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				be = ObjectBehave::ObjectBehave_meleeAttack2;
 				hero->Skill2();
 				hero->setMP(hero->getMp() - 10.0f);
-				addProjectile(0, hero->getPosition(), hero->direction, 3, (Object**)orcs, orcNum);
+				addProjectile(0, hero->getPosition(), hero->direction, 3, (Object**)goblins, goblinNum);
 			}
 			else if (keyDown & keyboard_num3 && hero->getMp() > 1)
 			{
@@ -519,24 +514,28 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 		if (hero->getStamina() > hero->getMaxStamina())
 			hero->setStamina(hero->getMaxStamina());
 	}
-	
+
+
+	expIndicator->setString("%f", (hero->getExp()));
 }
 
-void drawOrc(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)
+void drawGoblin(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)
 { // paint Orc
-	for (int i = 0; i < orcNum; i++)
+	for (int i = 0; i < goblinNum; i++)
 	{
-		if (orcs[i]->alive == false)
+		if (goblins[i]->alive == false)
 		{
-			orcNum--;
-			delete orcs[i];
-			orcs[i] = orcs[orcNum];
+			hero->setExp(hero->getExp() + 5.0f);
+			goblinNum--;
+			delete goblins[i];
+			goblins[i] = goblins[goblinNum];
 			continue;
 		}
-		((Orc*)orcs[i])->paint(dt, offMt, tile, NumX, NumY);
+		((Goblin*)goblins[i])->paint(dt, offMt, tile, NumX, NumY);
 	}
 
 	killIndicator->setString("%d", hero->kill);
+	
 }
 
 
@@ -547,9 +546,9 @@ void debugHitbox(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 
 
 	//hitbox orc
-	if(orcs != NULL)
-	for (int i = 0; i < orcNum; i++)
-		drawRect((orcs[i]->getPosition().x - orcs[i]->getSize().width / 2) + offMt.x, (orcs[i]->getPosition().y - orcs[i]->getSize().height) + offMt.y, orcs[i]->getSize().width, orcs[i]->getSize().height);
+	if(goblins != NULL)
+	for (int i = 0; i < goblinNum; i++)
+		drawRect((goblins[i]->getPosition().x - goblins[i]->getSize().width / 2) + offMt.x, (goblins[i]->getPosition().y - goblins[i]->getSize().height) + offMt.y, goblins[i]->getSize().width, goblins[i]->getSize().height);
 
 	//hitbox player
 	if(hero != NULL)

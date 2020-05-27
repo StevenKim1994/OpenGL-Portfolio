@@ -46,6 +46,10 @@ public:
 	iPoint targetPosition;
 	iSize size;
 	iPoint jumpment;
+	iPoint v = iPointZero;
+	float rateV;
+	float r = 0.0f;
+	float rValue = 1.0f;
 	int jumpNum;
 	int _jumpNum; // 점프를 할수 있는 최대 수
 	int direction;

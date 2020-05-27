@@ -1,7 +1,7 @@
 #pragma once
 #include "Player.h"
 #include "Monster.h"
-
+#include "GameUI.h"
 #define Player_HP 100
 #define Player_MP 100
 #define Player_Stamina 100
@@ -256,17 +256,40 @@ void Player::paint(float dt, iPoint offset)
 
 }
 
+int Player::getLevel()
+{
+	return level;
+}
+
+void Player::setLevel(int _lv)
+{
+	level = _lv;
+}
+
+float Player::getExp()
+{
+	return exp;
+}
+
+void Player::setExp(float _ex)
+{
+	exp = _ex;
+}
+
 //iImage* skill;// = new iImage();
 
-void Player::cbSkill(void* cb)
+void Player::cbSkill1(void* cb)
 {
-
-
 
 }
 
+void Player::cbSkill2(void* cb)
+{
+}
 
-
+void Player::cbSkill3(void* cb)
+{
+}
 
 
 void Player::Skill1()

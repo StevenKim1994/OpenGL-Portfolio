@@ -2,7 +2,7 @@
 
 #include "GameEffect.h"
 #include "../game/sceneManager.h"
-#include "Orc.h"
+#include "Goblin.h"
 
 struct Damage
 {
@@ -166,7 +166,7 @@ void addEffectHit(int index, iPoint p)
 	}
 }
 
-extern Monster** orcs;
+extern Object** orcs;
 struct Projectile
 {
 	iImage* img;
@@ -195,21 +195,13 @@ struct Projectile
 
 				if (containPoint(iPointMake(p.x, p.y + 32), iRectMake(target[i]->position.x, target[i]->position.y, 64, 64)))
 				{
-					target[i]->setDmg(15);
-					target[i]->setBehave(ObjectBehave::ObjectBehave_hurt, target[i]->direction);
+					target[i]->setDmg(7);
 					addEffectHit(0, target[i]->position);
 					//zoomCamera(target[i]->position, 1.5);
 					return true;
 				}
 			}
 		
-		
-
-		//else if (gameState == gs_boss)
-		//{
-
-		//}
-
 
 		if (img->animation)
 			return false;

@@ -12,10 +12,15 @@ public:
 	virtual ~Player();
 
 	static void cbBehave(void* cb);
-	static void cbSkill(void* cb);
+	static void cbSkill1(void* cb);
+	static void cbSkill2(void* cb);
+	static void cbSkill3(void* cb);
 	void setBehave(ObjectBehave be, int direction);
 	void paint(float dt, iPoint offset);
-	
+	int getLevel();
+	void setLevel(int _lv);
+	float getExp();
+	void setExp(float _ex);
 	
 	iImage** imgs;
 	iImage* img;
@@ -23,7 +28,9 @@ public:
 	ObjectBehave behave;
 	int direction;
 	int kill = 0; // 몬스터 처치수
-
+	int level = 1;
+	float exp = 0.0f;
+	
 	
 
 	//override func

@@ -1,14 +1,14 @@
 #pragma once
 #include "iStd.h"
 #include "Object.h"
-#include "Monster.h"
 
-#define orc_Num 10
 
-class Orc : public Monster
+#define goblin_Num 10
+
+class Goblin : public Object
 {
-public: Orc(int number);
-	  virtual ~Orc();
+public: Goblin(int number);
+	  virtual ~Goblin();
 
 public:
 	void paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY);
@@ -36,7 +36,7 @@ private:
 	Object* Target;
 
 public:
-	int orc_number;
+	int goblin_number;
 	//iImage** imgs;
 	//iImage* img;
 

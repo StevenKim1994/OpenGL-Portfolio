@@ -9,7 +9,7 @@ Texture* methodKillIndicator(const char* str);
 Texture* methodPlayerHPIndicator(const char* str);
 Texture* methodPlayerMPIndicator(const char* str);
 Texture* methodPlayerStaminaIndicator(const char* str);
-
+Texture* methodPlayerExpIndicator(const char* str);
 
 // 여기에 플레이어의 체력, 게임 플레이상의 UI 출력해야함 
 
