@@ -198,7 +198,8 @@ void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 	iPoint orcMovement = iPointMake(0, 1) * powGravity * dt;
 	move(v + orcMovement, tile, NumX, NumY);
 
-	img->paint(dt, position + offset, direction);
+	img->paint(dt, position + offset);
+	img->leftRight = direction;
 
 	direction = (position.x < targetPosition.x);
 
@@ -291,6 +292,7 @@ void Orc::Skill1()
 	shakeCamera(25, 0.5);
 	audioPlay(5);
 	hero->setHP(hero->getHp() - 5.0);
+	hero->setBehave(PlayerBehave::PlayerBehave_takeHit, hero->direction);
 	extern iStrTex* hpIndicator;
 	hpIndicator->setString("%f", hero->getHp());
 

@@ -47,6 +47,13 @@ void drawEffectHit(float dt, iPoint off);
 void addEffectHit(int index, iPoint p);
 
 
+//------------Projectile-----------------//
+void loadProjectile();
+void freeProjectile();
+void drawProjectile(float dt, iPoint off);
+void addProjectile(int index, iPoint p, int direction, int speed);
+
+
 //-------------PopGameOverUI---------------------//
 void createPopGameOverUI();
 void freePopGameOverUI();

@@ -25,7 +25,7 @@ extern iStrTex* staminaIndicator;
 static float logoDt;
 static Texture* stageLogo;
 static Texture* texFboStage;
-
+extern Texture* minimapFbo;
 
 static Texture* endStageTileset[1521];
 
@@ -217,7 +217,14 @@ void drawEndStage(float dt)
 	drawNumber(dt, offMt);
 	fbo->unbind();
 
+
+
 	showCamera(texFboStage, dt);
+
+	fbo->bind(minimapFbo);
+	drawMinimapTile(dt, endStagetiles, endStagemaptile, endStageTileset, endStageMapTileNumX, endStageMapTileNumY);
+	drawMinimapHero(dt, endStagetiles, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
+	fbo->unbind();
 
 	drawPopPlayerUI(dt);
 	drawPopMenuUI(dt);

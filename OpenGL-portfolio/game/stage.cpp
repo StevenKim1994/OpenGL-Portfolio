@@ -36,6 +36,7 @@ static MapTile* maptile;
 static Texture* tileset[1521];
 static Texture* texFboStage;
 static Texture* stageLogo;
+Texture* minimapFbo;
 
 
 // UI 관련
@@ -49,7 +50,7 @@ float gameTime = 0;
 float _gameTime = 100000000000;
 static float logoDt = 0.0;
 
-
+Player* minimapHero;
 
 
 
@@ -98,6 +99,7 @@ void loadStage()
 	
 	playerPortrait = createImage("assets/stage/hero/Knight/KnightPortrait.png");
 	texFboStage = createTexture(devSize.width, devSize.height);
+	minimapFbo = createTexture(devSize.width, devSize.height);
 
 	iGraphics* g = iGraphics::instance();
 	setRGBA(0, 0, 0, 0);
@@ -191,7 +193,7 @@ void loadStage()
 		orc->alive = true;
 		orcs[i] = orc;
 	}
-	
+    minimapHero = new Player();
 
 	sp = new iShortestPath();
 	sp->init(tiles, stageMapTileNumX, stageMapTileNumY);
@@ -217,9 +219,16 @@ void loadStage()
 	createPopGameOverUI();
 	createPopPlayerInventory();
 
+	loadProjectile();
 	loadNumber();
 	loadEffectHit();
+
 	logoDt = 0.0f;
+
+	minimapFbo->width *= 0.5;
+	minimapFbo->potWidth *= 0.5;
+	minimapFbo->height *= 0.5;
+	minimapFbo->potHeight *= 0.5;
 	
 }
 
@@ -249,13 +258,28 @@ void drawStage(float dt)
 	drawMapTile(dt, tiles,maptile,tileset, stageMapTileNumX, stageMapTileNumY);
 	drawOrc(dt, tiles,maptile, stageMapTileNumX, stageMapTileNumY);
 	drawHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
+	drawProjectile(dt, offMt);
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);
 #if _DEBUG
 	debugHitbox(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 #endif
+	
 	fbo->unbind();
 	showCamera(texFboStage, dt);
+	
+
+
+	//minimap drawing
+	fbo->bind(minimapFbo);
+	drawMinimapTile(dt, tiles, maptile, tileset, stageMapTileNumX, stageMapTileNumY);
+	drawMinimapHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
+	fbo->unbind();
+
+	
+
+
+
 
 	//gameTime += dt;
 	//timeIndicator->setString("TIME : %0.2f",gameTime);
@@ -308,13 +332,14 @@ void keyStage(iKeyState stat, iPoint point)
 	if(keyPopQuitAnswerUI(stat, point))
 		return;
 
-	if (keyPopPlayerInventory(stat, point))
-		return;
 	
 	if (keyPopMenuUI(stat, point))
 		return;
 	
 	keyPopPlayerUI(stat, point);
+
+	keyPopPlayerInventory(stat, point);
+	
 		
 
 		

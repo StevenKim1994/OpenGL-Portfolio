@@ -101,7 +101,8 @@ void Mushroom::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 {
 	iPoint mushMovement = iPointMake(0, 1) * powGravity * dt;
 	move(v + mushMovement, tile, NumX, NumY);
-	img->paint(dt, position + offset, direction);
+	img->paint(dt, position + offset);
+	img->leftRight = direction;
 }
 
 void Mushroom::setBehave(EnermyBehave be, int direction)

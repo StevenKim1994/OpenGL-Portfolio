@@ -8,6 +8,7 @@
 #include "../game/endstage.h"
 #include "../game/sceneManager.h"
 #include "../game/vilege.h"
+#include "Orc.h"
 
 extern iStrTex* killIndicator;
 extern iStrTex* timeIndicator;
@@ -15,7 +16,7 @@ extern Texture* playerPortrait;
 extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
-
+iPopup* PopPlayerInventory;
 Texture* methodTimeIndicator(const char* str)
 {
 	iGraphics* g = iGraphics::instance();
@@ -114,7 +115,7 @@ void createPopPlayerUI()
 	iImage* img = new iImage();
 	iSize size = iSizeMake(devSize.width, devSize.height); // 크기를 화면크기랑 동일하게 사용자의 화면을 그래도 덮는 UI Layer
 
-	PopPlayerUIImgs = (iImage**)malloc(sizeof(iImage*) * 5);
+	PopPlayerUIImgs = (iImage**)malloc(sizeof(iImage*) * 6);
 
 
 	// Stage Title
@@ -146,13 +147,16 @@ void createPopPlayerUI()
 		setRGBA(1, 1, 0, 1);
 		setStringSize(10);
 		iSize mapsize = iSizeMake(200, 200);
-		g->init(mapsize);
-		g->fillRect(0, 0, mapsize.width, mapsize.height);
-		g->drawString(mapsize.width / 2, mapsize.height / 2, HCENTER | VCENTER, "Minimap position");
-		Texture* minimapTex = g->getTexture();
+		//g->init(mapsize);
+		//g->fillRect(0, 0, mapsize.width, mapsize.height);
+		//g->drawString(mapsize.width / 2, mapsize.height / 2, HCENTER | VCENTER, "Minimap position");
+		extern Texture* minimapFbo;
+		Texture* minimapTex = minimapFbo; // g->getTexture();
+
 		iImage* minimap = new iImage();
+		minimap->leftRight = 2;
 		minimap->addObject(minimapTex);
-		minimap->position = iPointMake(devSize.width - mapsize.width, 60);
+		minimap->position = iPointMake(devSize.width/2 +320, -60);
 		pop->addObject(minimap);
 
 	}
@@ -230,6 +234,27 @@ void createPopPlayerUI()
 
 	}
 
+	//Inventory Btn
+	{
+		setStringSize(30);
+		iImage* Btn = new iImage();
+		Texture* BtnTex;
+		iSize BtnSize = iSizeMake(200, 100);
+		g->init(BtnSize);
+		setRGBA(0, 1, 0, 1);
+		g->fillRect(0, 0, BtnSize.width, BtnSize.width);
+		g->drawString(BtnSize.width / 2, BtnSize.height / 2, HCENTER | VCENTER, "Inventory");
+
+		BtnTex = g->getTexture();
+		Btn->addObject(BtnTex);
+		freeImage(BtnTex);
+
+		Btn->position = iPointMake(devSize.width - BtnSize.width, devSize.height - BtnSize.height);
+		PopPlayerUIImgs[5] = Btn;
+		pop->addObject(Btn);
+		
+	}
+
 	pop->openPosition = iPointZero;
 	pop->closePosition = iPointZero;
 
@@ -272,6 +297,14 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 				showPopMenuUI(false);
 		}
 
+		else if (i == 5)
+		{
+			if (PopPlayerInventory->bShow == false)
+				showPopPlayerInventory(true);
+
+			else
+				showPopPlayerInventory(false);
+		}
 
 		else
 			printf("seletecd = %d\n", i);
@@ -279,7 +312,7 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 
 	case iKeyState::iKeyStateMoved:
 
-		for (i = 0; i < 5; i++)
+		for (i = 0; i < 6; i++)
 		{
 			if (containPoint(point, PopPlayerUIImgs[i]->touchRect(PopPlayerUI->closePosition)))
 			{
@@ -694,7 +727,8 @@ struct EffectHit
 
 	bool paint(float dt, iPoint off)
 	{
-		img->paint(dt, p + off, dir);
+		img->paint(dt, p + off);
+		img->leftRight = dir;
 		if (img->animation)
 			return false;
 		return true;
@@ -774,6 +808,143 @@ void addEffectHit(int index, iPoint p)
 			ehNum++;
 			return;
 		}
+	}
+}
+
+extern Monster** orcs;
+struct Projectile
+{
+	iImage* img;
+	iPoint p;
+	int dir;
+	int speed;
+	iSize rectSize = iSizeMake(32, 32);
+
+	bool paint(float dt, iPoint off)
+	{
+	
+		if (dir == 1)
+			p += iPointMake(1, 0) * speed;
+		else
+			p += iPointMake(-1, 0) * speed;
+		img->paint(dt, p + off);
+		img->leftRight = dir;
+
+		extern int gameState;
+
+		if (gameState == gs_stage)
+		{
+			for (int i = 0; i < 10; i++)
+			{
+
+				if (containPoint(iPointMake(p.x, p.y + 32), iRectMake(orcs[i]->position.x, orcs[i]->position.y, 64, 64)))
+				{
+					((Orc*)orcs[i])->setDmg(15);
+					addEffectHit(0, orcs[i]->position);
+					zoomCamera(orcs[i]->position, 1.5);
+					return true;
+				}
+			}
+		}
+		else if (gameState == gs_stage)
+		{
+
+		}
+		
+		//else if (gameState == gs_boss)
+		//{
+
+		//}
+
+		
+		if (img->animation)
+			return false;
+
+
+		return true;
+
+	}
+};
+
+Projectile** _projectile;
+Projectile** projectile;
+int projectNum;
+#define _projectNum 100
+
+void loadProjectile()
+{
+	int i;
+	_projectile = (Projectile**)malloc(sizeof(Projectile*) * 1);
+	 
+	iImage* img = new iImage();
+	for (int i = 0; i < 61; i++)
+	{
+		Texture* tex = createImage("assets/stage/hero/Knight/skill2/tile%03d.png", i);
+		img->addObject(tex);
+		freeImage(tex);
+	}
+	img->position = iPointMake(-60, -60);
+	img->_aniDt = 0.01f;
+	img->_repeatNum = 0;
+
+	_projectile[0] = (Projectile*)malloc(sizeof(Projectile) * _projectNum);
+	for (i = 0; i < _projectNum; i++)
+		_projectile[0][i].img = img->copy();
+
+	delete img;
+
+	projectile = (Projectile**)malloc(sizeof(Projectile*) * 1 * _projectNum);
+	projectNum = 0;
+
+
+}
+
+void freeProjectile()
+{
+	for (int j = 0; j < 1; j++)
+	{
+		for (int i = 0; i < _projectNum; i++)
+			delete _projectile[j][i].img;
+
+		free(_projectile[j]);
+	}
+	free(_projectile);
+	free(projectile);
+}
+
+
+
+void drawProjectile(float dt, iPoint off)
+{
+	for (int i = 0; i < projectNum; i++)
+	{
+		if (projectile[i]->paint(dt, off))
+		{
+			projectNum--;
+			for (int j = i; j < projectNum; j++)
+				projectile[j] = projectile[1 + j];
+		}
+
+	}
+}
+
+void addProjectile(int index, iPoint p,int direction, int speed)
+{
+	for (int i = 0; i < _projectNum; i++)
+	{
+		Projectile* pj = &_projectile[index][i];
+		if (pj->img->animation == false)
+		{
+			pj->p = p;
+			pj->dir = direction;
+			pj->speed = speed;
+			pj->img->startAnimation();
+
+			projectile[projectNum] = pj;
+			projectNum++;
+			return;
+		}
+
 	}
 }
 
@@ -1102,7 +1273,7 @@ void showPopStageNPCMenuUI(bool show)
 }
 
 //----------------PopPlayerInventory------------------//
-iPopup* PopPlayerInventory;
+//iPopup* PopPlayerInventory; 맨위에 선언함
 iImage** PopPlayerInventoryImgs;
 void createPopPlayerInventory()
 {
@@ -1126,6 +1297,95 @@ void createPopPlayerInventory()
 		img->position = iPointZero;
 		pop->addObject(img);	
 	}
+
+	// Equitment
+	{
+		iSize size = iSizeMake(250, 250);
+		iImage* img = new iImage();
+		Texture* tex;
+		setRGBA(1, 0, 0, 1);
+		g->init(size);
+		g->fillRect(0, 0, size.width, size.height);
+		g->drawString(size.width / 2, 10, HCENTER|VCENTER, "Enquitment");
+		tex = g->getTexture();
+		img->addObject(tex);
+		freeImage(tex);
+		img->position = iPointMake(10, 35);
+		pop->addObject(img);
+
+		for (int i = 0; i < 2; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				iSize rectSize = iSizeMake(64, 64);
+				iImage* rectImg = new iImage();
+				Texture* rectTex;
+				setRGBA(1, 1, 0, 1);
+				g->init(rectSize);
+				g->fillRect(0, 0, rectSize.width, rectSize.height * (i + 1));
+
+				rectTex = g->getTexture();
+				rectImg->addObject(rectTex);
+				freeImage(rectTex);
+				rectImg->position = iPointMake(size.width / 2 - rectSize.width + (100 * j), size.height / 2 - rectSize.height/2 + (100 * i));
+				pop->addObject(rectImg);
+			}
+		}
+
+
+	}
+	//bags
+	{
+		iSize size = iSizeMake(250, 250);
+		iImage* img2 = new iImage();
+		Texture* tex2;
+		setRGBA(0, 1, 0, 1);
+		g->init(size);
+		g->fillRect(0, 0, size.width, size.height);
+		g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Bags");
+		tex2 = g->getTexture();
+		img2->addObject(tex2);
+		freeImage(tex2);
+		img2->position = iPointMake(bgSize.width - size.width - 10, 35);
+		pop->addObject(img2);
+
+		for (int i = 0; i < 2; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				iSize rectSize = iSizeMake(64, 64);
+				iImage* rectImg2 = new iImage();
+				Texture* rectTex2;
+				setRGBA(1, 1, 1, 1);
+				g->init(rectSize);
+				g->fillRect(0, 0, rectSize.width, rectSize.height * (i + 1));
+
+				rectTex2 = g->getTexture();
+				rectImg2->addObject(rectTex2);
+				freeImage(rectTex2);
+				rectImg2->position = iPointMake(size.width / 2 - rectSize.width + (100 * j)+ 420, size.height / 2 - rectSize.height / 2 + (100 * i));
+				pop->addObject(rectImg2);
+			}
+		}
+	}
+
+	// Money
+	{
+		iSize size = iSizeMake(100, 100);
+		iImage* img = new iImage();
+		Texture* tex;
+		setRGBA(0, 0, 1, 1);
+		g->init(size);
+		g->fillRect(0, 0, size.width, size.height);
+		g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Money");
+		tex = g->getTexture();
+		img->addObject(tex);
+		freeImage(tex);
+		img->position = iPointMake(bgSize.width / 2 - size.width / 2, 35);
+		pop->addObject(img);
+	}
+
+
 
 
 	
@@ -1189,3 +1449,4 @@ bool Damage::paint(float dt, iPoint off)
 		return false;
 	return true;
 }
+

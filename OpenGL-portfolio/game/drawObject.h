@@ -18,3 +18,5 @@ void drawOrc(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);
 void debugHitbox(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);
 #endif
 
+void drawMinimapTile(float dt, int* tiledata, MapTile* tile, Texture** tileset, int NumX, int NumY);
+void drawMinimapHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);

@@ -22,18 +22,24 @@ Player::Player()
 		iPoint p;
 	};
 
-	PlayerInfo _pi[4] = {
-		{"assets/stage/hero/Knight/hero_idle (%d).png", 15, 2.0f, {-30, -38} },
-		{"assets/stage/hero/Knight/hero_melee (%d).png", 22, 2.0f, {-72, -38}},
-		{"assets/stage/hero/Knight/hero_move (%d).png",8, 2.0f, {-48, -38}},
-		{"assets/stage/hero/Knight/hero_jumpAndFall (%d).png", 14, 2.0f, {-48, -38}}
+	PlayerInfo _pi[8] = {
+		{"assets/stage/hero/Knight/hero idle (%d).png", 11, 1.5f, {-75, -80} },
+		{"assets/stage/hero/Knight/hero melee2 (%d).png", 7, 1.5f, {-72, -80}},
+		{"assets/stage/hero/Knight/hero melee1 (%d).png", 7, 1.5f, {-72, -80}},
+		{"assets/stage/hero/Knight/hero move (%d).png",8, 1.5f, {-60, -80}},
+		{"assets/stage/hero/Knight/hero jump (%d).png", 3, 1.5f, {-72, -80}},
+		{"assets/stage/hero/Knight/hero fall (%d).png", 3, 1.5f, {-72, -80}},
+		{"assets/stage/hero/Knight/hero takeHit (%d).png", 4, 1.5f, {-72, -80}},
+		{"assets/stage/hero/Knight/hero death (%d).png", 11 , 1.5f, {-72, -80}},
+
+
 	};
 	iGraphics* g = iGraphics::instance();
 	iSize size;
 	
 
-	imgs = (iImage**)malloc(sizeof(iImage*) * 4);
-	for (int i = 0; i < 4; i++)
+	imgs = (iImage**)malloc(sizeof(iImage*) * 8);
+	for (int i = 0; i < 8; i++)
 	{
 		PlayerInfo* pi = &_pi[i];
 
@@ -53,7 +59,7 @@ Player::Player()
 		switch (i)
 		{
 		case 0: 
-		case 2:
+		case 3:
 			img->_repeatNum = 0;
 			break;
 
@@ -130,7 +136,7 @@ Player::Player()
 			iGraphics* g = iGraphics::instance();
 	
 			//Texture* tex = createImage("assets/stage/hero/knight/skill2/tile%03d.png", i);
-			Texture* tex = createColorImage(iColor4fMake(1, 0, 0, 1), "assets/stage/hero/knight/skill2/tile%03d.png", i);
+			Texture* tex = createColorImage(iColor4fMake(1, 0, 0, 1), "assets/stage/hero/knight/skill3/tile%03d.png", i);
 			tex->width *= 2.0;
 			tex->potWidth *= 2.0f;
 			tex->height *= 2.0f;
@@ -158,10 +164,25 @@ Player::Player()
 	}
 
 	
-
+	iImage* img4 = new iImage();
 	{// 원거리 스킬 불러오는 부분
-		
+		for (int i = 0; i < 61; i++)
+		{
+			Texture* tex = createImage("assets/stage/hero/Knight/skill2/tile%03d.png", i);
+			tex->width *= 2.0;
+			tex->potWidth *= 2.0;
+			tex->height *= 2.0;
+			tex->potHeight *= 2.0;
 
+			img4->addObject(tex);
+			freeImage(tex);
+
+		}
+		img4->_aniDt = 0.01f;
+		img4->repeatNum = 0;
+		img4->position = iPointMake(-30, -100);
+		imgRange = img4;
+		
 		
 	}
 	
@@ -184,6 +205,8 @@ void Player::cbBehave(void* cb)
 	extern Player* hero;
 	if(hero->behave != PlayerBehave::PlayerBehave_idle)
 		hero->setBehave(PlayerBehave::PlayerBehave_idle, hero->direction);
+
+
 }
 
 void Player::setBehave(PlayerBehave be, int dir)
@@ -203,25 +226,33 @@ void Player::paint(float dt, iPoint offset)
 {
 	if(imgBuff->animation)
 	{
-		imgBuff->paint(dt, iPointMake(position.x -55, position.y -50)+ offset, direction);
+		imgBuff->leftRight = direction;
+		imgBuff->paint(dt, iPointMake(position.x -55, position.y -50)+ offset);
 	}
-	if (direction == 0 && behave == PlayerBehave::PlayerBehave_jumpAndFall)
+	if (direction == 0 && behave == PlayerBehave::PlayerBehave_jump)
 	{
 		printf("left direction Jumping!\n");
-		img->paint(dt, (position + offset) - iPointMake(100,0), direction);
+		img->leftRight = direction;
+		img->paint(dt, (position + offset) - iPointMake(0,0));
 	}
 
 	else
-		img->paint(dt, position + offset, direction);
+	{
+		img->leftRight = direction;
+		img->paint(dt, position + offset);
+	}
 	if (imgSkill->animation)
 	{
-		imgSkill->paint(dt, offset, direction);
+		imgSkill->leftRight = direction;
+		imgSkill->paint(dt, offset);
 	}
 
 	if(imgSKillHit->animation)
 	{
-		imgSKillHit->paint(dt, offset, direction);
+		imgSKillHit->leftRight = direction;
+		imgSKillHit->paint(dt, offset);
 	}
+
 
 }
 
@@ -258,6 +289,13 @@ void Player::Skill2()
 {
 	printf("skill2! on!\n");
 
+
+}
+
+void Player::Skill3()
+{
+	printf("skill3! on!\n");
+
 	//imgBuff->position = iPointMake(position.x -50, position.y-50);
 	if (imgBuff->animation)
 	{
@@ -269,10 +307,6 @@ void Player::Skill2()
 		imgBuff->startAnimation();
 		damage += 5.0f;
 	}
-}
-
-void Player::Skill3()
-{
 }
 
 //Override

@@ -16,7 +16,7 @@ public:
 	void setTexAtIndex(int index);
 	void replaceAtIndex(int index, Texture* tex);
 
-	void paint(float dt, iPoint off, int direction = 1);
+	void paint(float dt, iPoint off);
 	void startAnimation(IMAGE_METHOD m = 0, void* cb = 0);
 
 	iRect touchRect(iPoint p = iPointMake(0, 0));
@@ -38,6 +38,11 @@ public:
 	int repeatNum, _repeatNum;	// 0 : inf
 	IMAGE_METHOD method;
 	void* cb;
+	int anc;
+	float degree;
+	float scale;
+
+	int8 leftRight;// 0 : original, 1: w 반전 2: h 반전
 };
 
 #define default_selectedDt 0.1f

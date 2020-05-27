@@ -93,5 +93,6 @@ void stageNPC::setBehave(NPCBehave be, int dir)
 
 void stageNPC::paint(float dt, iPoint offset)
 {
-	img->paint(dt, position + offset, direction);
+	img->paint(dt, position + offset);
+	img->leftRight = direction;
 }

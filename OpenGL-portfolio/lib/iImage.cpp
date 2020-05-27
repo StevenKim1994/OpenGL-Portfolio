@@ -20,6 +20,11 @@ iImage::iImage()
 	repeatNum = 0;
 	_repeatNum = 0;// inf
 	method = NULL;
+
+	anc = TOP | LEFT;
+
+	leftRight = 1;
+	degree = 0;
 }
 
 iImage::~iImage()
@@ -75,29 +80,11 @@ void iImage::replaceAtIndex(int index, Texture* tex)
 #endif
 }
 
-void iImage::paint(float dt, iPoint off, int direction) 
+void iImage::paint(float dt, iPoint off) 
 {
 	//printf("paint!!!\n");
-	int dir;
+	
 
-	switch(direction)
-	{
-	case 0:
-		dir = REVERSE_WIDTH;
-		break;
-
-	case 1:
-		dir = REVERSE_NONE;
-		break;
-
-	case 2:
-		dir = REVERSE_HEIGHT;
-		break;
-
-	case 3:
-		dir = REVERSE_WIDTH + REVERSE_HEIGHT;
-		break;
-	}
 	if (animation)
 	{
 		aniDt += dt;
@@ -151,16 +138,51 @@ void iImage::paint(float dt, iPoint off, int direction)
 	}
 	iPoint p = position + off;
 	float s = 1.0f + linear(selectedDt / _selectedDt, 0.0f, selectedScale);
+	s *= scale;
+	int reverse;
+
+
+	switch (leftRight)
+	{
+	case 0:
+		reverse = REVERSE_WIDTH;
+		break;
+	case 1:
+		reverse = REVERSE_NONE;
+		break;
+	case 2:
+		reverse = REVERSE_HEIGHT;
+		break;
+	}
+
+
+	int x = p.x;
+	int y = p.y;
+	int width = tex->width;
+	int height = tex->height;
+
+	switch (anc) {
+	case TOP | LEFT:                                         break;
+	case TOP | HCENTER:     x -= width / 2;                  break;
+	case TOP | RIGHT:       x -= width;                      break;
+	case VCENTER | LEFT:                    y -= height / 2; break;
+	case VCENTER | HCENTER: x -= width / 2; y -= height / 2; break;
+	case VCENTER | RIGHT:   x -= width;     y -= height / 2; break;
+	case BOTTOM | LEFT:                     y -= height;     break;
+	case BOTTOM | HCENTER:  x -= width / 2; y -= height;     break;
+	case BOTTOM | RIGHT:    x -= width;     y -= height;     break;
+	}
+
 	if (s == 0.0f)
 	{
-		drawImage(tex, p.x, p.y, TOP | LEFT);
+		drawImage(tex, x, y, 0, 0, tex->width, tex->height, TOP | LEFT, 1, 1, 2, degree, reverse);
 	}
 	else
 	{
 		p.x += tex->width / 2;
 		p.y += tex->height / 2;
-		drawImage(tex, p.x, p.y, 0, 0, tex->width, tex->height,
-			VCENTER | HCENTER, s, s, 2, 0, dir);
+		drawImage(tex, x,y, 0, 0, tex->width, tex->height,
+			VCENTER | HCENTER, s, s, 2, degree, reverse);
 	}
 }
 

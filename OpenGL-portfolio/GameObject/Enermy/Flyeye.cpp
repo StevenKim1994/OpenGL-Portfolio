@@ -113,5 +113,6 @@ void Flyeye::paint(float dt, iPoint offset)
 {
 	iPoint flyeyeMovement = iPointMake(0, 0) * powGravity * dt; // 애는 날고있으므로 중력 적용 X
 
-	img->paint(dt, position + offset, direction);
+	img->leftRight = direction;
+	img->paint(dt, position + offset);
 }
