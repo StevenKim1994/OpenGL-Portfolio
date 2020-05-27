@@ -65,8 +65,8 @@ Flyeye::Flyeye()
 
 		img = imgs[0];
 
-		behave = EnermyBehave::EnermyBehave_NULL;
-		setBehave(EnermyBehave::EnermyBehave_idle, 0);
+		behave = ObjectBehave::ObjectBehave_NULL;
+		setBehave(ObjectBehave::ObjectBehave_idle, 0);
 		movement = 100;
 		direction = 0;
 	
@@ -94,13 +94,13 @@ void Flyeye::cbBehave(void* cb)
 }
 
 
-void Flyeye::setBehave(EnermyBehave be, int direction)
+void Flyeye::setBehave(ObjectBehave be, int direction)
 {
 	if(behave != be || direction != direction)
 	{
 		behave = be;
 		img = imgs[(int)be];
-		if (be == EnermyBehave::EnermyBehave_idle)
+		if (be == ObjectBehave::ObjectBehave_idle)
 			img->startAnimation(cbBehave, img);
 
 		this->direction = direction;

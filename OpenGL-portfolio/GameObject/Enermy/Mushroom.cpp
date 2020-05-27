@@ -17,7 +17,7 @@ Mushroom::Mushroom(int number)
 {
 	if (imgMush == NULL)
 	{
-		ObjInfo _oi[6] = {
+		ObjInfo _oi[(int)ObjectBehave::ObjectBehave_num] = {
 			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75,-100},
 			"assets/stage/mushroom/Attack (%d).png", 8, 2.5f, {-75,-100},
 			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
@@ -29,9 +29,9 @@ Mushroom::Mushroom(int number)
 		iGraphics* g = iGraphics::instance();
 		iSize size;
 
-		imgMush = (iImage**)malloc(sizeof(iImage*) * 6);
+		imgMush = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
 
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 		{
 			iImage* img = new iImage();
 			ObjInfo* oi = &_oi[i];
@@ -66,8 +66,8 @@ Mushroom::Mushroom(int number)
 	mush_number = number;
 	this->size = iSizeMake(16, 16);
 
-	imgs = (iImage**)malloc(sizeof(iImage*) * 6);
-	for (int i = 0; i < 6; i++)
+	imgs = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
+	for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 		imgs[i] = imgMush[i]->copy();
 	img = imgs[0];
 
@@ -76,15 +76,15 @@ Mushroom::Mushroom(int number)
 	
 	direction = 0;
 
-	behave = EnermyBehave::EnermyBehave_NULL;
-	setBehave(EnermyBehave::EnermyBehave_meleeAttack, direction);
+	behave = ObjectBehave::ObjectBehave_NULL;
+	setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
 }
 
 Mushroom::~Mushroom()
 {
 	if (imgMush)
 	{
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 			delete imgMush[i];
 
 		free(imgMush);
@@ -92,7 +92,7 @@ Mushroom::~Mushroom()
 
 	}
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 		delete imgs[i];
 	free(imgs);
 }
@@ -105,17 +105,17 @@ void Mushroom::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 	img->leftRight = direction;
 }
 
-void Mushroom::setBehave(EnermyBehave be, int direction)
+void Mushroom::setBehave(ObjectBehave be, int direction)
 {
 	if (behave != be || direction != direction)
 	{
 		behave = be;
 		img = imgs[(int)be];
 		
-		if (be == EnermyBehave::EnermyBehave_idle)
+		if (be == ObjectBehave::ObjectBehave_idle)
 			img->startAnimation(cbBehave, this);
 
-		else if (be == EnermyBehave::EnermyBehave_meleeAttack)
+		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
 			img->startAnimation(cbBehave, this);
 			
 	

@@ -2,18 +2,6 @@
 #include "Object.h"
 
 
-enum class EnermyBehave
-{
-	EnermyBehave_NULL = -1,
-	EnermyBehave_idle = 0,
-	EnermyBehave_meleeAttack,
-	EnermyBehave_move,
-	EnermyBehave_jumpAndFall,
-	EnermyBehave_hurt,
-	EnermyBehave_death,
-
-	EnermyBehave_num,
-};
 
 
 class Monster : public Object // 모든 몬스터(ex, 오크, 아처 들은 이 부모클래스를 상속받음)
@@ -23,7 +11,7 @@ public: Monster();
 
 
 public:
-	EnermyBehave behave;
+	
 	float roamingDt;
 	float _roamingDt = 2.0f;
 	
@@ -57,12 +45,13 @@ public:
 	static void cbBehave(iImage* img);
 	static void cbSkill(iImage* skillimg);
 
-	void setBehave(EnermyBehave be, int direction);
+	void setBehave(ObjectBehave be, int direction);
+	void setDmg(float dmg);
 	void paint(float dt, iPoint offset);
 	void paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY);
 
-	iImage** imgs;
-	iImage* img;
+	//iImage** imgs;
+	//iImage* img;
 
 	void Skill1();
 	void Skill2();

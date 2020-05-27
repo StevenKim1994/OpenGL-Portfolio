@@ -7,6 +7,7 @@
 #include "sceneManager.h"
 
 #include "GameUI.h"
+#include "GameEffect.h"
 #include "endstage.h"
 
 

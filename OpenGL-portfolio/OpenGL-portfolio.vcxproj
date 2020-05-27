@@ -156,14 +156,14 @@
     <ClInclude Include="GameObject\endStageTileInfo.h" />
     <ClInclude Include="GameObject\Enermy\Flyeye.h" />
     <ClInclude Include="GameObject\Enermy\Mushroom.h" />
+    <ClInclude Include="GameObject\GameEffect.h" />
     <ClInclude Include="GameObject\GameUI.h" />
-    <ClInclude Include="GameObject\NPC\Potion.h" />
+    <ClInclude Include="GameObject\NPC\PotionNPC.h" />
     <ClInclude Include="GameObject\NPC\stageNPC.h" />
     <ClInclude Include="GameObject\Parents\Monster.h" />
     <ClInclude Include="GameObject\Parents\NPC.h" />
     <ClInclude Include="GameObject\Parents\Object.h" />
     <ClInclude Include="GameObject\Enermy\Orc.h" />
-    <ClInclude Include="GameObject\Parents\PlayerParent.h" />
     <ClInclude Include="GameObject\PlayerCharacter\Player.h" />
     <ClInclude Include="GameObject\Projectile\Spore.h" />
     <ClInclude Include="GameObject\Prop\coin.h" />
@@ -215,14 +215,14 @@
   <ItemGroup>
     <ClCompile Include="GameObject\Enermy\Flyeye.cpp" />
     <ClCompile Include="GameObject\Enermy\Mushroom.cpp" />
+    <ClCompile Include="GameObject\GameEffect.cpp" />
     <ClCompile Include="GameObject\GameUI.cpp" />
-    <ClCompile Include="GameObject\NPC\Potion.cpp" />
+    <ClCompile Include="GameObject\NPC\PotionNPC.cpp" />
     <ClCompile Include="GameObject\NPC\stageNPC.cpp" />
     <ClCompile Include="GameObject\Parents\Monster.cpp" />
     <ClCompile Include="GameObject\Parents\NPC.cpp" />
     <ClCompile Include="GameObject\Parents\Object.cpp" />
     <ClCompile Include="GameObject\Enermy\Orc.cpp" />
-    <ClCompile Include="GameObject\Parents\PlayerParent.cpp" />
     <ClCompile Include="GameObject\PlayerCharacter\Player.cpp" />
     <ClCompile Include="GameObject\Projectile\Spore.cpp" />
     <ClCompile Include="GameObject\Prop\coin.cpp" />

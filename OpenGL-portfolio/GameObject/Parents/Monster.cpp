@@ -7,7 +7,7 @@ Monster::Monster()
 	Target_Pos = iPointZero;
 	_aiTime = 5.0f;
 	alive = false;
-	behave = EnermyBehave::EnermyBehave_NULL;
+	behave = ObjectBehave::ObjectBehave_NULL;
 	detected_Player = NULL;
 	direction = 0;
 	imgs = NULL;
@@ -39,7 +39,11 @@ Object* Monster::getTarget()
 	return nullptr;
 }
 
-void Monster::setBehave(EnermyBehave be, int direction)
+void Monster::setBehave(ObjectBehave be, int direction)
+{
+}
+
+void Monster::setDmg(float dmg)
 {
 }
 

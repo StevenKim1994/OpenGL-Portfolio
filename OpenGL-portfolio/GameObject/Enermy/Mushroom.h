@@ -13,7 +13,7 @@ public: Mushroom(int number);
 public:
 	void paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY);
 
-	void setBehave(EnermyBehave be, int direction);
+	void setBehave(ObjectBehave be, int direction);
 
 	void Skill1();
 	void setDmg(float dmg);

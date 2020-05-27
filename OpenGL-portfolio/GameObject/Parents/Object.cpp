@@ -1,5 +1,7 @@
 #pragma once
 #include "Object.h"
+
+#include "GameEffect.h"
 #include "stageTileInfo.h"
 
 
@@ -35,6 +37,8 @@ Object::Object()
 
 Object::~Object()
 {
+	imgs = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
+	
 }
 
 void Object::setTex(Texture* tex)
@@ -405,5 +409,68 @@ void Object::applyJump(iPoint& movement, float dt)
 	iPoint mp = jumpment * dt;
 	movement += mp;
 	jumpment -= mp;
+}
+
+void Object::setDmg(float dmg)
+{
+	ObjectBehave be = behave;
+	int dir = direction;
+
+	HP -= dmg;
+	if(HP> 0)
+	{
+		be = ObjectBehave::ObjectBehave_hurt;
+	}
+	else
+	{
+		HP = 0;
+		be = ObjectBehave::ObjectBehave_death;
+	}
+
+	setBehave(be, dir);
+
+	addNumber(dmg, position + iPointMake(0, -50));
+}
+
+void Object::setBehave(ObjectBehave be, int dir)
+{
+	if(behave != be || direction != dir)
+	{
+		behave = be;
+		img = imgs[(int)be];
+		if (be == ObjectBehave::ObjectBehave_death)
+			img->startAnimation(cbDeath, this);
+		else if (be == ObjectBehave::ObjectBehave_hurt)
+			img->startAnimation(cbHurt, this);
+		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
+			img->startAnimation(cbSkill, this);
+		else
+			img->startAnimation(cbBehave, img);
+		direction = dir;
+	}
+}
+
+void Object::cbDeath(void* cb)
+{
+	Object* o = (Object*)cb;
+	o->alive = false;
+
+	
+}
+
+void Object::cbHurt(void* cb)
+{
+	Object* o = (Object*)cb;
+	o->setBehave(ObjectBehave::ObjectBehave_idle, o->direction);
+}
+
+void Object::cbBehave(void* cb)
+{
+	iImage* i = (iImage*)cb;
+}
+
+void Object::cbSkill(void* cb)
+{
+	Object* o = (Object*)cb;
 }
 

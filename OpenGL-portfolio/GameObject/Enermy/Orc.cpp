@@ -1,6 +1,7 @@
 #include "Orc.h"
 
 #include "GameUI.h"
+#include "GameEffect.h"
 
 #define Orc_HP 20
 #define Orc_MP 100
@@ -26,9 +27,11 @@ Orc::Orc(int number)
 
 		};
 
-		OrcInfo _oi[6] = {
+		OrcInfo _oi[(int)ObjectBehave::ObjectBehave_num] = {
 			"assets/stage/goblin/goblin idle (%d).png", 4, 2.0f, {-75, -90} ,
 			"assets/stage/goblin/goblin attack (%d).png", 8, 2.0f, {-75,-90},
+			"assets/stage/goblin/goblin attack (%d).png", 8, 2.0f, {-75,-90},
+			"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
 			"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
 			"assets/stage/goblin/goblin move (%d).png", 8, 2.0f, {-75, -90},
 			"assets/stage/goblin/goblin hurt (%d).png", 4, 2.0f, {-75, -90},
@@ -38,8 +41,8 @@ Orc::Orc(int number)
 		iGraphics* g = iGraphics::instance();
 		iSize size;
 
-		imgOrc = (iImage**)malloc(sizeof(iImage*) * 6);
-		for (int i = 0; i < 6; i++)
+		imgOrc = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
+		for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 		{
 			iImage* img = new iImage();
 			OrcInfo* oi = &_oi[i];
@@ -57,7 +60,7 @@ Orc::Orc(int number)
 			switch (i)
 			{
 			case 0:
-			case 2:
+			case 3:
 				img->_repeatNum = 0; // 무한반복
 				break;
 
@@ -72,8 +75,8 @@ Orc::Orc(int number)
 	}
 
 	orc_number = number;
-	imgs = (iImage**)malloc(sizeof(iImage*) * 6);
-	for (int i = 0; i < 6; i++)
+	imgs = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
+	for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 		imgs[i] = imgOrc[i]->copy();
 	img = imgs[0];
 
@@ -97,21 +100,21 @@ Orc::Orc(int number)
 	_jumpNum = 2;
 
 
-	behave = EnermyBehave::EnermyBehave_NULL;
-	setBehave(EnermyBehave::EnermyBehave_idle, 0);
+	behave = ObjectBehave::ObjectBehave_NULL;
+	setBehave(ObjectBehave::ObjectBehave_idle, 0);
 }
 
 Orc::~Orc()
 {
 	if (imgOrc)
 	{
-		for (int i = 0; i < 6; i++)
+		for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 			delete imgOrc[i];
 		free(imgOrc);
 		imgOrc = NULL;
 	}
 
-	for (int i = 0; i < 6; i++)
+	for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
 		delete imgs[i];
 	free(imgs);
 
@@ -127,13 +130,6 @@ void Orc::cbDeath(void* cb)
 	hero->kill++;
 }
 
-void Orc::cbHurt(void* cb)
-{
-	Orc* o = (Orc*)cb;
-	o->setBehave(EnermyBehave::EnermyBehave_idle, o->direction);
-
-}
-
 void Orc::cbBehave(void* cb)
 {
 	iImage* i = (iImage*)cb;
@@ -142,9 +138,10 @@ void Orc::cbBehave(void* cb)
 
 void Orc::cbSkill(void* cb)
 {
+	
 	Orc* o = (Orc*)cb;
 	o->Skill1();
-	o->setBehave(EnermyBehave::EnermyBehave_idle, o->direction);
+	o->setBehave(ObjectBehave::ObjectBehave_idle, o->direction);
 
 
 
@@ -153,35 +150,35 @@ void Orc::cbSkill(void* cb)
 #include "../game/stage.h"
 void Orc::setDmg(float dmg)
 {
-	EnermyBehave be = behave;
+	ObjectBehave be = behave;
 	int dir = direction;
 
 	HP -= dmg;
 	if (HP > 0)
 	{
-		be = EnermyBehave::EnermyBehave_hurt;
+		be = ObjectBehave::ObjectBehave_hurt;
 	}
 	else
 	{
 		HP = 0;
-		be = EnermyBehave::EnermyBehave_death;
+		be = ObjectBehave::ObjectBehave_death;
 	}
 	setBehave(be, dir);
 
 	addNumber(dmg, position + iPointMake(0, -50));
 
 }
-void Orc::setBehave(EnermyBehave be, int dir)
+void Orc::setBehave(ObjectBehave be, int dir)
 {
 	if (behave != be || direction != dir)
 	{
 		behave = be;
 		img = imgs[(int)be];
-		if (be == EnermyBehave::EnermyBehave_death)
+		if (be == ObjectBehave::ObjectBehave_death)
 			img->startAnimation(cbDeath, this);
-		else if (be == EnermyBehave::EnermyBehave_hurt)
+		else if (be == ObjectBehave::ObjectBehave_hurt)
 			img->startAnimation(cbHurt, this);
-		else if (be == EnermyBehave::EnermyBehave_meleeAttack)
+		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
 			img->startAnimation(cbSkill, this);
 		else
 			img->startAnimation(cbBehave, img);
@@ -240,7 +237,7 @@ void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 		{
 			if (speed > _speed)
 			{
-				setBehave(EnermyBehave::EnermyBehave_meleeAttack, direction);
+				setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
 				speed = 0;
 			}
 			speed += 0.05f;
@@ -271,7 +268,8 @@ void Orc::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 		else
 			direction = 0;
 
-		setBehave(EnermyBehave::EnermyBehave_move, direction);
+		if(behave != ObjectBehave::ObjectBehave_hurt)
+			setBehave(ObjectBehave::ObjectBehave_move, direction);
 
 	}
 }
@@ -292,7 +290,7 @@ void Orc::Skill1()
 	shakeCamera(25, 0.5);
 	audioPlay(5);
 	hero->setHP(hero->getHp() - 5.0);
-	hero->setBehave(PlayerBehave::PlayerBehave_takeHit, hero->direction);
+	hero->setBehave(ObjectBehave::ObjectBehave_hurt, hero->direction);
 	extern iStrTex* hpIndicator;
 	hpIndicator->setString("%f", hero->getHp());
 

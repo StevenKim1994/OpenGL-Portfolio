@@ -75,8 +75,8 @@ Player::Player()
 		imgs[i] = img;
 	}
 	
-	behave = PlayerBehave::PlayerBehave_NULL;
-	setBehave(PlayerBehave::PlayerBehave_idle, 0);
+	behave = ObjectBehave::ObjectBehave_NULL;
+	setBehave(ObjectBehave::ObjectBehave_idle, 0);
 	direction = 0;
 	jumpNum = 0;
 	_jumpNum = 2;
@@ -203,13 +203,13 @@ void Player::cbBehave(void* cb)
 
 	printf("End Animation!\n");
 	extern Player* hero;
-	if(hero->behave != PlayerBehave::PlayerBehave_idle)
-		hero->setBehave(PlayerBehave::PlayerBehave_idle, hero->direction);
+	if(hero->behave != ObjectBehave::ObjectBehave_idle)
+		hero->setBehave(ObjectBehave::ObjectBehave_idle, hero->direction);
 
 
 }
 
-void Player::setBehave(PlayerBehave be, int dir)
+void Player::setBehave(ObjectBehave be, int dir)
 {
 	
 	if (behave != be || direction != dir)
@@ -229,7 +229,7 @@ void Player::paint(float dt, iPoint offset)
 		imgBuff->leftRight = direction;
 		imgBuff->paint(dt, iPointMake(position.x -55, position.y -50)+ offset);
 	}
-	if (direction == 0 && behave == PlayerBehave::PlayerBehave_jump)
+	if (direction == 0 && behave == ObjectBehave::ObjectBehave_jump)
 	{
 		printf("left direction Jumping!\n");
 		img->leftRight = direction;
@@ -314,10 +314,10 @@ bool Player::moveForMouse(float dt, int NumX, int NumY)
 {
 	
 	if (position.x < targetPosition.x)
-		setBehave(PlayerBehave::PlayerBehave_move, 1);
+		setBehave(ObjectBehave::ObjectBehave_move, 1);
 
 	else
-		setBehave(PlayerBehave::PlayerBehave_move, 0);
+		setBehave(ObjectBehave::ObjectBehave_move, 0);
 	
 
 	

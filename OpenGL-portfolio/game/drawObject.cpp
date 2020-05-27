@@ -7,6 +7,8 @@
 #include "../GameObject/Prop/Fire.h"
 #include "sceneManager.h"
 
+#include "GameEffect.h"
+
 extern iPoint offMt;
 
 extern MapTile* maptile;
@@ -125,13 +127,13 @@ void drawMinimapHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				minimapHero->setStamina(minimapHero->getStamina() - 50.0f);
 				minimapHero->jump();
 
-				if (minimapHero->behave != PlayerBehave::PlayerBehave_meleeAttack1)
+				if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
 				{
 					keyStat = getKeyStat();
 					keyDown = getKeyDown();
 				}
 				iPoint v = iPointZero;
-				PlayerBehave be;
+				ObjectBehave be;
 				if (keyStat & keyboard_left) v.x = -1;
 				else if (keyStat & keyboard_right) v.x = 1;
 				//if (keyStat & keyboard_up) v.y = -1;
@@ -156,13 +158,13 @@ void drawMinimapHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			}
 		}
 
-		if (minimapHero->behave != PlayerBehave::PlayerBehave_meleeAttack1)
+		if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
 		{
 			keyStat = getKeyStat();
 			keyDown = getKeyDown();
 		}
 		iPoint v = iPointZero;
-		PlayerBehave be;
+		ObjectBehave be;
 		if (keyStat & keyboard_left) v.x = -1;
 		else if (keyStat & keyboard_right) v.x = 1;
 		//if (keyStat & keyboard_up) v.y = -1;
@@ -190,19 +192,19 @@ void drawMinimapHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			{
 
 				if (keyDown & keyboard_space)
-					be = PlayerBehave::PlayerBehave_jump;
+					be = ObjectBehave::ObjectBehave_jump;
 				else if (keyDown & keyboard_down)
-					be = PlayerBehave::PlayerBehave_idle;
+					be = ObjectBehave::ObjectBehave_idle;
 
 				else
-					be = (v == iPointZero ? PlayerBehave::PlayerBehave_idle : PlayerBehave::PlayerBehave_move);
+					be = (v == iPointZero ? ObjectBehave::ObjectBehave_idle : ObjectBehave::ObjectBehave_move);
 				int dir = minimapHero->direction;
 
 
 				if (v.x < 0) dir = 0;
 				else if (v.x > 0) dir = 1;
 
-				if (minimapHero->behave != PlayerBehave::PlayerBehave_meleeAttack1 && minimapHero->behave != PlayerBehave::PlayerBehave_meleeAttack2 && hero->behave != PlayerBehave::PlayerBehave_jump && hero->behave != PlayerBehave::PlayerBehave_takeHit)
+				if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1 && minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack2 && hero->behave != ObjectBehave::ObjectBehave_jump && hero->behave != ObjectBehave::ObjectBehave_hurt)
 					minimapHero->setBehave(be, dir);
 				float minX, maxX, minY, maxY;
 
@@ -271,7 +273,7 @@ void drawMinimapHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 
 void meleeAttackCb()
 {
-	PlayerBehave be = PlayerBehave::PlayerBehave_meleeAttack2;
+	ObjectBehave be = ObjectBehave::ObjectBehave_meleeAttack2;
 	hero->setBehave(be, hero->direction);
 }
 
@@ -291,13 +293,13 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			hero->setStamina(hero->getStamina() - 50.0f);
 			hero->jump();
 
-			if (hero->behave != PlayerBehave::PlayerBehave_meleeAttack1)
+			if (hero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
 			{
 				keyStat = getKeyStat();
 				keyDown = getKeyDown();
 			}
 			iPoint v = iPointZero;
-			PlayerBehave be;
+			ObjectBehave be;
 			if (keyStat & keyboard_left) v.x = -1;
 			else if (keyStat & keyboard_right) v.x = 1;
 			//if (keyStat & keyboard_up) v.y = -1;
@@ -322,13 +324,13 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 		}
 	}
 
-	if (hero->behave != PlayerBehave::PlayerBehave_meleeAttack1)
+	if (hero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
 	{
 		keyStat = getKeyStat();
 		keyDown = getKeyDown();
 	}
 	iPoint v = iPointZero;
-	PlayerBehave be;
+	ObjectBehave be;
 	if (keyStat & keyboard_left) v.x = -1;
 	else if (keyStat & keyboard_right) v.x = 1;
 	//if (keyStat & keyboard_up) v.y = -1;
@@ -358,7 +360,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			if (keyDown & keyboard_num1)
 			{
 				
-				be = PlayerBehave::PlayerBehave_meleeAttack1;
+				be = ObjectBehave::ObjectBehave_meleeAttack1;
 
 				hero->Skill1();
 				hero->setMP(hero->getMp() - 5.0f);
@@ -393,14 +395,14 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			}
 			else if (keyDown & keyboard_num2 && hero->getMp() > 9)
 			{
-				be = PlayerBehave::PlayerBehave_meleeAttack2;
+				be = ObjectBehave::ObjectBehave_meleeAttack2;
 				hero->Skill2();
 				hero->setMP(hero->getMp() - 10.0f);
-				addProjectile(0, hero->getPosition(), hero->direction, 3);
+				addProjectile(0, hero->getPosition(), hero->direction, 3, (Object**)orcs, orcNum);
 			}
 			else if (keyDown & keyboard_num3 && hero->getMp() > 1)
 			{
-				be = PlayerBehave::PlayerBehave_idle;
+				be = ObjectBehave::ObjectBehave_idle;
 				hero->Skill3();
 				hero->setMP(hero->getMp() - 1.0f);
 			
@@ -408,11 +410,11 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 
 
 			else if (keyDown & keyboard_space && hero->getStamina() > 49)
-				be = PlayerBehave::PlayerBehave_jump;
+				be = ObjectBehave::ObjectBehave_jump;
 			else if (keyDown & keyboard_down)
-				be = PlayerBehave::PlayerBehave_idle;
+				be = ObjectBehave::ObjectBehave_idle;
 			else
-				be = (v == iPointZero ? PlayerBehave::PlayerBehave_idle : PlayerBehave::PlayerBehave_move);
+				be = (v == iPointZero ? ObjectBehave::ObjectBehave_idle : ObjectBehave::ObjectBehave_move);
 
 			
 			int dir = hero->direction;
@@ -421,7 +423,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			if (v.x < 0) dir = 0;
 			else if (v.x > 0) dir = 1;
 
-			if (hero->behave != PlayerBehave::PlayerBehave_meleeAttack1 &&hero->behave != PlayerBehave::PlayerBehave_meleeAttack2 && hero->behave != PlayerBehave::PlayerBehave_jump && hero->behave != PlayerBehave::PlayerBehave_takeHit)
+			if (hero->behave != ObjectBehave::ObjectBehave_meleeAttack1 &&hero->behave != ObjectBehave::ObjectBehave_meleeAttack2 && hero->behave != ObjectBehave::ObjectBehave_jump && hero->behave != ObjectBehave::ObjectBehave_hurt)
 				hero->setBehave(be, dir);
 			float minX, maxX, minY, maxY;
 

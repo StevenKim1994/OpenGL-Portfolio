@@ -18,7 +18,7 @@ private:
 
 
 public:
-	void setBehave(EnermyBehave be, int direction);
+	void setBehave(ObjectBehave be, int direction);
 	void paint(float dt, iPoint offset);
 
 

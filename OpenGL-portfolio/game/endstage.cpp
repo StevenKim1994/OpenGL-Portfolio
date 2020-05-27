@@ -6,6 +6,7 @@
 #include "../GameObject/NPC/stageNPC.h"
 #include "../GameObject/Prop/Fire.h"
 #include "../GameObject/Enermy/Mushroom.h"
+#include "GameEffect.h"
 
 // 게임 씬 관련
 extern int gameState;

@@ -7,7 +7,19 @@
 #define PlayerHeight 16
 #define PlayerSpeed 200
 
-#define PlayerColor 0,0,1,1
+enum class ObjectBehave
+{
+	ObjectBehave_NULL = -1,
+	ObjectBehave_idle = 0,
+	ObjectBehave_meleeAttack1,
+	ObjectBehave_meleeAttack2,
+	ObjectBehave_move,
+	ObjectBehave_jump,
+	ObjectBehave_fall,
+	ObjectBehave_hurt,
+	ObjectBehave_death,
+	ObjectBehave_num,
+};
 
 struct ObjInfo
 {
@@ -26,6 +38,9 @@ public: Object();
 
 public:
 
+	iImage** imgs;
+	iImage* img;
+	
 	Texture* tex;
 	iPoint position;
 	iPoint targetPosition;
@@ -33,6 +48,7 @@ public:
 	iPoint jumpment;
 	int jumpNum;
 	int _jumpNum; // 점프를 할수 있는 최대 수
+	int direction;
 	float movement; // 이동속도를 의미함.
 	float range;
 	float damage;
@@ -88,12 +104,20 @@ public:
 	
 
 public:
+	ObjectBehave behave;
 	//function
 	bool moveForMouse(float dt, int NumX, int NumY);
 	void move(iPoint movement);
 	void move(iPoint movement, MapTile* maptile, int NumX , int NumY);
 	void jump();
 	void applyJump(iPoint& movement, float dt);
+	void setDmg(float dmg);
+	void setBehave(ObjectBehave be, int dir);
+
+	static void cbDeath(void* cb);
+	static void cbHurt(void* cb);
+	static void cbBehave(void* cb);
+	static void cbSkill(void* cb);
 
 	int path[1024];
 	int pathNum;

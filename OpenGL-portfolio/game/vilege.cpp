@@ -2,6 +2,7 @@
 
 #include "vilege.h"
 #include "GameUI.h"
+#include "GameEffect.h"
 #include "Player.h"
 #include "drawObject.h"
 

@@ -34,24 +34,6 @@ void drawPopQuitAnswerUI(float dt);
 bool keyPopQuitAnswerUI(iKeyState stat, iPoint point);
 void showPopQuitAnswerUI(bool show);
 
-//------------Number------------------//
-void loadNumber();
-void freeNumber();
-void drawNumber(float dt, iPoint off);
-void addNumber(int dmg, iPoint position);
-
-//------------EffectHit------------------//
-void loadEffectHit();
-void freeEffectHit();
-void drawEffectHit(float dt, iPoint off);
-void addEffectHit(int index, iPoint p);
-
-
-//------------Projectile-----------------//
-void loadProjectile();
-void freeProjectile();
-void drawProjectile(float dt, iPoint off);
-void addProjectile(int index, iPoint p, int direction, int speed);
 
 
 //-------------PopGameOverUI---------------------//

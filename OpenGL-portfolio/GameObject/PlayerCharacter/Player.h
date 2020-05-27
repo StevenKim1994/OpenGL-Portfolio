@@ -2,10 +2,10 @@
 #include "iStd.h"
 #include "Object.h"
 #include "Monster.h"
-#include "PlayerParent.h"
 
 
-class Player : public PlayerParent
+
+class Player : public Object
 {
 public:
 	Player();
@@ -13,14 +13,14 @@ public:
 
 	static void cbBehave(void* cb);
 	static void cbSkill(void* cb);
-	void setBehave(PlayerBehave be, int direction);
+	void setBehave(ObjectBehave be, int direction);
 	void paint(float dt, iPoint offset);
 	
 	
 	iImage** imgs;
 	iImage* img;
 
-	PlayerBehave behave;
+	ObjectBehave behave;
 	int direction;
 	int kill = 0; // 몬스터 처치수
 
