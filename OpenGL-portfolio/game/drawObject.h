@@ -1,7 +1,12 @@
 #pragma once
 
 #include "iStd.h"
+#include "Player.h"
+#include "Goblin.h"
+#include "../GameObject/Prop/Fire.h"
+#include "sceneManager.h"
 
+#include "GameEffect.h"
 #include "GameUI.h"
 
 #define _logoDt 1.0f
@@ -10,7 +15,7 @@ void drawMapTile(float dt, int* tiledata, MapTile* tile, Texture** tileset, int 
 
 // ctrl - hero
 void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);
-// ctrl - orc
+// ctrl - goblin
 void drawGoblin(float dt, int* tiledata, MapTile* tile, int NumX, int NumY);
 
 // debugHitbox

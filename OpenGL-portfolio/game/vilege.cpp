@@ -1,10 +1,6 @@
 #pragma once
 
 #include "vilege.h"
-#include "GameUI.h"
-#include "GameEffect.h"
-#include "Player.h"
-#include "drawObject.h"
 
 // 게임 씬 관련
 extern int gameState;

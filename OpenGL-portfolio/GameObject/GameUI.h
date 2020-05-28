@@ -10,7 +10,8 @@ Texture* methodPlayerHPIndicator(const char* str);
 Texture* methodPlayerMPIndicator(const char* str);
 Texture* methodPlayerStaminaIndicator(const char* str);
 Texture* methodPlayerExpIndicator(const char* str);
-
+Texture* methodPlayerMoneyIndicator(const char* str);
+Texture* methodPlayerNameIndicator(const char* str);
 // 여기에 플레이어의 체력, 게임 플레이상의 UI 출력해야함 
 
 //-------------PopPlayerUI----------------------//

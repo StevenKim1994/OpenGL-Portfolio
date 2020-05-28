@@ -12,6 +12,7 @@ public:
 	int kill;
 	int level;
 	float exp;
+	int money;
 
 public:
 	bool moveForMouse(float dt, int NumX, int NumY);

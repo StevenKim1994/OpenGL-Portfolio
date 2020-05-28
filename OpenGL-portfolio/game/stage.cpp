@@ -1,15 +1,6 @@
 #pragma once
 #include "stage.h"
-#include "stageTileInfo.h"
-#include "Monster.h"
-#include "Player.h"
-#include "Goblin.h"
-#include "../GameObject/Prop/coin.h"
-#include "sceneManager.h"
 
-#include "GameUI.h"
-#include "GameEffect.h"
-#include "endstage.h"
 
 
 #define ON_HITBOX 0
@@ -49,6 +40,9 @@ iStrTex* hpIndicator;
 iStrTex* mpIndicator;
 iStrTex* staminaIndicator;
 iStrTex* expIndicator;
+iStrTex* moneyIndicator;
+iStrTex* nameIndicator;
+
 Texture* playerPortrait;
 float gameTime = 0;
 float _gameTime = 100000000000;
@@ -150,10 +144,10 @@ void loadStage()
 	{
 		MapTile* t = &maptile[i];
 		t->attr = tiles[i];
-		//t->imgIndex;
 	}
 
 	hero = new Player(); // 플레이어 캐릭터 생성
+    minimapHero = new Player(); // 미니맵 플레이어
 
 	{
 		hero->setSize(iSizeMake(PlayerWidth, PlayerHeight));
@@ -198,18 +192,13 @@ void loadStage()
 		goblins[i] = goblin;
 	}
 
-	loadCoin();
 
-    minimapHero = new Player();
 
 	sp = new iShortestPath();
 	sp->init(tiles, stageMapTileNumX, stageMapTileNumY);
 
 	killIndicator = new iStrTex(methodKillIndicator);
 	killIndicator->setString("%d", hero->kill);
-	
-	//timeIndicator = new iStrTex(methodTimeIndicator);
-	//timeIndicator->setString("TIME : %0.2f", gameTime);
 
 	hpIndicator = new iStrTex(methodPlayerHPIndicator);
 	hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
@@ -222,6 +211,12 @@ void loadStage()
 
 	expIndicator = new iStrTex(methodPlayerExpIndicator);
 	expIndicator->setString("Exp : %.1f, / 100", hero->getExp());
+
+	moneyIndicator = new iStrTex(methodPlayerMoneyIndicator);
+	moneyIndicator->setString("%d", hero->money);
+
+	nameIndicator = new iStrTex(methodPlayerNameIndicator);
+	nameIndicator->setString("%d", hero->getLevel());
 	
 	createPopPlayerUI();
 	createPopMenuUI();
@@ -232,6 +227,7 @@ void loadStage()
 	loadProjectile();
 	loadNumber();
 	loadEffectHit();
+	loadCoin();
 
 	logoDt = 0.0f;
 
@@ -269,6 +265,7 @@ void drawStage(float dt)
 	drawMapTile(dt, tiles,maptile,tileset, stageMapTileNumX, stageMapTileNumY);
 	drawGoblin(dt, tiles,maptile, stageMapTileNumX, stageMapTileNumY);
 	drawHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
+	drawCoin(dt, offMt, maptile);
 	drawProjectile(dt, offMt);
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);
@@ -280,27 +277,14 @@ void drawStage(float dt)
 	fbo->unbind();
 	showCamera(texFboStage, dt);
 	
-
-
 	setRGBA(1, 1, 1, 1);
-	//minimap drawing
 	fbo->bind(minimapFbo);
 	drawMinimapTile(dt, tiles, maptile, tileset, stageMapTileNumX, stageMapTileNumY);
 	drawMinimapHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 	fbo->unbind();
 
 
-
-	
-	//gameTime += dt;
-	//timeIndicator->setString("TIME : %0.2f",gameTime);
-
-
 	drawPopPlayerUI(dt);
-
-	//((Coin*)coins[0])->paint(dt, offMt, maptile, stageMapTileNumX, stageMapTileNumY);
-	drawCoin(dt, offMt, maptile);
-
 	drawPopMenuUI(dt);
 	drawPopQuitAnswerUI(dt);
 	drawPopGameOverUI(dt);
@@ -335,6 +319,17 @@ void drawStage(float dt)
 		}
 	}
 
+	moneyIndicator->setString("%d", hero->money);
+
+	if (hero->exp >= 100)
+	{
+		hero->setLevel(hero->getLevel() + 1);
+		hero->exp = 0.0f;
+		hero->setHP(hero->getMaxHp());
+		hero->setMP(hero->getMaxMP());
+		hero->setStamina(hero->getStamina());
+		nameIndicator->setString("%d", hero->getLevel());
+	}
 	
 }
 

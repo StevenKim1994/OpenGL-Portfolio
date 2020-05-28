@@ -2,6 +2,10 @@
 
 #include "iStd.h"
 
+#include "iVideo.h"
+#include "sceneManager.h"
+
+#include "intro.h"
 
 void loadTrailer();
 void freeTrailer();

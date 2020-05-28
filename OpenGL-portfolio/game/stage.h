@@ -2,10 +2,20 @@
 
 #include "iStd.h"
 
-#include "GameUI.h"
 
 #include "drawObject.h"
 
+
+#include "stageTileInfo.h"
+#include "Monster.h"
+#include "Player.h"
+#include "Goblin.h"
+#include "sceneManager.h"
+
+#include "GameUI.h"
+#include "GameEffect.h"
+#include "CoinFactory.h"
+#include "endstage.h"
 
 
 void loadStage();

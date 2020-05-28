@@ -3,6 +3,7 @@
 #include "CanNotMove.h"
 #include "stageTileInfo.h"
 #include "Player.h"
+#include "coin.h"
 enum CoinStat
 {
 	CoinStat_wait = 0,
@@ -31,9 +32,3 @@ public:
 #define coin_wait_delta 1.0f
 #define coin_move_delta 1.2f
 #define coin_disappear_delta 0.5f
-
-void loadCoin();
-void freeCoin();
-void drawCoin(float dt, iPoint off ,MapTile* maptile);
-void checkCoin(iPoint p, iPoint off);
-void addCoin(iPoint p, int price);

@@ -1,7 +1,7 @@
 #include "Goblin.h"
-
 #include "GameUI.h"
 #include "GameEffect.h"
+#include "CoinFactory.h"
 
 #define Orc_HP 20
 #define Orc_MP 100

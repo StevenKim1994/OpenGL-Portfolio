@@ -14,7 +14,7 @@ Player::Player()
 	HP = Player_HP;
 	MP = Player_MP;
 	Stamina = Player_Stamina;
-	
+
 
 	ObjInfo _pi[8] = {
 		{"assets/stage/hero/Knight/hero idle (%d).png", 11, 1.5f, {-75, -80} },

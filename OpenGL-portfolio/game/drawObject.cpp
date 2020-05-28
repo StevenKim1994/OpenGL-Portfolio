@@ -1,13 +1,8 @@
 #pragma once
 
-#include "iStd.h"
-#include "drawObject.h"
-#include "Player.h"
-#include "Goblin.h"
-#include "../GameObject/Prop/Fire.h"
-#include "sceneManager.h"
 
-#include "GameEffect.h"
+#include "drawObject.h"
+
 
 extern iPoint offMt;
 
@@ -126,6 +121,7 @@ void drawMinimapHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			{
 				minimapHero->setStamina(minimapHero->getStamina() - 50.0f);
 				minimapHero->jump();
+				
 
 				if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
 				{
@@ -284,14 +280,20 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	uint32 keyDown = 0;
 
 	iPoint movement = iPointMake(0, 1) * powGravity * dt;
+	
 	hero->applyJump(movement, dt);
+
 
 	if (getKeyDown() & keyboard_space) // 윗점프
 	{
 		if (hero->getStamina() > 50.0f)
 		{
 			hero->setStamina(hero->getStamina() - 50.0f);
+			ObjectBehave be;
+			be = ObjectBehave::ObjectBehave_jump;
+			hero->setBehave(be, hero->direction);
 			hero->jump();
+
 
 			if (hero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
 			{
@@ -299,7 +301,6 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				keyDown = getKeyDown();
 			}
 			iPoint v = iPointZero;
-			ObjectBehave be;
 			if (keyStat & keyboard_left) v.x = -1;
 			else if (keyStat & keyboard_right) v.x = 1;
 			//if (keyStat & keyboard_up) v.y = -1;

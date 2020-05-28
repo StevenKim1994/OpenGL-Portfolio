@@ -153,7 +153,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="GameObject\endStageTileInfo.h" />
+    <ClInclude Include="GameObject\CoinFactory.h" />
     <ClInclude Include="GameObject\Enermy\Flyeye.h" />
     <ClInclude Include="GameObject\Enermy\Mushroom.h" />
     <ClInclude Include="GameObject\GameEffect.h" />
@@ -215,6 +215,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameObject\CoinFactory.cpp" />
     <ClCompile Include="GameObject\Enermy\Flyeye.cpp" />
     <ClCompile Include="GameObject\Enermy\Mushroom.cpp" />
     <ClCompile Include="GameObject\GameEffect.cpp" />

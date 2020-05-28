@@ -17,6 +17,8 @@ extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
 extern iStrTex* expIndicator;
+extern iStrTex* moneyIndicator;
+extern iStrTex* nameIndicator;
 
 iPopup* PopPlayerInventory;
 Texture* methodTimeIndicator(const char* str)
@@ -111,6 +113,35 @@ Texture* methodPlayerExpIndicator(const char* str)
 	g->drawRect(0, 0, size.width, size.height);
 	g->fillRect(0, 0, size.width * (hero->getExp() / 100.0f), size.height);
 	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, str);
+
+	return g->getTexture();
+}
+
+Texture* methodPlayerMoneyIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(100, 100);
+
+
+	setRGBA(0, 0, 1, 1);
+	setStringSize(20);
+	g->init(size);
+	g->fillRect(0, 0, size.width, size.height);
+	g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Money");
+	g->drawString(size.width / 2, 40, HCENTER | VCENTER, "%s", str);
+
+	
+	return g->getTexture();
+
+}
+
+Texture* methodPlayerNameIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(200, 100);
+	setStringSize(20);
+	g->init(size);
+	g->drawString(0, 0, TOP | LEFT, "Lv %s %s", str, hero->getName());
 
 	return g->getTexture();
 }
@@ -219,9 +250,8 @@ void createPopPlayerUI()
 		// Player Name Indicator
 
 		setStringSize(25);
-		g->init(infoSize);
-		g->drawString(0,0,TOP|LEFT,"Lv %d %s", hero->getLevel(), hero->getName());
-		infoTex = g->getTexture();
+
+		infoTex = nameIndicator->tex;
 		playerName->addObject(infoTex);
 		freeImage(infoTex);
 		playerName->position = iPointMake(70, 15);
@@ -1051,6 +1081,7 @@ void createPopPlayerInventory()
 		iImage* img = new iImage();
 		Texture* tex; 
 		setRGBA(1, 1, 1, 1);
+		setStringSize(20);
 		g->init(bgSize);
 		g->fillRect(0, 0, bgSize.width, bgSize.height);
 		g->drawString(bgSize.width / 2, 20, HCENTER | VCENTER, "%s Inventory", hero->getName());
@@ -1136,14 +1167,9 @@ void createPopPlayerInventory()
 	{
 		iSize size = iSizeMake(100, 100);
 		iImage* img = new iImage();
-		Texture* tex;
 		setRGBA(0, 0, 1, 1);
-		g->init(size);
-		g->fillRect(0, 0, size.width, size.height);
-		g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Money");
-		tex = g->getTexture();
-		img->addObject(tex);
-		freeImage(tex);
+		img->addObject(moneyIndicator->tex);
+		freeImage(moneyIndicator->tex);
 		img->position = iPointMake(bgSize.width / 2 - size.width / 2, 35);
 		pop->addObject(img);
 	}

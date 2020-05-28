@@ -5,6 +5,7 @@ Playerable::Playerable()
 	level = 1;
 	kill = 0;
 	exp = 0.0f;
+	money = 0;
 }
 
 Playerable::~Playerable()

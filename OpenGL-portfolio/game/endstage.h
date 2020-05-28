@@ -5,6 +5,13 @@
 #include "GameUI.h"
 
 #include "drawObject.h"
+#include "Player.h"
+
+#include "vilege.h"
+#include "../GameObject/NPC/stageNPC.h"
+#include "../GameObject/Prop/Fire.h"
+#include "../GameObject/Enermy/Mushroom.h"
+#include "GameEffect.h"
 
 void loadEndStage();
 void freeEndStage();
