@@ -377,8 +377,9 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				
 						if (containPoint(goblins[i]->getPosition(), hero->imgSkill->touchRect()))
 						{
-							goblins[i]->setDmg(hero->getDamage());
-							addEffectHit(0, goblins[i]->getPosition());
+							Goblin* goblin = (Goblin*)goblins[i];
+							goblin->setDmg(hero->getDamage());
+							addEffectHit(0, goblin->getPosition());
 						}
 					}
 					break;
@@ -525,7 +526,7 @@ void drawGoblin(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)
 	{
 		if (goblins[i]->alive == false)
 		{
-			hero->setExp(hero->getExp() + 5.0f);
+			
 			goblinNum--;
 			delete goblins[i];
 			goblins[i] = goblins[goblinNum];

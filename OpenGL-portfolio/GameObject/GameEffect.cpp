@@ -195,10 +195,13 @@ struct Projectile
 
 				if (containPoint(iPointMake(p.x, p.y + 32), iRectMake(target[i]->position.x, target[i]->position.y, 64, 64)))
 				{
-					target[i]->setDmg(7);
-					addEffectHit(0, target[i]->position);
-					//zoomCamera(target[i]->position, 1.5);
-					return true;
+					if (target[i]->type == 2)
+					{
+						((Goblin*)target[i])->setDmg(7);
+						addEffectHit(0, target[i]->position);
+						//zoomCamera(target[i]->position, 1.5);
+						return true;
+					}
 				}
 			}
 		

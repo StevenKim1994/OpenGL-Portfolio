@@ -7,6 +7,7 @@ static iImage** imgFlyeye = NULL;
 
 Flyeye::Flyeye()
 {
+	type = 2;
 	if (imgFlyeye == NULL)
 	{
 

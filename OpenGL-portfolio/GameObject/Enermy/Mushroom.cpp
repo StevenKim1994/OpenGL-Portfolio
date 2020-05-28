@@ -15,6 +15,7 @@ static iImage** imgMush = NULL;
 
 Mushroom::Mushroom(int number)
 {
+	type = 2;
 	if (imgMush == NULL)
 	{
 		ObjInfo _oi[(int)ObjectBehave::ObjectBehave_num] = {

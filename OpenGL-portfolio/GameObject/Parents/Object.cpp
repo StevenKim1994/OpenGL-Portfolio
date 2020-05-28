@@ -450,11 +450,14 @@ void Object::setBehave(ObjectBehave be, int dir)
 	}
 }
 
+
+
 void Object::cbDeath(void* cb)
 {
 	Object* o = (Object*)cb;
 	o->alive = false;
 
+	
 	
 }
 

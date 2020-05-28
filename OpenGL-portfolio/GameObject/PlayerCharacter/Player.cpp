@@ -8,6 +8,7 @@
 
 Player::Player()
 {
+	type = 0;
 	memset(path, 0x00, sizeof(int) * 1024);
 	pathIndex = pathNum;
 	HP = Player_HP;

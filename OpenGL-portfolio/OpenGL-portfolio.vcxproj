@@ -160,10 +160,13 @@
     <ClInclude Include="GameObject\GameUI.h" />
     <ClInclude Include="GameObject\NPC\PotionNPC.h" />
     <ClInclude Include="GameObject\NPC\stageNPC.h" />
+    <ClInclude Include="GameObject\Parents\CanMove.h" />
     <ClInclude Include="GameObject\Parents\Monster.h" />
+    <ClInclude Include="GameObject\Parents\CanNotMove.h" />
     <ClInclude Include="GameObject\Parents\NPC.h" />
     <ClInclude Include="GameObject\Parents\Object.h" />
     <ClInclude Include="GameObject\Enermy\Goblin.h" />
+    <ClInclude Include="GameObject\Parents\Playerable.h" />
     <ClInclude Include="GameObject\PlayerCharacter\Player.h" />
     <ClInclude Include="GameObject\Prop\coin.h" />
     <ClInclude Include="GameObject\Prop\Fire.h" />
@@ -218,10 +221,13 @@
     <ClCompile Include="GameObject\GameUI.cpp" />
     <ClCompile Include="GameObject\NPC\PotionNPC.cpp" />
     <ClCompile Include="GameObject\NPC\stageNPC.cpp" />
+    <ClCompile Include="GameObject\Parents\CanMove.cpp" />
     <ClCompile Include="GameObject\Parents\Monster.cpp" />
+    <ClCompile Include="GameObject\Parents\CanNotMove.cpp" />
     <ClCompile Include="GameObject\Parents\NPC.cpp" />
     <ClCompile Include="GameObject\Parents\Object.cpp" />
     <ClCompile Include="GameObject\Enermy\Goblin.cpp" />
+    <ClCompile Include="GameObject\Parents\Playerable.cpp" />
     <ClCompile Include="GameObject\PlayerCharacter\Player.cpp" />
     <ClCompile Include="GameObject\Prop\coin.cpp" />
     <ClCompile Include="GameObject\Prop\Fire.cpp" />

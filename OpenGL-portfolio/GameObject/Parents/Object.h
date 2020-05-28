@@ -38,6 +38,7 @@ public: Object();
 
 public:
 
+	int type;  // 0 : player type 1 : NPC type 2: goblin type .... 쭉 계속추가하다가 나중에 Object 하위클래스 제작할거임
 	iImage** imgs;
 	iImage* img;
 	

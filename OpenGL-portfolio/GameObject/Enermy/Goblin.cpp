@@ -3,7 +3,7 @@
 #include "GameUI.h"
 #include "GameEffect.h"
 
-#define Orc_HP 1
+#define Orc_HP 20
 #define Orc_MP 100
 #define Orc_Stamina 100
 
@@ -16,6 +16,7 @@ static iImage** imgOrc = NULL;
 
 Goblin::Goblin(int number)
 {
+	type = 2;
 	if (imgOrc == NULL)
 	{
 		struct OrcInfo
@@ -121,12 +122,20 @@ Goblin::~Goblin()
 
 }
 
+
+
 #include "../PlayerCharacter/Player.h"
+#include "../GameObject/Prop/coin.h"
+extern Object** coins;
+extern int coinNum;
+
 void Goblin::cbDeath(void* cb)
 {
 	Object* o = (Object*)cb;
 	o->alive = false;
-	
+
+	hero->setExp(hero->getExp() + 5.0f);
+	addCoin(o->position, 100);	
 }
 
 void Goblin::cbBehave(void* cb)

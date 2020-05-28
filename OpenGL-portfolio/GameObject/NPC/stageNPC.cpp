@@ -6,6 +6,7 @@ static iImage** imgstageNPC = NULL;
 
 stageNPC::stageNPC()
 {
+	type = 1;
 	if(imgstageNPC == NULL)
 	{
 		NPCInfo _ni[1] = {

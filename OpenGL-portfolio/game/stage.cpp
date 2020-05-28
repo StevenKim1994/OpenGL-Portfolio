@@ -4,6 +4,7 @@
 #include "Monster.h"
 #include "Player.h"
 #include "Goblin.h"
+#include "../GameObject/Prop/coin.h"
 #include "sceneManager.h"
 
 #include "GameUI.h"
@@ -31,6 +32,7 @@ Player* hero;
 // 오브젝트 풀 관련
 int _goblinNum = goblin_Num;
 int goblinNum = _goblinNum;
+
 
 //맵 관련
 static MapTile* maptile;
@@ -195,6 +197,9 @@ void loadStage()
 		goblin->alive = true;
 		goblins[i] = goblin;
 	}
+
+	loadCoin();
+
     minimapHero = new Player();
 
 	sp = new iShortestPath();
@@ -255,6 +260,7 @@ void freeStage()
 //hero는 다음Stage에서 사용되므로 delete 하지 않음!
 //UI는 여기서 생성되고 게임오버할떄 까지 계속쓰이므로 게임오버할떄 지운다
 
+	freeCoin();
 }
 
 void drawStage(float dt)
@@ -266,6 +272,7 @@ void drawStage(float dt)
 	drawProjectile(dt, offMt);
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);
+
 #if _DEBUG
 	debugHitbox(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 #endif
@@ -282,8 +289,6 @@ void drawStage(float dt)
 	drawMinimapHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 	fbo->unbind();
 
-	
-
 
 
 	
@@ -292,6 +297,10 @@ void drawStage(float dt)
 
 
 	drawPopPlayerUI(dt);
+
+	//((Coin*)coins[0])->paint(dt, offMt, maptile, stageMapTileNumX, stageMapTileNumY);
+	drawCoin(dt, offMt, maptile);
+
 	drawPopMenuUI(dt);
 	drawPopQuitAnswerUI(dt);
 	drawPopGameOverUI(dt);
@@ -380,3 +389,4 @@ void keyStage(iKeyState stat, iPoint point)
 
 
 }
+
