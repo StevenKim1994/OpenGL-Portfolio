@@ -195,7 +195,7 @@ struct Projectile
 
 				if (containPoint(iPointMake(p.x, p.y + 32), iRectMake(target[i]->position.x, target[i]->position.y, 64, 64)))
 				{
-					if (target[i]->type == 2)
+					if (((Monster*)target[i])->type == 2)
 					{
 						((Goblin*)target[i])->setDmg(7);
 						addEffectHit(0, target[i]->position);

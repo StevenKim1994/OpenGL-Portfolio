@@ -1,7 +1,4 @@
 #pragma once
-
-#include "iStd.h"
-
 #include "Monster.h"
 
 class Flyeye : public Monster

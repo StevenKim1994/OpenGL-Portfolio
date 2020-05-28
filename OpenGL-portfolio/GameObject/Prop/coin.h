@@ -1,9 +1,7 @@
 #pragma once
 
-#include "iStd.h"
-#include "Object.h"
+#include "CanNotMove.h"
 #include "stageTileInfo.h"
-#include "../game/stage.h"
 #include "Player.h"
 enum CoinStat
 {
@@ -12,7 +10,7 @@ enum CoinStat
 	CoinStat_disappear
 };
 
-class Coin : public Object
+class Coin : public CanNotMove
 {
 public:
 	Coin();

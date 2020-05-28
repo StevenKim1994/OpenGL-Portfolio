@@ -6,10 +6,10 @@ static iImage** imgstageNPC = NULL;
 
 stageNPC::stageNPC()
 {
-	type = 1;
+
 	if(imgstageNPC == NULL)
 	{
-		NPCInfo _ni[1] = {
+		ObjInfo _ni[1] = {
 			
 				"assets/stage/stageNPC/stageNPC (%d).png", 8, 1.5f, {-16,-42},
 			
@@ -24,7 +24,7 @@ stageNPC::stageNPC()
 		{
 
 			iImage* img = new iImage();
-			NPCInfo* ni = &_ni[i];
+			ObjInfo* ni = &_ni[i];
 			for (int j = 0; j < ni->num; j++)
 			{
 				Texture* tex = createImage(ni->path, j + 1);
@@ -53,9 +53,9 @@ stageNPC::stageNPC()
 
 	img = imgs[0];
 
-	behave = NPCBehave::NPCBehave_NULL;
+	behave = ObjectBehave::ObjectBehave_NULL;
 	direction = 1;
-	setBehave(NPCBehave::NPCBehave_idle, direction);
+	setBehave(ObjectBehave::ObjectBehave_idle, direction);
 
 }
 
@@ -67,7 +67,7 @@ stageNPC::~stageNPC()
 			delete imgstageNPC[i];
 	}
 	
-	for (int i = 0; i < (int)NPCBehave::NPCBehave_num; i++)
+	for (int i = 0; i < 1; i++)
 		delete imgs[i];
 	free(imgs);
 
@@ -81,7 +81,7 @@ void stageNPC::cbSkill(void* cb)
 {
 }
 
-void stageNPC::setBehave(NPCBehave be, int dir)
+void stageNPC::setBehave(ObjectBehave be, int dir)
 {
 	if (behave != be || direction != dir)
 	{

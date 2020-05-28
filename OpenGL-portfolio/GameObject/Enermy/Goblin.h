@@ -1,11 +1,10 @@
 #pragma once
-#include "iStd.h"
-#include "Object.h"
+#include "Monster.h"
 
 
 #define goblin_Num 10
 
-class Goblin : public Object
+class Goblin : public Monster
 {
 public: Goblin(int number);
 	  virtual ~Goblin();
@@ -23,14 +22,7 @@ public:
 	static void cbSkill(void* cb);
 
 public:
-	//settter
-	void setDetected_Player(bool check);
-	void setTarget(Object* obj);
 
-	//getter
-	bool getDetected_Player();
-	Object* getTarget();
-private:
 	bool detected_Player;
 	iPoint Target_Pos;
 	Object* Target;

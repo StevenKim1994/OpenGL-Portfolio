@@ -17,14 +17,14 @@ public:
 	iImage** imgs;
 	iImage* img;
 
-	NPCBehave behave;
+
 	int direction;
 
 	static void cbBehave(void* cb);
 	static void cbSkill(void* cb);
 
 
-	void setBehave(NPCBehave be, int dir);
+	void setBehave(ObjectBehave be, int dir);
 	void paint(float dt, iPoint offset);
 
 

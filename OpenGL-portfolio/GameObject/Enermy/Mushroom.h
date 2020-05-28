@@ -1,6 +1,4 @@
 #pragma once
-#include "iStd.h"
-#include "Object.h"
 #include "Monster.h"
 
 #define mush_Num 1

@@ -38,7 +38,6 @@ public: Object();
 
 public:
 
-	int type;  // 0 : player type 1 : NPC type 2: goblin type .... 쭉 계속추가하다가 나중에 Object 하위클래스 제작할거임
 	iImage** imgs;
 	iImage* img;
 	
@@ -46,15 +45,8 @@ public:
 	iPoint position;
 	iPoint targetPosition;
 	iSize size;
-	iPoint jumpment;
-	iPoint v = iPointZero;
-	float rateV;
-	float r = 0.0f;
-	float rValue = 1.0f;
-	int jumpNum;
-	int _jumpNum; // 점프를 할수 있는 최대 수
+
 	int direction;
-	float movement; // 이동속도를 의미함.
 	float range;
 	float damage;
 	float speed; // 공격속도를 의미함.
@@ -76,7 +68,7 @@ public:
 	void setPosition(iPoint position);
 	void setTargetPosition(iPoint targetPosition);
 	void setSize(iSize size);
-	void setMovement(float movement);
+
 	void setRange(float range);
 	void setDamage(float damage);
 	void setSpeed(float speed);
@@ -93,7 +85,7 @@ public:
 	iPoint getPosition();
 	iPoint getTargetPosition();
 	iSize getSize();
-	float getMovement();
+	
 	float getRange();
 	float getDamage();
 	float getSpeed();
@@ -110,14 +102,8 @@ public:
 
 public:
 	ObjectBehave behave;
-	//function
-	bool moveForMouse(float dt, int NumX, int NumY);
-	void move(iPoint movement);
-	void move(iPoint movement, MapTile* maptile, int NumX , int NumY);
-	void jump();
-	void applyJump(iPoint& movement, float dt);
-	void setDmg(float dmg);
-	void setBehave(ObjectBehave be, int dir);
+	virtual void setDmg(float dmg);
+	virtual void setBehave(ObjectBehave be, int dir);
 
 	static void cbDeath(void* cb);
 	static void cbHurt(void* cb);

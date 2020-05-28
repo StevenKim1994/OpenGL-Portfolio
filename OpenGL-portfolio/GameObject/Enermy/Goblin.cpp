@@ -311,23 +311,3 @@ void Goblin::Skill2()
 {
 }
 
-void Goblin::setDetected_Player(bool check)
-{
-	detected_Player = check;
-}
-
-void Goblin::setTarget(Object* obj)
-{
-	Target = obj;
-	Target_Pos = obj->getPosition();
-}
-
-bool Goblin::getDetected_Player()
-{
-	return detected_Player;
-}
-
-Object* Goblin::getTarget()
-{
-	return Target;
-}

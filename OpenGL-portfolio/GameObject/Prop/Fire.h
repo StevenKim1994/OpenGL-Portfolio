@@ -1,9 +1,7 @@
 #pragma once
+#include "CanNotMove.h"
 
-#include "iStd.h"
-#include "Object.h"
-
-class Fire : public Object
+class Fire : public CanNotMove
 {
 public:
 	Fire();

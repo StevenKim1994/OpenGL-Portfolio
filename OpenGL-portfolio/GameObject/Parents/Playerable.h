@@ -15,4 +15,9 @@ public:
 
 public:
 	bool moveForMouse(float dt, int NumX, int NumY);
+
+	int getLevel();
+	void setLevel(int _lv);
+	void setExp(float _ex);
+	float getExp();
 };

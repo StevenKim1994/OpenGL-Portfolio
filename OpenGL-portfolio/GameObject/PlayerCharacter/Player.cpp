@@ -8,22 +8,15 @@
 
 Player::Player()
 {
-	type = 0;
+	
 	memset(path, 0x00, sizeof(int) * 1024);
 	pathIndex = pathNum;
 	HP = Player_HP;
 	MP = Player_MP;
 	Stamina = Player_Stamina;
 	
-	struct PlayerInfo
-	{
-		const char* path;
-		int num;
-		float sizeRate;
-		iPoint p;
-	};
 
-	PlayerInfo _pi[8] = {
+	ObjInfo _pi[8] = {
 		{"assets/stage/hero/Knight/hero idle (%d).png", 11, 1.5f, {-75, -80} },
 		{"assets/stage/hero/Knight/hero melee2 (%d).png", 7, 1.5f, {-72, -80}},
 		{"assets/stage/hero/Knight/hero melee1 (%d).png", 7, 1.5f, {-72, -80}},
@@ -42,7 +35,7 @@ Player::Player()
 	imgs = (iImage**)malloc(sizeof(iImage*) * 8);
 	for (int i = 0; i < 8; i++)
 	{
-		PlayerInfo* pi = &_pi[i];
+		ObjInfo* pi = &_pi[i];
 
 		iImage* img = new iImage();
 		for (int j = 0; j < pi->num; j++)
@@ -257,27 +250,6 @@ void Player::paint(float dt, iPoint offset)
 
 }
 
-int Player::getLevel()
-{
-	return level;
-}
-
-void Player::setLevel(int _lv)
-{
-	level = _lv;
-}
-
-float Player::getExp()
-{
-	return exp;
-}
-
-void Player::setExp(float _ex)
-{
-	exp = _ex;
-}
-
-//iImage* skill;// = new iImage();
 
 void Player::cbSkill1(void* cb)
 {

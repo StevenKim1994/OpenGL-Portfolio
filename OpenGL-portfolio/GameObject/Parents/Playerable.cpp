@@ -2,6 +2,9 @@
 
 Playerable::Playerable()
 {
+	level = 1;
+	kill = 0;
+	exp = 0.0f;
 }
 
 Playerable::~Playerable()
@@ -61,4 +64,24 @@ bool Playerable::moveForMouse(float dt, int NumX, int NumY)
 			return true;
 	}
 	return false;
+}
+
+int Playerable::getLevel()
+{
+	return level;
+}
+
+void Playerable::setLevel(int _lv)
+{
+	level = _lv;
+}
+
+void Playerable::setExp(float _ex)
+{
+	exp = _ex;
+}
+
+float Playerable::getExp()
+{
+	return exp;
 }

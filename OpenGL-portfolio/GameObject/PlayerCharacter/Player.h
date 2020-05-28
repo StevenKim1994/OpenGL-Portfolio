@@ -1,11 +1,9 @@
 #pragma once
-#include "iStd.h"
-#include "Object.h"
-#include "Monster.h"
+#include "Playerable.h"
 
 
 
-class Player : public Object
+class Player : public Playerable
 {
 public:
 	Player();
@@ -17,20 +15,10 @@ public:
 	static void cbSkill3(void* cb);
 	void setBehave(ObjectBehave be, int direction);
 	void paint(float dt, iPoint offset);
-	int getLevel();
-	void setLevel(int _lv);
-	float getExp();
-	void setExp(float _ex);
-	
+
 	iImage** imgs;
 	iImage* img;
 
-	ObjectBehave behave;
-	int direction;
-	int kill = 0; // 몬스터 처치수
-	int level = 1;
-	float exp = 0.0f;
-	
 	
 
 	//override func
