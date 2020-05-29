@@ -12,6 +12,7 @@ iStrTex::iStrTex(method_istrtex m)
 	tex = NULL;
 }
 
+
 iStrTex::~iStrTex()
 {
 	free(str);

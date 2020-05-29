@@ -10,6 +10,7 @@ class iStrTex
 {
 public:
 	iStrTex(method_istrtex m = NULL);
+	
 	virtual ~iStrTex();
 
 public:
@@ -23,6 +24,7 @@ public:
 
 public:
 	method_istrtex method;
+	
 
 	char* str;
 	int strLength;

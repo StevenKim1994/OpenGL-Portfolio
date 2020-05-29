@@ -2,6 +2,8 @@
 #include "Player.h"
 #include "Monster.h"
 #include "GameUI.h"
+#include "GameEffect.h"
+
 #define Player_HP 100
 #define Player_MP 100
 #define Player_Stamina 100
@@ -179,6 +181,10 @@ Player::Player()
 		
 		
 	}
+
+	_CoolDown_SK1 = CoolDown_SK1 = 2;
+	_CoolDown_SK2 = CoolDown_SK2 = 5;
+	_CoolDown_SK3 = CoolDown_SK3 = 0;
 	
 	
 }
@@ -267,8 +273,19 @@ void Player::cbSkill3(void* cb)
 
 void Player::Skill1()
 {
-	printf("skill1! on!\n");
+	if (MP < 5)
+	{
+		printf("MP enough\n");
+		return;
+	}
+	if (CoolDown_SK1 < _CoolDown_SK1)
+		return;
 
+	MP -= 5;
+	CoolDown_SK1 = 0.0f;
+
+	printf("skill1! on!\n");
+		
 	audioPlay(4);
 	iPoint targetPos = iPointZero;
 	if (direction == 1)
@@ -277,31 +294,49 @@ void Player::Skill1()
 		targetPos = iPointMake(position.x - 128, position.y - 100);
 	imgSkill->position = targetPos;
 	imgSkill->startAnimation();
-
-	
 }
+
+extern Object** goblins;
+extern int goblinNum;
 
 void Player::Skill2()
 {
+	if (MP < 10)
+	{
+		printf("MP enough\n");
+		return;
+	}
+	if (CoolDown_SK2 < _CoolDown_SK2)
+		return;
+
+	MP -= 10;
+	CoolDown_SK2 = 0.0f;
+
 	printf("skill2! on!\n");
 
+	addProjectile(0, hero->getPosition(), hero->direction, 3, (Object**)goblins, goblinNum);
 
 }
 
 void Player::Skill3()
 {
-	printf("skill3! on!\n");
-
-	//imgBuff->position = iPointMake(position.x -50, position.y-50);
-	if (imgBuff->animation)
+	if (MP >= 1)
 	{
-		imgBuff->animation = false;
-		damage -= 5.0f;
-	}
-	else
-	{
-		imgBuff->startAnimation();
-		damage += 5.0f;
+		printf("skill3! on!\n");
+		
+		//imgBuff->position = iPointMake(position.x -50, position.y-50);
+		if (imgBuff->animation)
+		{
+			imgBuff->animation = false;
+			damage -= 5.0f;
+		}
+		else
+		{
+			printf("mana use!\n");
+			imgBuff->startAnimation();
+			damage += 5.0f;
+			//MP--;
+		}
 	}
 }
 

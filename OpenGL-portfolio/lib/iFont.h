@@ -10,4 +10,4 @@ struct iFont
 
 void loadFont();
 void freeFont();
-void drawFont(int x, int y, int anc, const char* szFormat);
+void drawFont(int x, int y, int anc, const char* szFormat,...);

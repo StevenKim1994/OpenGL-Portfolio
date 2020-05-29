@@ -30,9 +30,17 @@ public:
 	iImage* imgRange; // 원거리 스킬
 	iImage* imgBuff; // 버프 스킬
 	iImage* Ultimate; // 궁극기
+
 	void Skill1();
 	void Skill2();
 	void Skill3();
+
+	float CoolDown_SK1;
+	float _CoolDown_SK1; // 쿨다운 최대치
+	float CoolDown_SK2;
+	float _CoolDown_SK2; // 쿨다운 최대치
+	float CoolDown_SK3;
+	float _CoolDown_SK3; // 쿨다운 최대치
 
 public:
 

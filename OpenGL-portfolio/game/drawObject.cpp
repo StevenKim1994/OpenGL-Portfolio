@@ -18,6 +18,7 @@ extern iStrTex* hpIndicator;
 extern iStrTex* mpIndicator;
 extern iStrTex* staminaIndicator;
 extern iStrTex* expIndicator;
+extern iStrTex* skillIndicator[3];
 extern int gameState;
 
 void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, int NumX, int NumY)
@@ -364,7 +365,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				be = ObjectBehave::ObjectBehave_meleeAttack1;
 
 				hero->Skill1();
-				hero->setMP(hero->getMp() - 5.0f);
+				//hero->setMP(hero->getMp() - 5.0f);
 				zoomCamera(hero->getPosition() + offMt, 1.5);
 				shakeCamera(30);
 
@@ -390,18 +391,17 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 					break;
 				}
 			}
-			else if (keyDown & keyboard_num2 && hero->getMp() > 9)
+			else if (keyDown & keyboard_num2)
 			{
 				be = ObjectBehave::ObjectBehave_meleeAttack2;
 				hero->Skill2();
-				hero->setMP(hero->getMp() - 10.0f);
-				addProjectile(0, hero->getPosition(), hero->direction, 3, (Object**)goblins, goblinNum);
+				
 			}
-			else if (keyDown & keyboard_num3 && hero->getMp() > 1)
+			else if (keyDown & keyboard_num3)
 			{
 				be = ObjectBehave::ObjectBehave_idle;
 				hero->Skill3();
-				hero->setMP(hero->getMp() - 1.0f);
+				
 			
 			}
 
@@ -515,6 +515,52 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 
 		if (hero->getStamina() > hero->getMaxStamina())
 			hero->setStamina(hero->getMaxStamina());
+	}
+
+	
+	hero->CoolDown_SK1 += dt;
+	if (hero->CoolDown_SK1 > hero->_CoolDown_SK1)
+	{
+		hero->CoolDown_SK1 = hero->_CoolDown_SK1;
+	}
+
+	hero->CoolDown_SK2 += dt;
+	if (hero->CoolDown_SK2 > hero->_CoolDown_SK2)
+	{
+		hero->CoolDown_SK2 = hero->_CoolDown_SK2;
+	}
+
+	hero->CoolDown_SK3 += dt;
+	if (hero->CoolDown_SK3 > hero->_CoolDown_SK3)
+	{
+		hero->CoolDown_SK3 = hero->_CoolDown_SK3;
+	}
+
+	if (hero->_CoolDown_SK1 - hero->CoolDown_SK1 > 0)
+	{
+		skillIndicator[0]->setString("%1.0f", hero->_CoolDown_SK1 - hero->CoolDown_SK1);
+	}
+	else
+	{
+		skillIndicator[0]->setString("On!");
+	}
+
+	if (hero->_CoolDown_SK2 - hero->CoolDown_SK2 > 0)
+	{
+		skillIndicator[1]->setString("%1.0f", hero->_CoolDown_SK2 - hero->CoolDown_SK2);
+	}
+	else
+	{
+		skillIndicator[1]->setString("On!");
+	}
+
+	if (hero->_CoolDown_SK3 - hero->CoolDown_SK3 > 0)
+	{
+		skillIndicator[2]->setString("%1.0f", hero->_CoolDown_SK3 - hero->CoolDown_SK3);
+	}
+	else
+	{
+		skillIndicator[2]->setString("On!");
 	}
 
 

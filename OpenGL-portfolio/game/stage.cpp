@@ -43,6 +43,8 @@ iStrTex* expIndicator;
 iStrTex* moneyIndicator;
 iStrTex* nameIndicator;
 
+iStrTex* skillIndicator[3];
+
 Texture* playerPortrait;
 float gameTime = 0;
 float _gameTime = 100000000000;
@@ -217,6 +219,16 @@ void loadStage()
 
 	nameIndicator = new iStrTex(methodPlayerNameIndicator);
 	nameIndicator->setString("%d", hero->getLevel());
+
+	skillIndicator[0] = new iStrTex(methodPlayerCooldownIndicator);
+	skillIndicator[0]->setString("%1.0f", hero->_CoolDown_SK1 - hero->CoolDown_SK1);
+
+	skillIndicator[1] = new iStrTex(methodPlayerCooldownIndicator);
+	skillIndicator[1]->setString("%1.0f", hero->_CoolDown_SK2 - hero->CoolDown_SK2);
+
+	skillIndicator[2] = new iStrTex(methodPlayerCooldownIndicator);
+	skillIndicator[2]->setString("%1.0f", hero->_CoolDown_SK3 - hero->CoolDown_SK3);
+
 	
 	createPopPlayerUI();
 	createPopMenuUI();
