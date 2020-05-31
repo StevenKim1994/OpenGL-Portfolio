@@ -296,7 +296,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 			hero->jump();
 
 
-			if (hero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
+			if (hero->behave != ObjectBehave::ObjectBehave_meleeAttack2)
 			{
 				keyStat = getKeyStat();
 				keyDown = getKeyDown();
@@ -359,7 +359,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 		else // 키보드 입력일때
 		{
 
-			if (keyDown & keyboard_num1)
+			if (keyDown & keyboard_num1 && (hero->CoolDown_SK1 - hero->_CoolDown_SK1 == 0))
 			{
 				
 				be = ObjectBehave::ObjectBehave_meleeAttack1;
@@ -391,7 +391,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 					break;
 				}
 			}
-			else if (keyDown & keyboard_num2)
+			else if (keyDown & keyboard_num2 && (hero->CoolDown_SK2 - hero->_CoolDown_SK2 == 0))
 			{
 				be = ObjectBehave::ObjectBehave_meleeAttack2;
 				hero->Skill2();
@@ -554,13 +554,13 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 		skillIndicator[1]->setString("On!");
 	}
 
-	if (hero->_CoolDown_SK3 - hero->CoolDown_SK3 > 0)
+	if (hero->imgBuff->animation)
 	{
-		skillIndicator[2]->setString("%1.0f", hero->_CoolDown_SK3 - hero->CoolDown_SK3);
+		skillIndicator[2]->setString("Buff\nOn!");
 	}
 	else
 	{
-		skillIndicator[2]->setString("On!");
+		skillIndicator[2]->setString("Buff\nOff!");
 	}
 
 
@@ -582,7 +582,7 @@ void drawGoblin(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)
 		((Goblin*)goblins[i])->paint(dt, offMt, tile, NumX, NumY);
 	}
 
-	killIndicator->setString("%d", hero->kill);
+	//killIndicator->setString("%d", hero->kill);
 	
 }
 

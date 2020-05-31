@@ -180,7 +180,7 @@ void loadStage()
 	// camera positioning Initialize
 	{
 		offMt = hero->getPosition();
-		offMt = iPointMake(0, 5000);
+		offMt = iPointMake(0, -5000);
 	}
 
 

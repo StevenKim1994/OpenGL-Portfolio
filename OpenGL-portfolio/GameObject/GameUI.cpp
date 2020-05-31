@@ -152,7 +152,7 @@ Texture* methodPlayerCooldownIndicator(const char* str)
 {
 	iGraphics* g = iGraphics::instance();
 	iSize size = iSizeMake(70, 70);
-	setStringSize(20);
+	setStringSize(17);
 	g->init(size);
 	g->fillRect(0, 0, size.width, size.height);
 	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, "%s", str);
@@ -345,12 +345,7 @@ void createPopPlayerUI()
 			iImage* Btn = new iImage();
 			//Texture* bgTex;
 			iSize bgSize = iSizeMake(70, 70);
-			//g->init(bgSize);
-			//g->fillRect(0, 0, bgSize.width, bgSize.height);
-			//g->drawString(0, 0, TOP | LEFT, "%d", i + 1);
-			//bgTex = g->getTexture();
-			//Btn->addObject(bgTex);
-			//freeImage(bgTex);
+			
 			Btn->addObject(skillIndicator[i]->tex);
 			freeImage(skillIndicator[i]->tex);
 			Btn->position = iPointMake(devSize.width / 2 - SKbgSize.width / 2  + 15+ (i * 100), devSize.height - bgSize.height -15);

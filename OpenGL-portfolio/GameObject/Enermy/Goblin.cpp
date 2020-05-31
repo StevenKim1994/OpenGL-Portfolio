@@ -170,7 +170,7 @@ void Goblin::setDmg(float dmg)
 	else
 	{
 		HP = 0;
-		hero->setExp(hero->getExp() + 5.0f);
+		//hero->setExp(hero->getExp() + 5.0f);
 		be = ObjectBehave::ObjectBehave_death;
 	}
 	setBehave(be, dir);
