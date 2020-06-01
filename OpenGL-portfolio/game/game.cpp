@@ -15,16 +15,19 @@
 void loadGame()
 {
 	AudioInfo soundAssets[SOUND_NUM] = {
-							{ "assets/intro/sound/bgm.wav", true, 1.0f},
+							{ "assets/intro/sound/bgm.wav", true, 7.0f},
 							{ "assets/intro/sound/okay.wav", false, 1.0f},
 							{ "assets/intro/sound/SHOT.wav", false, 1.0f},
 							{"assets/menu/sound/menuBGM.wav", true, 1.0f},
 							{"assets/stage/hero/Knight/skill/skill1sound.wav", false, 1.0f},
 							{"assets/stage/goblin/sound/playerhit.wav", false, 1.0f},
+							{"assets/menu/sound/levelup.wav", false, 1.0f},
+							{"assets/menu/sound/getitem.wav",false, 1.0f},
+							{"assets/stage/hero/Knight/skill2/skill2.wav", false, 1.0f},
 	};
 
 
-	loadAudio(soundAssets, 6);
+	loadAudio(soundAssets, 9);
 
 
 	//loadTrailer();

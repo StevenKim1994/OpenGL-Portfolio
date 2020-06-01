@@ -335,12 +335,17 @@ void drawStage(float dt)
 
 	if (hero->exp >= 100)
 	{
+		
 		hero->setLevel(hero->getLevel() + 1);
 		hero->exp = 0.0f;
 		hero->setHP(hero->getMaxHp());
 		hero->setMP(hero->getMaxMP());
 		hero->setStamina(hero->getStamina());
 		nameIndicator->setString("%d", hero->getLevel());
+		hpIndicator->setString("%0.1f", hero->getHp());
+		mpIndicator->setString("%0.1f", hero->getMp());
+		staminaIndicator->setString("%0.1f", hero->getStamina());
+		audioPlay(6);
 	}
 	
 }

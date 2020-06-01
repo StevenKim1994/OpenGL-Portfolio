@@ -7,6 +7,9 @@ Texture* menuBg;
 Texture* menuBanner;
 Texture* tex;
 
+bool touching = false;
+iPoint prevPoint;
+
 void loadMenu()
 {
 
@@ -18,6 +21,7 @@ void loadMenu()
 	createPopSettings();
 	createPopQuitAnswer();
 	
+	showPopMenuBtn(true);
 	audioPlay(3);
 }
 
@@ -37,7 +41,6 @@ void drawMenu(float dt)
 	drawImage(tex, devSize.width / 2 , 150, VCENTER | HCENTER); // banner
 
 	drawPopMenuBtn(dt);
-	showPopMenuBtn(true);
 
 	drawPopSettings(dt);
 	drawPopQuitAnswer(dt);
@@ -401,58 +404,82 @@ bool keyPopSettings(iKeyState stat, iPoint point)
 	switch (stat)
 	{
 	case iKeyState::iKeyStateBegan:
-	
-	
+
+		//printf("%f, %f \n", point.x, point.y);
 		i = PopMenuSettings->selected;
-	
+		printf("setting = %d\n", i);
 
 		if (i == 0)
 		{
+			printf("seletec == %d", i);
 			PopMenuSettings->show(false);
 		}
-		else if ( i > 0 && i < 3)
+		else if (i > 0 && i < 3)
 		{
-		
+			touching = true;
+			prevPoint = point;
 
 		}
 		break;
-	
+
 
 	case iKeyState::iKeyStateMoved:
+
+		if (touching)
+		{
+			i = PopMenuSettings->selected;
+			if (i > 0 && i < 3)
+			{
+				iImage* img = PopMenuSettingsBtn[i];
+				img->position.x += (point - prevPoint).x;
+
+				if (img->position.x < 150)
+					img->position.x = 150;
+
+				else if (img->position.x > 630)
+					img->position.x = 630;
+
+				prevPoint = point;
+			}
+		}
+
+		else
 		{
 			for (i = 0; i < 3; i++)
 			{
 				if (containPoint(point, PopMenuSettingsBtn[i]->touchRect(PopMenuSettings->closePosition)))
 				{
-				
+					printf("%d\n", i);
 					j = i;
 					break;
 				}
 			}
 			PopMenuSettings->selected = j;
 		}
-			break;
-	
+		break;
 
-		
+
+
 	case iKeyState::iKeyStateEnded:
-
+		touching = false;
 		i = PopMenuSettings->selected;
 		if (i == 1) // bgm sound
 		{
 			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
+			printf("bgm %f\n", r);
 			bgmPop = r;
 			audioVolume(bgmPop, sfxPop, 2);
 		}
 		else if (i == 2) // effect sound
 		{
 			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
+			printf("sfx %f\n", r);
 			sfxPop = r;
 			audioVolume(bgmPop, sfxPop, 2);
 
 		}
 
-		
+
 		break;
 
 

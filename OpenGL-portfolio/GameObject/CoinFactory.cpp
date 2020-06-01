@@ -46,6 +46,7 @@ void checkCoin(iPoint p, iPoint off)
 		Coin* c = (Coin*)coins[i];
 		if (c->touchRect(p))
 		{
+			audioPlay(7);
 			c->stat = CoinStat_move;
 			c->delta = 0.0f;
 			c->sp = c->position + off;

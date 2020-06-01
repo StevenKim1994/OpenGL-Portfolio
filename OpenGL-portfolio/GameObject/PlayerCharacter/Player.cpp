@@ -301,7 +301,7 @@ extern int goblinNum;
 
 void Player::Skill2()
 {
-	if (MP < 10)
+	if (MP < 10 && (hero->CoolDown_SK2 - hero->_CoolDown_SK2 != 0))
 	{
 		printf("MP enough\n");
 		return;
@@ -314,7 +314,8 @@ void Player::Skill2()
 
 	printf("skill2! on!\n");
 
-	addProjectile(0, hero->getPosition(), hero->direction, 3, (Object**)goblins, goblinNum);
+	audioPlay(8);
+	addProjectile(0, hero->getPosition(), hero->direction, 10, (Object**)goblins, goblinNum);
 
 }
 
