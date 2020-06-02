@@ -337,7 +337,7 @@ void drawStage(float dt)
 	{
 		
 		hero->setLevel(hero->getLevel() + 1);
-		hero->exp = 0.0f;
+		hero->exp = hero->exp - 100.0f;
 		hero->setHP(hero->getMaxHp());
 		hero->setMP(hero->getMaxMP());
 		hero->setStamina(hero->getStamina());
