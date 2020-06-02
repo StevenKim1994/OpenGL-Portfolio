@@ -148,6 +148,8 @@ void loadEndStage()
 		mushrooms[i] = mush;
 	}
 
+	//#bug 임시로 Mushroom 생성 함수로 따로 안뺴논거임. 다 정리가 되면 drawObject로 옮길 예정
+
 	createPopPlayerUI();
 	createPopMenuUI();
 	createPopQuitAnswerUI();
@@ -231,20 +233,12 @@ void drawEndStage(float dt)
 	drawPopGameOverUI(dt);
 	drawPopStageNPCMenuUI(dt);
 
-
-
-	killIndicator->setString("%d", hero->kill);
-
-	//timeIndicator->setString("TIME : %0.2f", gameTime);
-
 	hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
-
 	mpIndicator->setString("MP : %.1f / %.1f", hero->getMp(), hero->getMaxMP());
-
 	staminaIndicator->setString("Stamina : %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
 
 	
-
+	// 장애물 fire(Prop) 충돌처리
 	for (int i = 0; i < 2; i++)
 	{
 		if (containPoint(hero->getPosition(), iRectMake(fires[i]->getPosition().x, fires[i]->getPosition().y+10, fires[i]->getSize().width, fires[i]->getSize().height)))
@@ -268,8 +262,6 @@ void drawEndStage(float dt)
 		if (hero->getStamina() > hero->getMaxStamina())
 			hero->setStamina(hero->getMaxStamina());
 	}
-
-	
 
 	if (hero->alive == false)
 	{
@@ -298,11 +290,6 @@ void drawEndStage(float dt)
 			hero->setStamina(hero->getMaxStamina());
 	}
 
-
-
-
-
-
 	{ // logoFadeInOut
 		if (logoDt < _logoDt)
 		{
@@ -318,8 +305,6 @@ void drawEndStage(float dt)
 		}
 	}
 
-	
-	
 }
 void keyEndStage(iKeyState stat, iPoint point)
 {
