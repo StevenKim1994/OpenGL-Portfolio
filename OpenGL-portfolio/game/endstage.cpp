@@ -140,11 +140,11 @@ void loadEndStage()
 		fires[i] = fire;
 	}
 
-	mushrooms = (Monster**)malloc(sizeof(Monster*) * 1);
-	for (int i = 0; i < 1; i++)
+	mushrooms = (Monster**)malloc(sizeof(Monster*) * 3);
+	for (int i = 0; i < 3; i++)
 	{
 		Mushroom* mush = new Mushroom(i + 1);
-		mush->setPosition(iPointMake(MapTileWidth* 27, MapTileHeight * 25));
+		mush->setPosition(iPointMake(MapTileWidth* 27+(i*(MapTileWidth * 7)), MapTileHeight * 25));
 		mushrooms[i] = mush;
 	}
 
@@ -171,7 +171,7 @@ void freeEndStage()
 
 	free(fires);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 3; i++)
 		delete mushrooms[i];
 
 	free(mushrooms);
@@ -204,7 +204,7 @@ void drawEndStage(float dt)
 		fires[i]->paint(dt, offMt);
 
 	//mushroom
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < 3; i++)
 		((Mushroom*)mushrooms[i])->paint(dt, offMt, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
 
 

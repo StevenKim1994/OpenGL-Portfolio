@@ -78,7 +78,7 @@ Mushroom::Mushroom(int number)
 	direction = 0;
 
 	behave = ObjectBehave::ObjectBehave_NULL;
-	setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+	setBehave(ObjectBehave::ObjectBehave_idle, direction);
 }
 
 Mushroom::~Mushroom()
