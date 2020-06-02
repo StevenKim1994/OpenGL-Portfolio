@@ -798,6 +798,7 @@ Texture** createDivideImage(int wNum, int hNum, const char* szFormat, ...)
 #endif
 
     free(buf);
+    free(RGBA);
 
     return texs;
 }

@@ -230,6 +230,17 @@ void loadStage()
 	skillIndicator[2]->setString("%1.0f", hero->_CoolDown_SK3 - hero->CoolDown_SK3);
 
 	
+
+#if 1
+	for (int i = 0; i < 1000000; i++)
+	{
+		createPopPlayerUI();
+		freePopPlayerUI();
+	}
+
+
+
+#endif
 	createPopPlayerUI();
 	createPopMenuUI();
 	createPopQuitAnswerUI();
