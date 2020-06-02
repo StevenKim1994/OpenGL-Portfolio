@@ -221,8 +221,9 @@ iImage* iImage::copy()
 	img->arrayTex = array;
 #else
 	iImage* img = new iImage();
+	iArray* array = img->arrayTex;
 	memcpy(img, this, sizeof(iImage));
-	img->arrayTex = new iArray(freeTex);
+	img->arrayTex = array;
 	for (int i = 0; i < arrayTex->count; i++)
 		img->addObject((Texture*)arrayTex->objectAtIndex(i));
 #endif
