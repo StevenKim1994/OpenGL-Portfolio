@@ -142,14 +142,19 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_USE_MATH_DEFINES;GDIPVER=0x0110;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\GameObject;E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\game;C:\Program Files %28x86%29\OpenAL 1.1 SDK\include;E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\lib;E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\GameObject\Prop;E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\GameObject\PlayerCharacter;E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\GameObject\Parents;E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\GameObject\NPC;E:\GitHub\OpenGL-Portfolio\OpenGL-portfolio\GameObject\Enermy;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <SupportJustMyCode>true</SupportJustMyCode>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Program Files %28x86%29\OpenAL 1.1 SDK\libs\Win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

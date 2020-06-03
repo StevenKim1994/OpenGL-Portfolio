@@ -34,7 +34,7 @@ Object::Object()
 
 Object::~Object()
 {
-	imgs = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
+	
 	
 }
 

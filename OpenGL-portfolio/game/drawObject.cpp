@@ -89,15 +89,14 @@ void drawMinimapTile(float dt, int* tiledata, MapTile* tileInfo, Texture** tiles
 				fillRect(x, y, 32, 32);
 			
 
-#if _DEBUG // tileHitbox
-			switch (t->attr)
-			{
-			case canMove: break;
-			case canNotMove: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			case deadZone:	setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			case nextStagePortal: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			}
-#endif
+
+				switch (t->attr)
+				{
+				case canMove: break;
+				case canNotMove: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				case deadZone:	setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				case nextStagePortal: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+				}
 
 		}
 
