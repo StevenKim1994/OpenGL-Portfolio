@@ -373,7 +373,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				switch (gameState)
 				{
 				case gs_stage:
-					for (int i = 0; i < goblin_Num; i++)
+					for (int i = 0; i < goblinNum; i++)
 					{
 				
 						if (containPoint(goblins[i]->getPosition(), hero->imgSkill->touchRect()))

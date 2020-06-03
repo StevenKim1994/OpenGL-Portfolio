@@ -124,7 +124,7 @@ void drawIntro(float dt)
 	{
 		audioStop(0); // Intro BGM stop
 		audioPlay(1); // 버튼음 재생
-		setLoading(gs_menu, freeMenu, loadMenu);
+		setLoading(gs_menu, freeIntro, loadMenu);
 	}
 
 	drawTitle(dt);
