@@ -20,6 +20,8 @@
 
 void loadStage();
 void freeStage();
+void freeStageToEndStage();
+void freeStageKeep();
 void drawStage(float dt);
 void keyStage(iKeyState stat, iPoint point);
 

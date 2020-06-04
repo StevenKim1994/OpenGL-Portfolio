@@ -1,21 +1,9 @@
 #pragma once
 #include "iStd.h"
 
-
-
-
-Texture* methodTimeIndicator(const char* str);
-Texture* methodKillIndicator(const char* str);
-Texture* methodPlayerHPIndicator(const char* str);
-Texture* methodPlayerMPIndicator(const char* str);
-Texture* methodPlayerStaminaIndicator(const char* str);
-Texture* methodPlayerExpIndicator(const char* str);
-Texture* methodPlayerMoneyIndicator(const char* str);
-Texture* methodPlayerNameIndicator(const char* str);
-Texture* methodPlayerCooldownIndicator(const char* str);
-// 여기에 플레이어의 체력, 게임 플레이상의 UI 출력해야함 
-
 //-------------PopPlayerUI----------------------//
+extern Texture* minimapFbo;
+
 void createPopPlayerUI();
 void freePopPlayerUI();
 void drawPopPlayerUI(float dt);

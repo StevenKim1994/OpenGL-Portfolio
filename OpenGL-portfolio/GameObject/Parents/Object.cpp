@@ -10,6 +10,9 @@
 
 Object::Object()
 {
+	imgs = NULL;
+	img = NULL;
+
 	HP = 0;
 	MP = 0;
 	Stamina = 0;
@@ -34,8 +37,6 @@ Object::Object()
 
 Object::~Object()
 {
-	
-	
 }
 
 void Object::setTex(Texture* tex)

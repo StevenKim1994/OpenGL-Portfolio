@@ -228,15 +228,9 @@ void drawEndStage(float dt)
 
 	drawPopPlayerUI(dt);
 	drawPopMenuUI(dt);
-	drawPopQuitAnswerUI(dt);
 
 	drawPopGameOverUI(dt);
 	drawPopStageNPCMenuUI(dt);
-
-	hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
-	mpIndicator->setString("MP : %.1f / %.1f", hero->getMp(), hero->getMaxMP());
-	staminaIndicator->setString("Stamina : %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
-
 	
 	// 장애물 fire(Prop) 충돌처리
 	for (int i = 0; i < 2; i++)
@@ -310,9 +304,6 @@ void keyEndStage(iKeyState stat, iPoint point)
 {
 	
 	if (keyPopGameOverUI(stat, point))
-		return;
-
-	if (keyPopQuitAnswerUI(stat, point))
 		return;
 
 	if (keyPopMenuUI(stat, point))

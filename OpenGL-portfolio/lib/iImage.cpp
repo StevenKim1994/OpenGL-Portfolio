@@ -74,7 +74,12 @@ void iImage::replaceAtIndex(int index, Texture* tex)
 	if (t->retainCount > 1)
 		t->retainCount--;
 	else
+	{
 		glDeleteTextures(1, &t->texID);
+#ifdef _DEBUG
+		texNum--;
+#endif
+	}
 	memcpy(t, tex, sizeof(Texture));
 	free(tex);
 #endif

@@ -16,11 +16,6 @@ public:
 	void setBehave(ObjectBehave be, int direction);
 	void paint(float dt, iPoint offset);
 
-	iImage** imgs;
-	iImage* img;
-
-	
-
 	//override func
 	bool moveForMouse(float dt, int NumX, int NumY);
 	

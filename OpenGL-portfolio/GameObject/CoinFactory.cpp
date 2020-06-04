@@ -7,15 +7,17 @@ int coinNum = 0;
 
 void loadCoin()
 {
-	_coins = (Object**)malloc(sizeof(Object) * _coinNum);
+	_coins = (Object**)malloc(sizeof(Object*) * _coinNum);
 	for (int i = 0; i < _coinNum; i++)
 		_coins[i] = new Coin();
-	coins = (Object**)malloc(sizeof(Object) * _coinNum);
+	coins = (Object**)malloc(sizeof(Object*) * _coinNum);
 	coinNum = 0;
 }
 
 void freeCoin()
 {
+	for (int i = 0; i < _coinNum; i++)
+		delete _coins[i];
 	free(_coins);
 	free(coins);
 }

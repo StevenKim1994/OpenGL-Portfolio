@@ -10,54 +10,15 @@
 #include "../game/vilege.h"
 #include "Goblin.h"
 
-extern iStrTex* killIndicator;
-extern iStrTex* timeIndicator;
-extern Texture* playerPortrait;
-extern iStrTex* hpIndicator;
-extern iStrTex* mpIndicator;
-extern iStrTex* staminaIndicator;
-extern iStrTex* expIndicator;
-extern iStrTex* moneyIndicator;
-extern iStrTex* nameIndicator;
+iStrTex* hpIndicator;
+iStrTex* mpIndicator;
+iStrTex* staminaIndicator;
+iStrTex* expIndicator;
+iStrTex* nameIndicator;
 
-extern iStrTex* skillIndicator[3];
+iStrTex** skillIndicator;
 
 iPopup* PopPlayerInventory;
-Texture* methodTimeIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(500, 50);
-
-	setRGBA(1, 1, 1, 0);
-	g->init(size);
-	g->fillRect(0, 0, size.width, size.height);
-
-	setRGBA(1, 1, 1, 1);
-	setStringSize(50);
-	setStringRGBA(1, 1, 0, 1);
-	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER | VCENTER, str);
-
-
-	return g->getTexture();
-}
-
-Texture* methodKillIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(100, 50);
-
-	setRGBA(1, 1, 1, 0);
-	g->init(size);
-	g->fillRect(0, 0, size.width, size.height);
-
-	setRGBA(1, 1, 1, 1);
-	setStringSize(50);
-	setStringRGBA(1, 1, 0, 1);
-	g->drawString(size.width / 2 - 50, size.height / 2, HCENTER | VCENTER, str);
-
-	return g->getTexture();
-}
-
 Texture* methodPlayerHPIndicator(const char* str)
 {
 	iGraphics* g = iGraphics::instance();
@@ -119,24 +80,6 @@ Texture* methodPlayerExpIndicator(const char* str)
 	return g->getTexture();
 }
 
-Texture* methodPlayerMoneyIndicator(const char* str)
-{
-	iGraphics* g = iGraphics::instance();
-	iSize size = iSizeMake(100, 100);
-
-
-	setRGBA(0, 0, 1, 1);
-	setStringSize(20);
-	g->init(size);
-	g->fillRect(0, 0, size.width, size.height);
-	g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Money");
-	g->drawString(size.width / 2, 40, HCENTER | VCENTER, "%s", str);
-
-	
-	return g->getTexture();
-
-}
-
 Texture* methodPlayerNameIndicator(const char* str)
 {
 	iGraphics* g = iGraphics::instance();
@@ -150,12 +93,28 @@ Texture* methodPlayerNameIndicator(const char* str)
 
 Texture* methodPlayerCooldownIndicator(const char* str)
 {
+	int lineNum;
+	char** line = iString::getStringLine(str, lineNum);
+
 	iGraphics* g = iGraphics::instance();
 	iSize size = iSizeMake(70, 70);
 	setStringSize(17);
 	g->init(size);
 	g->fillRect(0, 0, size.width, size.height);
-	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, "%s", str);
+	if (atoi(line[0]) < 2)
+	{
+		float cooldown = atof(line[1]);
+		g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER,
+			"%s", cooldown ? str : "On!");
+	}
+	else
+	{
+		bool on = atoi(line[1]);
+		g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER,
+			"%s", on ? "Buff\nOn!" : "Buff\nOff!");
+	}
+
+	iString::freeStringLine(line, lineNum);
 
 	return g->getTexture();
 }
@@ -170,191 +129,177 @@ iPopup* PopMenuUI;
 //const char* slotString[5] = { "Name", "HP", "MP", "Stamina", "Menu" };
 
 const char* mapTitle[1] = { "Waterfront" };
+
+Texture* methodTimeIndicator(const char* str);
+Texture* methodKillIndicator(const char* str);
+Texture* methodPlayerHPIndicator(const char* str);
+Texture* methodPlayerMPIndicator(const char* str);
+Texture* methodPlayerStaminaIndicator(const char* str);
+Texture* methodPlayerExpIndicator(const char* str);
+Texture* methodPlayerNameIndicator(const char* str);
+Texture* methodPlayerCooldownIndicator(const char* str);
+
+Texture* minimapFbo;
+
 void createPopPlayerUI()
 {
 	iPopup* pop = new iPopup(iPopupStyleNone);
+
 	iGraphics* g = iGraphics::instance();
-	iImage* img = new iImage();
-	iSize size = iSizeMake(devSize.width, devSize.height); // 크기를 화면크기랑 동일하게 사용자의 화면을 그래도 덮는 UI Layer
-
-	PopPlayerUIImgs = (iImage**)malloc(sizeof(iImage*) * 6);
-
 
 	// Stage Title
-	{
-		g->init(size);
-		setStringRGBA(0, 0, 0, 1);
-		setRGBA(1, 1, 1, 0);// alpha값은 0 투명한 사이즈의 화면크기의 상자를 만드는거니까
-		g->fillRect(0, 0, devSize.width, devSize.height);
-		g->drawString(devSize.width / 2, 10, HCENTER | VCENTER, "- Stage -");
-		g->drawString(devSize.width / 2, 35, HCENTER | VCENTER, mapTitle[0]);
-		//g->drawString(devSize.width / 2, 65, HCENTER | VCENTER, "KILL:");
+	iSize size = iSizeMake(devSize.width, devSize.height); // 크기를 화면크기랑 동일하게 사용자의 화면을 그래도 덮는 UI Layer
+	g->init(size);
+	setStringRGBA(0, 0, 0, 1);
+	setRGBA(1, 1, 1, 0);// alpha값은 0 투명한 사이즈의 화면크기의 상자를 만드는거니까
+	g->fillRect(0, 0, devSize.width, devSize.height);
+	g->drawString(devSize.width / 2, 10, HCENTER | VCENTER, "- Stage -");
+	g->drawString(devSize.width / 2, 35, HCENTER | VCENTER, mapTitle[0]);
+	//g->drawString(devSize.width / 2, 65, HCENTER | VCENTER, "KILL:");
 
-		Poptex = g->getTexture();
-		img->addObject(Poptex);
-		freeImage(Poptex);
-		pop->addObject(img);
-	}
+	Texture* tex = g->getTexture();
+	iImage* img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	pop->addObject(img);
 
-	// kill indicator
-	{
-		//setRGBA(1, 1, 1, 1);
-		//iImage* kill_indicator = new iImage();
-		//kill_indicator->addObject(killIndicator->tex);
-		//kill_indicator->position = iPointMake(devSize.width / 2, 90);
-		//pop->addObject(kill_indicator);
-	}
-
-	{ // 미니맵
-		setRGBA(1, 1, 1, 1);
-		setStringSize(10);
-		iSize mapsize = iSizeMake(200, 200);;
-		extern Texture* minimapFbo;
-		Texture* minimapTex = minimapFbo; // g->getTexture();
-
-		iImage* minimap = new iImage();
-		minimap->leftRight = 2;
-		minimap->addObject(minimapTex);
-		minimap->position = iPointMake(devSize.width/2 +320, -60);
-		pop->addObject(minimap);
-
-	}
+	// 미니맵
+	tex = createTexture(devSize.width, devSize.height);
+	tex->width *= 0.5;
+	tex->potWidth *= 0.5;
+	tex->height *= 0.5;
+	tex->potHeight *= 0.5;
+	img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	img->leftRight = 2;
+	img->position = iPointMake(devSize.width/2 +320, -60);
+	pop->addObject(img);
+	minimapFbo = tex;
 
 	// Stage Menu
-	{
-		setStringSize(30);
-		iImage* menuBtn = new iImage();
-		Texture* menuBtnTex;
-		iSize menuSize = iSizeMake(200, 100);
-		g->init(menuSize);
-		setRGBA(0, 0, 1, 1);
-		g->fillRect(0, 0, menuSize.width, menuSize.height);
-		g->drawString(menuSize.width / 2, menuSize.height / 2, HCENTER | VCENTER, "Menu");
+	PopPlayerUIImgs = (iImage**)malloc(sizeof(iImage*) * 7);
 
-		menuBtnTex = g->getTexture();
-		menuBtn->addObject(menuBtnTex);
-		freeImage(menuBtnTex);
+	// PopPlayerUIImgs[0]
+	size = iSizeMake(200, 100);
+	g->init(size);
+	setRGBA(0, 0, 1, 1);
+	g->fillRect(0, 0, size.width, size.height);
+	setStringSize(30);
+	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, "Menu");
 
-		menuBtn->position = iPointMake(devSize.width - menuSize.width, 10);
-		PopPlayerUIImgs[0] = menuBtn;
-		pop->addObject(menuBtn);
+	tex = g->getTexture();
+	img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
 
-	}
+	img->position = iPointMake(devSize.width - size.width, 10);
+	pop->addObject(img);
+	PopPlayerUIImgs[0] = img;
 
-	{
-		iImage* playerImage = new iImage();
-		iImage* playerName = new iImage();
-		iImage* playerHP = new iImage();
-		iImage* playerMP = new iImage();
-		iImage* playerStamina = new iImage();
-		iImage* playerExp = new iImage();
-		
-		Texture* infoTex;
-		iSize infoSize = iSizeMake(200, 100);
-		setRGBA(0, 1, 0, 1);
+	// PopPlayerUIImgs[1] - Player Portrait
+	tex = createImage("assets/stage/hero/Knight/KnightPortrait.png");
+	img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	img->position = iPointMake(0, 10);
+	pop->addObject(img);
+	PopPlayerUIImgs[1] = img;
 
-		// Player Portrait
+	// Player Name Indicator
+	iStrTex* st = new iStrTex(methodPlayerNameIndicator);
+	st->setString("%d", hero->getLevel());
+	img = new iImage();
+	img->addObject(st->tex);
+	//freeImage(st->tex);
+	img->position = iPointMake(70, 15);
+	pop->addObject(img);
+	nameIndicator = st;/////////////////////////
 
-		setRGBA(1, 1, 1, 1);
-		playerImage->addObject(playerPortrait);
-		playerImage->position = iPointMake(0, 10);
-		PopPlayerUIImgs[1] = playerImage;
-		pop->addObject(playerImage);
+	st = new iStrTex(methodPlayerHPIndicator);
+	st->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
+	img = new iImage();
+	img->addObject(st->tex);
+	//freeImage(st->tex);
+	img->position = iPointMake(0, 110);
+	pop->addObject(img);
+	PopPlayerUIImgs[2] = img;/////////////////////////
+	hpIndicator = st;/////////////////////////
 
-		// Player Name Indicator
+	st = new iStrTex(methodPlayerMPIndicator);
+	st->setString("MP : %.1f / %.1f", hero->getMp(), hero->getMaxMP());
+	img = new iImage();
+	img->addObject(st->tex);
+	//freeImage(st->tex);
+	img->position = iPointMake(0, 160);
+	pop->addObject(img);
+	PopPlayerUIImgs[3] = img;
+	mpIndicator = st;
 
-		setStringSize(25);
+	st = new iStrTex(methodPlayerStaminaIndicator);
+	st->setString("Stamina : %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
+	img = new iImage();
+	img->addObject(st->tex);
+	//freeImage(st->tex);
+	img->position = iPointMake(0, 210);
+	pop->addObject(img);
+	PopPlayerUIImgs[4] = img;
+	staminaIndicator = st;
 
-		infoTex = nameIndicator->tex;
-		playerName->addObject(infoTex);
-		freeImage(infoTex);
-		playerName->position = iPointMake(70, 15);
-		pop->addObject(playerName);
-
-
-		setRGBA(1, 1, 1, 1);
-		playerHP->addObject(hpIndicator->tex);
-		freeImage(hpIndicator->tex);
-		playerHP->position = iPointMake(0, 110);
-		PopPlayerUIImgs[2] = playerHP;
-		pop->addObject(playerHP);
-
-		playerMP->addObject(mpIndicator->tex);
-		freeImage(mpIndicator->tex);
-		playerMP->position = iPointMake(0, 160);
-		PopPlayerUIImgs[3] = playerMP;
-		pop->addObject(playerMP);
-
-		playerStamina->addObject(staminaIndicator->tex);
-		freeImage(staminaIndicator->tex);
-		playerStamina->position = iPointMake(0, 210);
-		PopPlayerUIImgs[4] = playerStamina;
-		pop->addObject(playerStamina);
-
-		playerExp->addObject(expIndicator->tex);
-		freeImage(expIndicator->tex);
-		playerExp->position = iPointMake(0, 260);
-		PopPlayerUIImgs[5] = playerExp;
-		pop->addObject(playerExp);
-
-	}
+	st = new iStrTex(methodPlayerExpIndicator);
+	st->setString("Exp : %.1f, / 100", hero->getExp());
+	img = new iImage();
+	img->addObject(st->tex);
+	//freeImage(st->tex);
+	img->position = iPointMake(0, 260);
+	pop->addObject(img);
+	PopPlayerUIImgs[5] = img;
+	expIndicator = st;
 
 	//Inventory Btn
+	size = iSizeMake(200, 100);
+	g->init(size);
+	setRGBA(0, 1, 0, 1);
+	g->fillRect(0, 0, size.width, size.width);
+	setStringSize(30);
+	g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, "Inventory");
+
+	tex = g->getTexture();
+	img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	img->position = iPointMake(devSize.width - size.width, devSize.height - size.height);
+	pop->addObject(img);
+	PopPlayerUIImgs[6] = img;
+
+	//SkillBar -BarBackground
+	size = iSizeMake(500, 100);
+	g->init(size);
+	setRGBA(0, 0, 1, 1);
+	g->fillRect(0, 0, size.width, size.height);
+
+	tex = g->getTexture();
+	img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	img->position = iPointMake(devSize.width/2- size.width/2, devSize.height - size.height);
+	pop->addObject(img);
+
+	//SkillBar -BarBtn
+	skillIndicator = (iStrTex**)malloc(sizeof(iStrTex*) * 3);
+	setRGBA(1, 1, 1, 1);
+	for (int i = 0; i < 3; i++)
 	{
-		setStringSize(30);
-		iImage* Btn = new iImage();
-		Texture* BtnTex;
-		iSize BtnSize = iSizeMake(200, 100);
-		g->init(BtnSize);
-		setRGBA(0, 1, 0, 1);
-		g->fillRect(0, 0, BtnSize.width, BtnSize.width);
-		g->drawString(BtnSize.width / 2, BtnSize.height / 2, HCENTER | VCENTER, "Inventory");
-
-		BtnTex = g->getTexture();
-		Btn->addObject(BtnTex);
-		freeImage(BtnTex);
-
-		Btn->position = iPointMake(devSize.width - BtnSize.width, devSize.height - BtnSize.height);
-		PopPlayerUIImgs[5] = Btn;
-		pop->addObject(Btn);
-		
+		st = new iStrTex(methodPlayerCooldownIndicator);
+		st->setString("%d\n%d", i, i);
+		img = new iImage();
+		img->addObject(st->tex);
+		//freeImage(st->tex);
+		size = iSizeMake(st->tex->width, st->tex->height);
+		img->position = iPointMake(devSize.width / 2 - size.width / 2 + 15 + (i * 100), devSize.height - size.height - 15);
+		pop->addObject(img);
+		skillIndicator[i] = st;
 	}
-
-	//SkillBar
-	{
-		//BarBackground
-		setRGBA(0, 0, 1, 1);
-		iImage* SKBg = new iImage();
-		Texture* SKbgTex;
-		iSize SKbgSize = iSizeMake(500, 100);
-		g->init(SKbgSize);
-		g->fillRect(0, 0, SKbgSize.width, SKbgSize.height);
-
-		SKbgTex = g->getTexture();
-		SKBg->addObject(SKbgTex);
-		freeImage(SKbgTex);
-
-		SKBg->position = iPointMake(devSize.width/2- SKbgSize.width/2, devSize.height - SKbgSize.height);
-		pop->addObject(SKBg);
-
-		//BarBtn
-		for (int i = 0; i < 3; i++)
-		{
-			setStringSize(10);
-			setRGBA(1, 1, 1, 1);
-			iImage* Btn = new iImage();
-			//Texture* bgTex;
-			iSize bgSize = iSizeMake(70, 70);
-			
-			Btn->addObject(skillIndicator[i]->tex);
-			freeImage(skillIndicator[i]->tex);
-			Btn->position = iPointMake(devSize.width / 2 - SKbgSize.width / 2  + 15+ (i * 100), devSize.height - bgSize.height -15);
-			pop->addObject(Btn);
-
-		}
-
-	}
-
 	
 	pop->openPosition = iPointZero;
 	pop->closePosition = iPointZero;
@@ -367,13 +312,35 @@ void createPopPlayerUI()
 void freePopPlayerUI()
 {
 	delete PopPlayerUI;
+
+	free(PopPlayerUIImgs);
+	delete nameIndicator;
+	delete hpIndicator;
+	delete mpIndicator;
+	delete staminaIndicator;
+	delete expIndicator;
+	for (int i = 0; i < 3; i++)
+		delete skillIndicator[i];
+	free(skillIndicator);
 }
 
 void drawPopPlayerUI(float dt)
 {
+	nameIndicator->setString("%d", hero->getLevel());
+	hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
+	mpIndicator->setString("MP : %.1f / %.1f", hero->getMp(), hero->getMaxMP());
+	staminaIndicator->setString("Stamina : %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
+
+	skillIndicator[0]->setString("%d\n%1.0f", 0, hero->_CoolDown_SK1 - hero->CoolDown_SK1);
+	skillIndicator[1]->setString("%d\n%1.0f", 1, hero->_CoolDown_SK2 - hero->CoolDown_SK2);
+	skillIndicator[2]->setString("%d\n%d", 2, hero->imgBuff->animation);
+
+	expIndicator->setString("%f", (hero->getExp()));
+
 	PopPlayerUI->paint(dt);
 }
 
+iPopup* PopQuitAnswerUI;
 bool keyPopPlayerUI(iKeyState stat, iPoint point)
 {
 
@@ -555,10 +522,11 @@ bool keyPopMenuUI(iKeyState stat, iPoint point)
 
 		else if (i == 2)
 		{
-			showPopQuitAnswerUI(true);
+			PopQuitAnswerUI->show(true);
+			//showPopQuitAnswerUI(true);
+		printf("seletecd = %d\n", i);
 		}
 
-		printf("seletecd = %d\n", i);
 		break;
 	}
 
@@ -595,7 +563,7 @@ void showPopMenuUI(bool show)
 
 //----------------------PopQuitAnswerUI------------------------//
 
-iPopup* PopQuitAnswerUI;
+//iPopup* PopQuitAnswerUI;
 iImage** PopQuitAnswerUIBtn;
 // 0 : yes,  1 : no
 const char* btnUISlot[2] = { "Okay", "No" };
@@ -619,6 +587,7 @@ void createPopQuitAnswerUI()
 		size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
 		g->init(size);
 		g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
+		g->freeIgImage(ig);
 		g->drawString(size.width / 2, size.height / 2 - 175, VCENTER | HCENTER, "Do you want exit?");
 		Texture* bgTex;
 
@@ -649,6 +618,7 @@ void createPopQuitAnswerUI()
 				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
 				g->init(btnSize);
 				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->freeIgImage(answerBtn);
 				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnUISlot[i]);
 				btnTex = g->getTexture();
 			}
@@ -661,6 +631,7 @@ void createPopQuitAnswerUI()
 				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
 				g->init(btnSize);
 				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->freeIgImage(answerBtn);
 				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnUISlot[i]);
 				btnTex = g->getTexture();
 			}
@@ -685,6 +656,7 @@ void createPopQuitAnswerUI()
 void freePopQuitAnswerUI()
 {
 	delete PopQuitAnswerUI;
+	free(PopQuitAnswerUIBtn);
 }
 
 void drawPopQuitAnswerUI(float dt)
@@ -766,9 +738,6 @@ void createPopGameOverUI()
 	setRGBA(1, 0, 0, 1);
 	fillRect(0, 0, devSize.width, devSize.height);
 
-
-	GameOverBtn = (iImage**)malloc(sizeof(iImage*) * 2); // 0 : 메인메뉴 1 : 게임종료
-
 	// gameOverTitle
 	{
 		setStringSize(30);
@@ -789,6 +758,7 @@ void createPopGameOverUI()
 		pop->addObject(overTitle);
 	}
 
+	GameOverBtn = (iImage**)malloc(sizeof(iImage*) * 2); // 0 : 메인메뉴 1 : 게임종료
 	for (int i = 0; i < 2; i++)
 	{
 		iImage* answerBtn = new iImage();
@@ -804,6 +774,7 @@ void createPopGameOverUI()
 				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
 				g->init(btnSize);
 				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->freeIgImage(answerBtn);
 				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnStr[i]);
 				btnTex = g->getTexture();
 			}
@@ -816,6 +787,7 @@ void createPopGameOverUI()
 				iSize btnSize = iSizeMake(g->getIgImageWidth(answerBtn), g->getIgImageHeight(answerBtn));
 				g->init(btnSize);
 				g->drawImage(answerBtn, 0, 0, 1, 1, TOP | LEFT);
+				g->freeIgImage(answerBtn);
 				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnStr[i]);
 				btnTex = g->getTexture();
 			}
@@ -839,6 +811,7 @@ void createPopGameOverUI()
 void freePopGameOverUI()
 {
 	delete PopGameOver;
+	free(GameOverBtn);
 }
 
 void drawPopGameOverUI(float dt)
@@ -1079,117 +1052,125 @@ void showPopStageNPCMenuUI(bool show)
 //----------------PopPlayerInventory------------------//
 //iPopup* PopPlayerInventory; 맨위에 선언함
 iImage** PopPlayerInventoryImgs;
+
+iStrTex* moneyIndicator;
+Texture* methodPlayerMoneyIndicator(const char* str)
+{
+	iGraphics* g = iGraphics::instance();
+	iSize size = iSizeMake(100, 100);
+
+
+	setRGBA(0, 0, 1, 1);
+	setStringSize(20);
+	g->init(size);
+	g->fillRect(0, 0, size.width, size.height);
+	g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Money");
+	g->drawString(size.width / 2, 40, HCENTER | VCENTER, "%s", str);
+
+
+	return g->getTexture();
+}
+
 void createPopPlayerInventory()
 {
 	iPopup* pop = new iPopup(iPopupStyleAlpha);
 	iGraphics* g = iGraphics::instance();
 
 	iSize bgSize = iSizeMake(700, 300);
-	PopPlayerInventoryImgs = (iImage**)malloc(sizeof(iImage*) * 20); // 임시로 20개 만듬
 
 	//Inventory background
-	{
-		iImage* img = new iImage();
-		Texture* tex; 
-		setRGBA(1, 1, 1, 1);
-		setStringSize(20);
-		g->init(bgSize);
-		g->fillRect(0, 0, bgSize.width, bgSize.height);
-		g->drawString(bgSize.width / 2, 20, HCENTER | VCENTER, "%s Inventory", hero->getName());
-		tex = g->getTexture();
-		img->addObject(tex);
-		freeImage(tex);
-		img->position = iPointZero;
-		pop->addObject(img);	
-	}
+	setRGBA(1, 1, 1, 1);
+	setStringSize(20);
+	g->init(bgSize);
+	g->fillRect(0, 0, bgSize.width, bgSize.height);
+	g->drawString(bgSize.width / 2, 20, HCENTER | VCENTER, "%s Inventory", hero->getName());
+	Texture* tex = g->getTexture();
+	iImage* img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	img->position = iPointZero;
+	pop->addObject(img);	
 
-	// Equitment
-	{
-		iSize size = iSizeMake(250, 250);
-		iImage* img = new iImage();
-		Texture* tex;
-		setRGBA(1, 0, 0, 1);
-		g->init(size);
-		g->fillRect(0, 0, size.width, size.height);
-		g->drawString(size.width / 2, 10, HCENTER|VCENTER, "Enquitment");
-		tex = g->getTexture();
-		img->addObject(tex);
-		freeImage(tex);
-		img->position = iPointMake(10, 35);
-		pop->addObject(img);
+	PopPlayerInventoryImgs = (iImage**)malloc(sizeof(iImage*) * 20); // 임시로 20개 만듬
 
-		for (int i = 0; i < 2; i++)
+	// Equitment - PopPlayerInventoryImgs[0 ~ 3]
+	iSize size = iSizeMake(250, 250);
+	g->init(size);
+
+	setRGBA(1, 0, 0, 1);
+	g->fillRect(0, 0, size.width, size.height);
+	g->drawString(size.width / 2, 10, HCENTER|VCENTER, "Enquitment");
+
+	tex = g->getTexture();
+	img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	img->position = iPointMake(10, 35);
+	pop->addObject(img);
+
+	iSize rectSize = iSizeMake(64, 64);
+	for (int i = 0; i < 2; i++)
+	{
+		for (int j = 0; j < 2; j++)
 		{
-			for (int j = 0; j < 2; j++)
-			{
-				iSize rectSize = iSizeMake(64, 64);
-				iImage* rectImg = new iImage();
-				Texture* rectTex;
-				setRGBA(1, 1, 0, 1);
-				g->init(rectSize);
-				g->fillRect(0, 0, rectSize.width, rectSize.height * (i + 1));
+			g->init(rectSize);
 
-				rectTex = g->getTexture();
-				rectImg->addObject(rectTex);
-				freeImage(rectTex);
-				rectImg->position = iPointMake(size.width / 2 - rectSize.width + (100 * j), size.height / 2 - rectSize.height/2 + (100 * i));
-				pop->addObject(rectImg);
-			}
+			setRGBA(1, 1, 0, 1);
+			g->fillRect(0, 0, rectSize.width, rectSize.height * (i + 1));
+
+			tex = g->getTexture();
+			img = new iImage();
+			img->addObject(tex);
+			freeImage(tex);
+			img->position = iPointMake(size.width / 2 - rectSize.width + (100 * j), size.height / 2 - rectSize.height/2 + (100 * i));
+			pop->addObject(img);
+			PopPlayerInventoryImgs[2 * i + j] = img;////////////////////
 		}
-
-
 	}
-	//bags
+	// bags - PopPlayerInventoryImgs[4 ~ 7]
+	size = iSizeMake(250, 250);
+	g->init(size);
+
+	setRGBA(0, 1, 0, 1);
+	g->fillRect(0, 0, size.width, size.height);
+	g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Bags");
+
+	tex = g->getTexture();
+	img = new iImage();
+	img->addObject(tex);
+	freeImage(tex);
+	img->position = iPointMake(bgSize.width - size.width - 10, 35);
+	pop->addObject(img);
+
+	rectSize = iSizeMake(64, 64);
+	for (int i = 0; i < 2; i++)
 	{
-		iSize size = iSizeMake(250, 250);
-		iImage* img2 = new iImage();
-		Texture* tex2;
-		setRGBA(0, 1, 0, 1);
-		g->init(size);
-		g->fillRect(0, 0, size.width, size.height);
-		g->drawString(size.width / 2, 10, HCENTER | VCENTER, "Bags");
-		tex2 = g->getTexture();
-		img2->addObject(tex2);
-		freeImage(tex2);
-		img2->position = iPointMake(bgSize.width - size.width - 10, 35);
-		pop->addObject(img2);
-
-		for (int i = 0; i < 2; i++)
+		for (int j = 0; j < 2; j++)
 		{
-			for (int j = 0; j < 2; j++)
-			{
-				iSize rectSize = iSizeMake(64, 64);
-				iImage* rectImg2 = new iImage();
-				Texture* rectTex2;
-				setRGBA(1, 1, 1, 1);
-				g->init(rectSize);
-				g->fillRect(0, 0, rectSize.width, rectSize.height * (i + 1));
+			g->init(rectSize);
 
-				rectTex2 = g->getTexture();
-				rectImg2->addObject(rectTex2);
-				freeImage(rectTex2);
-				rectImg2->position = iPointMake(size.width / 2 - rectSize.width + (100 * j)+ 420, size.height / 2 - rectSize.height / 2 + (100 * i));
-				pop->addObject(rectImg2);
-			}
+			setRGBA(1, 1, 1, 1);
+			g->fillRect(0, 0, rectSize.width, rectSize.height * (i + 1));
+
+			tex = g->getTexture();
+			img = new iImage();
+			img->addObject(tex);
+			freeImage(tex);
+			img->position = iPointMake(size.width / 2 - rectSize.width + (100 * j)+ 420, size.height / 2 - rectSize.height / 2 + (100 * i));
+			pop->addObject(img);
+			PopPlayerInventoryImgs[4 + 2 * i + j] = img;////////////////////
 		}
 	}
 
 	// Money
-	{
-		iSize size = iSizeMake(100, 100);
-		iImage* img = new iImage();
-		setRGBA(0, 0, 1, 1);
-		img->addObject(moneyIndicator->tex);
-		freeImage(moneyIndicator->tex);
-		img->position = iPointMake(bgSize.width / 2 - size.width / 2, 35);
-		pop->addObject(img);
-	}
-
-
-
-
-	
-
+	iStrTex* st = new iStrTex(methodPlayerMoneyIndicator);
+	st->setString("%d", hero->money);
+	img = new iImage();
+	img->addObject(st->tex);
+	//freeImage(st->tex);
+	img->position = iPointMake(bgSize.width / 2 - st->tex->width / 2, 35);
+	pop->addObject(img);
+	moneyIndicator = st;
 	
 	pop->openPosition = iPointMake(devSize.width / 2 - bgSize.width / 2, devSize.height / 2 - bgSize.height / 2);
 	pop->closePosition = pop->openPosition;
@@ -1199,10 +1180,14 @@ void createPopPlayerInventory()
 void freePopPlayerInventory()
 {
 	delete PopPlayerInventory;
+	free(PopPlayerInventoryImgs);
+	delete moneyIndicator;
 }
 
 void drawPopPlayerInventory(float dt)
 {
+	moneyIndicator->setString("%d", hero->money);
+
 	PopPlayerInventory->paint(dt);
 }
 

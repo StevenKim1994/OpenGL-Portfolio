@@ -11,12 +11,8 @@ Coin::Coin()
 	{
 		ObjInfo _oi[1] =
 		{
-			{"assets/stage/props/coin/tile%03d.png", 4, 2.0f,iPointZero } ,
+			{"assets/stage/props/coin/tile%03d.png", 4, 2.0f,iPointZero, 0.1, 0, } ,
 		};
-
-		iGraphics* g = iGraphics::instance();
-		iSize size;
-
 		imgCoin = (iImage**)malloc(sizeof(iImage*) * 1);
 
 		for (int i = 0; i < 1; i++)
@@ -34,17 +30,8 @@ Coin::Coin()
 				freeImage(tex);
 			}
 
-			switch (i)
-			{
-			case 0:
-				img->_repeatNum = 0;
-				break;
-
-			default:
-				img->_repeatNum = 1;
-				break;
-			}
-			img->_aniDt = 0.1f;
+			img->_repeatNum = oi->repeatNum;
+			img->_aniDt = oi->aniDt;
 			img -> position = oi->p;
 			imgCoin[i] = img;
 		}
@@ -68,12 +55,10 @@ Coin::~Coin()
 			delete imgCoin[i];
 		free(imgCoin);
 		imgCoin = NULL;
-
 	}
 
-	for (int i = 0; i < i; i++)
+	for (int i = 0; i < 1; i++)
 		delete imgs[i];
-	
 	free(imgs);
 }
 

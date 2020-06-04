@@ -4,7 +4,6 @@
 
 static iImage** imgFlyeye = NULL;
 
-
 Flyeye::Flyeye()
 {
 	type = 2;
@@ -34,6 +33,7 @@ Flyeye::Flyeye()
 
 				g->init(size);
 				g->drawImage(ig, 0, 0, oi->sizeRate, oi->sizeRate, TOP | LEFT);
+				g->freeIgImage(ig);
 
 				Texture* tex = g->getTexture();
 				img->addObject(tex);
@@ -60,16 +60,16 @@ Flyeye::Flyeye()
 		}
 	}
 
-		imgs = (iImage**)malloc(sizeof(iImage*) * 1);
-		for (int i = 0; i < 1; i++)
-			imgs[i] = imgFlyeye[i]->copy();
+	imgs = (iImage**)malloc(sizeof(iImage*) * 1);
+	for (int i = 0; i < 1; i++)
+		imgs[i] = imgFlyeye[i]->copy();
 
-		img = imgs[0];
+	img = imgs[0];
 
-		behave = ObjectBehave::ObjectBehave_NULL;
-		setBehave(ObjectBehave::ObjectBehave_idle, 0);
-		movement = 100;
-		direction = 0;
+	behave = ObjectBehave::ObjectBehave_NULL;
+	setBehave(ObjectBehave::ObjectBehave_idle, 0);
+	movement = 100;
+	direction = 0;
 	
 }
 Flyeye::~Flyeye()

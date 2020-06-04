@@ -80,7 +80,12 @@ void iStrTex::setString(const char* szFormat, ...)
 	tex = t;
 #else
 	if (tex)
+	{
 		glDeleteTextures(1, &tex->texID);
+#ifdef _DEBUG
+		texNum--;
+#endif
+	}
 	else
 	{
 		tex = (Texture*)malloc(sizeof(Texture));

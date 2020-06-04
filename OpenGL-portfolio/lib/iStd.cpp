@@ -461,7 +461,9 @@ Texture* createTexture(int width, int height, bool rgba32f)
     tex->potWidth = width;
     tex->potHeight = height;
     tex->retainCount = 1;
-
+#ifdef _DEBUG
+    texNum++;
+#endif
     return tex;
 }
 

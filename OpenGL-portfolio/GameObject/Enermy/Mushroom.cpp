@@ -19,12 +19,12 @@ Mushroom::Mushroom(int number)
 	if (imgMush == NULL)
 	{
 		ObjInfo _oi[(int)ObjectBehave::ObjectBehave_num] = {
-			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75,-100},
-			"assets/stage/mushroom/Attack (%d).png", 8, 2.5f, {-75,-100},
-			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
-			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
-			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
-			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
+			{ "assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75,-100},   },
+			{ "assets/stage/mushroom/Attack (%d).png", 8, 2.5f, {-75,-100}, },
+			{ "assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},	},
+			{ "assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},	},
+			{ "assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},	},
+			{ "assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},	},
 		};
 
 		iGraphics* g = iGraphics::instance();

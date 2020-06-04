@@ -125,7 +125,6 @@ void drawVillege(float dt)
 	//drawNumber(dt, offMt);
 	//drawPopPlayerUI(dt);
 	//drawPopMenuUI(dt);
-	//drawPopQuitAnswerUI(dt);
 	//drawPopGameOverUI(dt);
 	
 }

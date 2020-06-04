@@ -12,13 +12,7 @@ extern bool mouseMove;
 
 extern Object** goblins;
 extern int goblinNum;
-extern iStrTex* killIndicator;
 
-extern iStrTex* hpIndicator;
-extern iStrTex* mpIndicator;
-extern iStrTex* staminaIndicator;
-extern iStrTex* expIndicator;
-extern iStrTex* skillIndicator[3];
 extern int gameState;
 
 void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, int NumX, int NumY)
@@ -89,14 +83,15 @@ void drawMinimapTile(float dt, int* tiledata, MapTile* tileInfo, Texture** tiles
 				fillRect(x, y, 32, 32);
 			
 
-
-				switch (t->attr)
-				{
-				case canMove: break;
-				case canNotMove: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				case deadZone:	setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				case nextStagePortal: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-				}
+#if _DEBUG // tileHitbox
+			switch (t->attr)
+			{
+			case canMove: break;
+			case canNotMove: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+			case deadZone:	setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+			case nextStagePortal: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+			}
+#endif
 
 		}
 
@@ -373,7 +368,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 				switch (gameState)
 				{
 				case gs_stage:
-					for (int i = 0; i < goblinNum; i++)
+					for (int i = 0; i < goblin_Num; i++)
 					{
 				
 						if (containPoint(goblins[i]->getPosition(), hero->imgSkill->touchRect()))
@@ -499,7 +494,6 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	if (hero->getMp() != hero->getMaxMP())
 	{
 		hero->setMP(hero->getMp() + 0.1f);
-		mpIndicator->setString("%0.1f", (hero->getMp()));
 
 		if (hero->getMp() > hero->getMaxMP())
 			hero->setMP(hero->getMaxMP());
@@ -510,7 +504,6 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	if (hero->getStamina() != hero->getMaxStamina())
 	{
 		hero->setStamina(hero->getStamina() + 0.1f);
-		staminaIndicator->setString("%f", (hero->getStamina()));
 
 		if (hero->getStamina() > hero->getMaxStamina())
 			hero->setStamina(hero->getMaxStamina());
@@ -519,51 +512,15 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	
 	hero->CoolDown_SK1 += dt;
 	if (hero->CoolDown_SK1 > hero->_CoolDown_SK1)
-	{
 		hero->CoolDown_SK1 = hero->_CoolDown_SK1;
-	}
 
 	hero->CoolDown_SK2 += dt;
 	if (hero->CoolDown_SK2 > hero->_CoolDown_SK2)
-	{
 		hero->CoolDown_SK2 = hero->_CoolDown_SK2;
-	}
 
 	hero->CoolDown_SK3 += dt;
 	if (hero->CoolDown_SK3 > hero->_CoolDown_SK3)
-	{
 		hero->CoolDown_SK3 = hero->_CoolDown_SK3;
-	}
-
-	if (hero->_CoolDown_SK1 - hero->CoolDown_SK1 > 0)
-	{
-		skillIndicator[0]->setString("%1.0f", hero->_CoolDown_SK1 - hero->CoolDown_SK1);
-	}
-	else
-	{
-		skillIndicator[0]->setString("On!");
-	}
-
-	if (hero->_CoolDown_SK2 - hero->CoolDown_SK2 > 0)
-	{
-		skillIndicator[1]->setString("%1.0f", hero->_CoolDown_SK2 - hero->CoolDown_SK2);
-	}
-	else
-	{
-		skillIndicator[1]->setString("On!");
-	}
-
-	if (hero->imgBuff->animation)
-	{
-		skillIndicator[2]->setString("Buff\nOn!");
-	}
-	else
-	{
-		skillIndicator[2]->setString("Buff\nOff!");
-	}
-
-
-	expIndicator->setString("%f", (hero->getExp()));
 }
 
 void drawGoblin(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)

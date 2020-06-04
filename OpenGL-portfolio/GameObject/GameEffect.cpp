@@ -143,6 +143,7 @@ void drawEffectHit(float dt, iPoint off)
 			ehNum--;
 			for (int j = i; j < ehNum; j++)
 				ehEffectHit[j] = ehEffectHit[1 + j];
+			i--;
 		}
 	}
 	setRGBA(1, 1, 1, 1);
