@@ -343,7 +343,7 @@ void drawStage(float dt)
 		hero->setStamina(hero->getStamina());
 		nameIndicator->setString("%d", hero->getLevel());
 	}
-	
+
 }
 
 void keyStage(iKeyState stat, iPoint point)

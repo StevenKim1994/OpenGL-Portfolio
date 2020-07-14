@@ -151,6 +151,8 @@ void freeGame()
 
 void drawGame(float dt)
 {
+	
+
 	switch(gameState)
 	{
 	case gs_intro:	drawIntro(dt); break;
