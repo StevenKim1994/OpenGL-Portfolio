@@ -26,7 +26,8 @@ void main()
 	vec2 center = vec2(rect.x/2 + rect.z/2 , rect.y  - rect.w/2);
 	float d = boxDist(gl_FragCoord.xy- center, rect.zw/2, radius);
 
-
-	fragColor = vec4(color.rgb, color.a * -d);
-	//fragColor = vec4(color);
+	if(radius == 0)
+		fragColor = vec4(color);
+	else
+		fragColor = vec4(color.rgb, color.a * -d);
 }

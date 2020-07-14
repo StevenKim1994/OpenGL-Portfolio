@@ -10,13 +10,15 @@
 
 Player::Player()
 {
+	
 	memset(path, 0x00, sizeof(int) * 1024);
 	pathIndex = pathNum;
 	HP = Player_HP;
 	MP = Player_MP;
 	Stamina = Player_Stamina;
 
-	ObjInfo _pi[(int)ObjectBehave::ObjectBehave_num] = {
+
+	ObjInfo _pi[8] = {
 		{"assets/stage/hero/Knight/hero idle (%d).png", 11, 1.5f, {-75, -80} },
 		{"assets/stage/hero/Knight/hero melee2 (%d).png", 7, 1.5f, {-72, -80}},
 		{"assets/stage/hero/Knight/hero melee1 (%d).png", 7, 1.5f, {-72, -80}},
@@ -25,22 +27,22 @@ Player::Player()
 		{"assets/stage/hero/Knight/hero fall (%d).png", 3, 1.5f, {-72, -80}},
 		{"assets/stage/hero/Knight/hero takeHit (%d).png", 4, 1.5f, {-72, -80}},
 		{"assets/stage/hero/Knight/hero death (%d).png", 11 , 1.5f, {-72, -80}},
+
+
 	};
 	iGraphics* g = iGraphics::instance();
 	iSize size;
-
-	iImage* img;
-	Texture* tex;
+	
 
 	imgs = (iImage**)malloc(sizeof(iImage*) * 8);
-	for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
+	for (int i = 0; i < 8; i++)
 	{
 		ObjInfo* pi = &_pi[i];
 
-		img = new iImage();
+		iImage* img = new iImage();
 		for (int j = 0; j < pi->num; j++)
 		{
-			tex = createImage(pi->path, j + 1);
+			Texture* tex = createImage(pi->path, j + 1);
 			tex->width *= pi->sizeRate;
 			tex->height *= pi->sizeRate;
 			tex->potWidth *= pi->sizeRate;
@@ -75,61 +77,125 @@ Player::Player()
 	jumpNum = 0;
 	_jumpNum = 2;
 
-	iImage* ii[4];
+	iImage* img = new iImage();
 
-	ObjInfo oi[4] = {
-		// 근거리 스킬 불러오는 부분
-		{"assets/stage/hero/Knight/skill/skill1 (%d).png", 4, 0.25, {-128, -128}, 0.15, 1},
-		//근거리 타격이펙트 (Monster 오브젝트에 copy용)
-		{"assets/stage/hero/knight/skill/hit/tile%03d.png", 31, 1.0, {0,0}, 0.01, 1},
-		//버프스킬
-		{"assets/stage/hero/knight/skill3/tile%03d.png", 61, 2.0, {-30, -100}, 0.01, 0, {1, 0, 0, 1}},
-		// 원거리 스킬 불러오는 부분
-		{"assets/stage/hero/Knight/skill2/tile%03d.png", 61, 2.0, {-30, -100}, 0.01, 0, }
-	};
-	for (int j = 0; j < 4; j++)
-	{
-		img = new iImage();
-		int n = (j == 0 ? 1 : 0 );
+	{// 근거리 스킬 불러오는 부분
 
-		ObjInfo* o = &oi[j];
-		for (int i = 0; i < o->num; i++)
+		for (int i = 0; i < 4; i++)
 		{
-			//if (o->color == iColor4fMake(1, 1, 1, 1))
-			//	tex = createImage(o->path, i + n);
-			//else
-				tex = createColorImage(o->color, o->path, i + n);
-			tex->width     *= o->sizeRate;
-			tex->height    *= o->sizeRate;
-			tex->potHeight *= o->sizeRate;
-			tex->potWidth  *= o->sizeRate;
+			iGraphics* g = iGraphics::instance();
+			Texture* tex = createImage("assets/stage/hero/Knight/skill/skill1 (%d).png", i + 1);
+			tex->width *= 0.25;
+			tex->height *= 0.25;
+			tex->potHeight *= 0.25;
+			tex->potWidth *= 0.25;
 			img->addObject(tex);
 			freeImage(tex);
 		}
-		img->_aniDt = o->aniDt;
-		img->_repeatNum = o->repeatNum;
-		ii[j] = img;
+		img->aniDt = 0.0f;
+		img->_aniDt = 0.15f;
+		img->_repeatNum = 1;
+
+		iPoint p = iPointMake(-128, -128);
+		img->position = p;
+
+		imgSkill = img;
 	}
-	imgSkill = ii[0];
-	imgSKillHit = ii[1];
-	imgBuff = ii[2];
-	imgRange = ii[3];
+
+	
+	//근거리 타격이펙트 (Monster 오브젝트에 copy용)
+	iImage* img2 = new iImage();
+	{
+		for(int i = 0; i<31; i++)
+		{
+			iGraphics* g = iGraphics::instance();
+			setRGBA(1, 0, 0, 1);
+			Texture* tex = createImage("assets/stage/hero/knight/skill/hit/tile%03d.png", i);
+			img2->addObject(tex);
+			freeImage(tex);
+		}
+		img2->aniDt = 0.0f;
+		img2->_aniDt = 0.01f;
+		img2->_repeatNum = 1;
+		
+
+		imgSKillHit = img2;
+		setRGBA(1, 1, 1, 1);	
+	}
+
+
+	//버프스킬
+	iImage* img3 = new iImage();
+	{
+		for (int i = 0; i < 61; i++)
+		{
+			iGraphics* g = iGraphics::instance();
+	
+			//Texture* tex = createImage("assets/stage/hero/knight/skill2/tile%03d.png", i);
+			Texture* tex = createColorImage(iColor4fMake(1, 0, 0, 1), "assets/stage/hero/knight/skill3/tile%03d.png", i);
+			tex->width *= 2.0;
+			tex->potWidth *= 2.0f;
+			tex->height *= 2.0f;
+			tex->potHeight *= 2.0f;
+
+			
+			/*
+			igImage* ig = g->createIgImage("assets/stage/hero/knight/skill2/tile%03d.png", i);
+			iSize skillsize = iSizeMake(g->getIgImageWidth(ig) * 2.0, g->getIgImageHeight(ig) * 2.0);
+			g->init(skillsize);
+			g->drawImage(ig, 0, 0, 2.0, 2.0, TOP | LEFT);
+
+			tex = g->getTexture();
+			*/
+			img3->addObject(tex);
+			freeImage(tex);
+		}
+		img3->aniDt = 0.0f;
+		img3->_aniDt = 0.01f;
+		img3->_repeatNum = 0; // on / off skill임
+		img3->position = iPointMake(-30, -100);
+		imgBuff = img3;
+
+		setRGBA(1, 1, 1, 1);
+	}
+
+	
+	iImage* img4 = new iImage();
+	{// 원거리 스킬 불러오는 부분
+		for (int i = 0; i < 61; i++)
+		{
+			Texture* tex = createImage("assets/stage/hero/Knight/skill2/tile%03d.png", i);
+			tex->width *= 2.0;
+			tex->potWidth *= 2.0;
+			tex->height *= 2.0;
+			tex->potHeight *= 2.0;
+
+			img4->addObject(tex);
+			freeImage(tex);
+
+		}
+		img4->_aniDt = 0.01f;
+		img4->repeatNum = 0;
+		img4->position = iPointMake(-30, -100);
+		imgRange = img4;
+		
+		
+	}
 
 	_CoolDown_SK1 = CoolDown_SK1 = 2;
 	_CoolDown_SK2 = CoolDown_SK2 = 5;
 	_CoolDown_SK3 = CoolDown_SK3 = 0;
+	
+	
 }
 
 Player::~Player()
 {
-	for (int i = 0; i < (int)ObjectBehave::ObjectBehave_num; i++)
+	for (int i = 0; i < 4; i++)
 		delete imgs[i];
 	free(imgs);
 
 	delete imgSkill;
-	delete imgSKillHit;
-	delete imgBuff;
-	delete imgRange;
 }
 
 void Player::cbBehave(void* cb)
@@ -235,7 +301,7 @@ extern int goblinNum;
 
 void Player::Skill2()
 {
-	if (MP < 10 && (hero->CoolDown_SK2 - hero->_CoolDown_SK2 != 0))
+	if (MP < 10)
 	{
 		printf("MP enough\n");
 		return;
@@ -248,8 +314,7 @@ void Player::Skill2()
 
 	printf("skill2! on!\n");
 
-	audioPlay(8);
-	addProjectile(0, hero->getPosition(), hero->direction, 10, (Object**)goblins, goblinNum);
+	addProjectile(0, hero->getPosition(), hero->direction, 3, (Object**)goblins, goblinNum);
 
 }
 

@@ -10,9 +10,9 @@ iColor4f iColor4fMake(float r, float g, float b, float a)
 	return c;
 }
 
-iColor4f iColor4bMake(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
+iColor4b iColor4bMake(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 {
-	iColor4f c;
+	iColor4b c;
 	c.r = r;
 	c.g = g;
 	c.b = b;

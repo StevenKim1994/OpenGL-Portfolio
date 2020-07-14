@@ -10,9 +10,6 @@
 
 Object::Object()
 {
-	imgs = NULL;
-	img = NULL;
-
 	HP = 0;
 	MP = 0;
 	Stamina = 0;
@@ -37,6 +34,8 @@ Object::Object()
 
 Object::~Object()
 {
+	imgs = (iImage**)malloc(sizeof(iImage*) * (int)ObjectBehave::ObjectBehave_num);
+	
 }
 
 void Object::setTex(Texture* tex)

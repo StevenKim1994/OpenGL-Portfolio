@@ -1,7 +1,5 @@
 #include "iStd.h"
 
-
-
 uint8 float2uint8(float f)
 {
     return f * 0xFF;
@@ -27,6 +25,10 @@ bool getKeyDown(uint32 key) { return keyDown & key; }
 uint32 getKeyStat() { return keyStat; }
 bool getKeyStat(uint32 key) { return keyStat & key; }
 
+
+iVBO* gVbo = NULL;
+Texture** texGdi;
+
 void loadLib(HDC hDC)
 {
     setupOpenGL(true, hDC);
@@ -35,7 +37,6 @@ void loadLib(HDC hDC)
 
     devSize = iSizeMake(DEVSIZE_WIDTH, DEVSIZE_HEIGHT);
     fbo = new iFBO(devSize.width, devSize.height);
-    uiFbo = new iFBO(devSize.width, devSize.height); 
     texFboForiPopup = createTexture(devSize.width, devSize.height);
     reshapeOpenGL(monitorSizeW, monitorSizeH);// App.cpp
 
@@ -62,6 +63,38 @@ void loadLib(HDC hDC)
     srand(time(NULL));
     void sRandom();
     sRandom();
+
+    gVbo = new iVBO();
+    texGdi = (Texture**)malloc(sizeof(Texture*) * 2);
+
+    Texture* tex = createTexture(32, 32);
+    setTexture(CLAMP, MIPMAP);
+    fbo->bind(tex);
+    // fbo->clear(1, 0, 1, 1);
+    iSize s = devSize;
+
+    devSize = iSizeMake(32, 32);
+    iRect v = viewport;
+    viewport = iRectMake(0, 0, 32, 32);
+    float m[16];
+    memcpy(m, mProjection->d(), sizeof(float) * 16);
+    mProjection->loadIdentity();
+    mProjection->ortho(0.0, 32.0, 32.0, 0, -1000, 1000);
+
+    fillCircle(16, 16, 16);
+    devSize = s;
+    memcpy(mProjection->d(), m, sizeof(float) * 16);
+    viewport = v;
+    fbo->unbind();
+    texGdi[0] = tex;
+
+    tex = createTexture(32, 32);
+    fbo->bind(tex);
+    fbo->clear(1, 1, 1, 1);
+    fbo->unbind();
+
+    texGdi[1] = tex;
+
 }
 
 void freeLib()
@@ -71,6 +104,12 @@ void freeLib()
     setupOpenGL(false, NULL);
 
     free(keys);
+
+    delete gVbo;
+
+    for (int i = 0; i < 2; i++)
+        freeImage(texGdi[i]);
+    free(texGdi);
 }
 
 bool takeScreenshot = false;
@@ -97,8 +136,8 @@ void checkScreenshot()
     {
         takeScreenshot = false;
 
-        int potW = nextPot(devSize.width);
-        int potH = nextPot(devSize.height);
+        int potW = nextPOT(devSize.width);
+        int potH = nextPOT(devSize.height);
         uint8* rgba = (uint8*)calloc(sizeof(uint8), potW * potH * 4);
         glReadPixels(0, 0, potW, potH, GL_RGBA, GL_UNSIGNED_BYTE, rgba);
         if (texScreenshot)
@@ -109,6 +148,7 @@ void checkScreenshot()
         free(rgba);
     }
 }
+
 
 
 void drawLib(Method_Paint method)
@@ -123,7 +163,9 @@ void drawLib(Method_Paint method)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     method(delta);
+  
     keyDown = 0;
+
 
     checkScreenshot();
     fbo->unbind();// ------------------
@@ -132,44 +174,94 @@ void drawLib(Method_Paint method)
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     setRGBA(1, 1, 1, 1);
+
     Texture* tex = fbo->getTexture();
+
     //drawImage(tex, 0, 0, TOP | LEFT);
     drawImage(tex, 0, 0,
         0, 0, tex->width, tex->height, TOP | LEFT,
         1.0f, 1.0f, 2, 0, REVERSE_HEIGHT);
-   
+
+
     drawScreenshot();
 
-#if 0
-    static float dt = 0.0f;
-    static int num = 1;
-    dt += delta;
-    if (dt > 0.2f)
-    {
-        dt -= 0.2f;
-        num++;
-        if (num > 16)
-            num = 1;
-    }
-    int i, n = num * num;
-    float w = devSize.width / num;
-    float h = devSize.height / num;
-    float s = 1.0 / num;
-    for (i = 0; i < n; i++)
-    {
-        drawImage(tex, w * (i % num), h * (i / num),
-            0, 0, tex->width, tex->height, TOP | LEFT,
-            s, s, 2, 0, REVERSE_HEIGHT);
-    }
-#endif
 
-#if 0// minimap
-    drawImage(tex, devSize.width - 50, devSize.height - 50,
-        0, 0, tex->width, tex->height, BOTTOM | RIGHT,
-        0.2f, 0.2f, 2, 0, REVERSE_HEIGHT);
-#endif
+}
 
-   
+
+
+
+float iMouse[4] = { 0, 0,0,0 };
+
+float _lineWidth = 1.0f;
+
+void drawCircle(float x, float y, float radius)
+{
+    static GLuint pid = 0;
+
+
+    if (pid == 0)
+    {
+        int length;
+        char* str = loadFile("assets/shader/gdi/gdi.vert", length);
+        GLuint vid = createShader(str, GL_VERTEX_SHADER);
+        str = loadFile("assets/shader/gdi/circle.frag", length);
+        GLuint fid = createShader(str, GL_FRAGMENT_SHADER);
+        pid = createProgramID(vid, fid);
+        destroyShader(vid);
+        destroyShader(fid);
+    }
+    glUseProgram(pid);
+
+    float p[4][4] =
+    {
+        {x - radius - _lineWidth / 2, y + radius + _lineWidth / 2, 0, 1} , { x + radius + _lineWidth / 2 , y + radius + _lineWidth / 2, 0,1},
+        {x - radius - _lineWidth / 2, y - radius - _lineWidth / 2, 0, 1}, { x + radius + _lineWidth / 2, y - radius - _lineWidth / 2, 0,1}
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 16, p);
+
+    GLuint positionAttr = glGetAttribLocation(pid, "position");
+    glEnableVertexAttribArray(positionAttr);
+    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+
+    GLuint mp = glGetUniformLocation(pid, "mProjection");
+    glUniformMatrix4fv(mp, 1, false, mProjection->d());
+
+    GLuint mm = glGetUniformLocation(pid, "mModelview");
+    glUniformMatrix4fv(mm, 1, false, mModelview->d());
+
+    GLuint uCenter = glGetUniformLocation(pid, "center");
+
+    glUniform2f(uCenter, x, devSize.height - y);
+
+    GLuint uLineWidth = glGetUniformLocation(pid, "lineWidth");
+    glUniform1f(uLineWidth, _lineWidth);
+
+
+    GLuint uRadius = glGetUniformLocation(pid, "radius");
+    glUniform1f(uRadius, radius);
+
+
+
+    GLuint uColor = glGetUniformLocation(pid, "color");
+    glUniform4f(uColor, _r, _g, _b, _a);
+
+
+    GLuint uViewport = glGetUniformLocation(pid, "viewport");
+    glUniform4fv(uViewport, 1, (float*)&viewport);
+
+    GLuint uDevSize = glGetUniformLocation(pid, "devSize");
+    glUniform2fv(uDevSize, 1, (float*)&devSize);
+
+    uint8 indices[6] = { 0, 1, 2, 1, 2, 3 };
+    glDrawElements(GL_TRIANGLES, 6 * 1, GL_UNSIGNED_BYTE, indices);
+
+
+    glDisableVertexAttribArray(positionAttr);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 static void keyLib(uint32& key, iKeyState stat, int c)
@@ -185,9 +277,9 @@ static void keyLib(uint32& key, iKeyState stat, int c)
         case VK_UP:     key |= keyboard_up; break;
         case 's':case 'S':
         case VK_DOWN:   key |= keyboard_down; break;
-        
+
         case VK_SPACE:  key |= keyboard_space; break;
-        
+
         case VK_RETURN: key |= keyboard_enter; break;
 
         case 49: key |= keyboard_num1; break;
@@ -220,7 +312,7 @@ static void keyLib(uint32& key, iKeyState stat, int c)
 
         case 51: key &= keyboard_num3; break;
 
-           
+
         }
     }
 }
@@ -241,11 +333,13 @@ void keyLib(iKeyState stat, int c)
     }
     keyLib(keyStat, stat, c);
 }
-
 void resizeLib(int width, int height)
 {
     reshapeOpenGL(width, height);
 }
+
+
+
 
 iFBO::iFBO(int width, int height)
 {
@@ -262,7 +356,6 @@ iFBO::iFBO(int width, int height)
     // frameBuffer
     glGenFramebuffers(1, &fbo);
     glBindFramebuffer(GL_FRAMEBUFFER, fbo);
- 
     GLenum fboBuffs[1] = { GL_COLOR_ATTACHMENT0, };
     glDrawBuffers(1, fboBuffs);//glDrawBuffer(GL_COLOR_ATTACHMENT0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, texID, 0);
@@ -277,9 +370,7 @@ iFBO::iFBO(int width, int height)
     listNum = 0;
 }
 
-iFBO* fbo = NULL; // game 화면 mainFBO
-iFBO* uiFbo = NULL; // game 화면 UIFBO
-
+iFBO* fbo = NULL;
 iFBO::~iFBO()
 {
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
@@ -288,7 +379,6 @@ iFBO::~iFBO()
     freeImage(tex);
 
     glDeleteFramebuffers(1, &fbo);
-
 
     free(listTex);
 }
@@ -362,21 +452,8 @@ void getRGBA(float& r, float& g, float& b, float& a)
 
 void setLineWidth(float lineWidth)
 {
-    glLineWidth(lineWidth);
-}
-void drawLine(iPoint sp, iPoint ep)
-{
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-
-    iPoint position[2] = { sp, ep };
-    float color[2][4] = { {_r, _g, _b, _a}, {_r, _g, _b, _a} };
-    glVertexPointer(2, GL_FLOAT, 0, position);
-    glColorPointer(4, GL_FLOAT, 0, color);
-    glDrawArrays(GL_LINES, 0, 2);
-
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
+    // glLineWidth(lineWidth);
+    _lineWidth = lineWidth;
 }
 
 void drawLine(float x0, float y0, float x1, float y1)
@@ -384,54 +461,249 @@ void drawLine(float x0, float y0, float x1, float y1)
     drawLine(iPointMake(x0, y0), iPointMake(x1, y1));
 }
 
-static void drawPoly(iPoint* poly, int num, bool fill)
+
+
+void drawLine(iPoint sp, iPoint ep)
 {
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
+    static GLuint pid = 0;
 
-    //float color[num][4];
-    float color[4][4] = { {_r, _g, _b, _a}, {_r, _g, _b, _a},
-        {_r, _g, _b, _a}, {_r, _g, _b, _a} };
-    glVertexPointer(2, GL_FLOAT, 0, poly);
-    glColorPointer(4, GL_FLOAT, 0, color);
 
-    glDrawArrays(fill ? GL_TRIANGLE_FAN : GL_LINE_LOOP, 0, num);
-    //glDrawElements;
+    if (pid == 0)
+    {
+        int length;
+        char* str = loadFile("assets/shader/gdi/gdi.vert", length);
+        GLuint vid = createShader(str, GL_VERTEX_SHADER);
+        str = loadFile("assets/shader/gdi/line.frag", length);
+        GLuint fid = createShader(str, GL_FRAGMENT_SHADER);
+        pid = createProgramID(vid, fid);
+        destroyShader(vid);
+        destroyShader(fid);
+    }
+    glUseProgram(pid);
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-}
 
-void drawRect(float x, float y, float width, float height, float radius)
-{
-    iPoint p[4] = {
-        {x, y},                 // top|left
-        {x, y + height},        // bottom|left
-        {x + width, y + height},// bottom|right
-        {x + width, y}          // top|right
+
+    float lw = _lineWidth / 2;
+    iPoint c = (sp + ep) / 2;
+    float d = iPointDistance(sp, ep) / 2;
+    float p[4][4] = {
+        { -d - lw , lw , 0 , 1}, { d + lw ,lw, 0,1},
+        { -d - lw , -lw , 0 , 1}, {d + lw, -lw, 0 ,1},
     };
-    drawPoly(p, 4, false);
-}
-void drawRect(iRect rt, float radius)
-{
-    drawRect(rt.origin.x, rt.origin.y, rt.size.width, rt.size.height);
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 16, p);
+
+    GLuint mp = glGetUniformLocation(pid, "mProjection");
+    glUniformMatrix4fv(mp, 1, false, mProjection->d());
+
+    GLuint mm = glGetUniformLocation(pid, "mModelview");
+
+    iMatrix mv;
+    mv.loadIdentity();
+    mv.translate(c.x, c.y, 0);
+    float theta = iPointAngle(iPointMake(1, 0), iPointZero, ep - sp);
+
+    mv.rotate(0, 0, 1, theta);
+    glUniformMatrix4fv(mm, 1, false, mv.d());
+
+    GLuint positionAttr = glGetAttribLocation(pid, "position");
+    glEnableVertexAttribArray(positionAttr);
+    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+
+    glUniform2f(glGetUniformLocation(pid, "sp"), sp.x, devSize.height - sp.y);
+    glUniform2f(glGetUniformLocation(pid, "ep"), ep.x, devSize.height - ep.y);
+    glUniform1f(glGetUniformLocation(pid, "lineWidth"), _lineWidth);
+    glUniform4f(glGetUniformLocation(pid, "color"), _r, _g, _b, _a);
+
+    uint8 indices[6] = { 0,1,2, 1,2,3 };
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
+
+    glDisableVertexAttribArray(positionAttr);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 
-void fillRect(float x, float y, float width, float height, float radius)
+
+void drawRect(float x, float y, float width, float height, float radius, float degree)
 {
-    iPoint p[4] = {
-        {x, y},                 // top|left
-        {x, y + height},        // bottom|left
-        {x + width, y + height},// bottom|right
-        {x + width, y}          // top|right
+
+    static GLuint pid = 0;
+
+    if (pid == 0)
+    {
+        int length;
+        char* str = loadFile("assets/shader/gdi/gdi.vert", length);
+        GLuint vid = createShader(str, GL_VERTEX_SHADER);
+        str = loadFile("assets/shader/gdi/rect2.frag", length);
+        GLuint fid = createShader(str, GL_FRAGMENT_SHADER);
+        pid = createProgramID(vid, fid);
+        destroyShader(vid);
+        destroyShader(fid);
+    }
+    glUseProgram(pid);
+
+    float p[4][4] =
+    {
+        {-width / 2 , height / 2, 0 , 1}, {width / 2, height / 2, 0, 1},
+        {-width / 2, -height / 2, 0, 1} , {width / 2, -height / 2, 0, 1},
     };
-    drawPoly(p, 4, true);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 16, p);
+
+
+
+    glUniformMatrix4fv(glGetUniformLocation(pid, "mProjection"), 1, false, mProjection->d());
+    iMatrix mv;
+    mv.loadIdentity();
+    mv.translate((x + width) / 2, (y + height / 2), 0);
+
+    GLuint positionAttr = glGetAttribLocation(pid, "position");
+    glEnableVertexAttribArray(positionAttr);
+    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+
+    glUniformMatrix4fv(glGetUniformLocation(pid, "mModelview"), 1, false, mv.d());
+    glUniform4f(glGetUniformLocation(pid, "rect"), x, devSize.height - y, width, height);
+    glUniform1f(glGetUniformLocation(pid, "radius"), radius);
+    glUniform4f(glGetUniformLocation(pid, "color"), _r, _g, _b, _a);
+    glUniform1f(glGetUniformLocation(pid, "lineWidth"), _lineWidth);
+    glUniform1f(glGetUniformLocation(pid, "degree"), degree);
+
+    uint8 indices[6] = { 0, 1, 2, 1, 2, 3 };
+    glDrawElements(GL_TRIANGLES, 6 * 1, GL_UNSIGNED_BYTE, indices);
+
+    glDisableVertexAttribArray(positionAttr);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+
+}
+void drawRect(iRect rt, float radius, float degree)
+{
+    drawRect(rt.origin.x, rt.origin.y, rt.size.width, rt.size.height, degree);
 }
 
-void fillRect(iRect rt, float radius)
+void fillRect(float x, float y, float width, float height, float radius, float degree)
 {
-    fillRect(rt.origin.x, rt.origin.y, rt.size.width, rt.size.height, radius);
+
+
+    static GLuint pid = 0;
+
+    if (pid == 0)
+    {
+        int length;
+        char* str = loadFile("assets/shader/gdi/gdi.vert", length);
+        GLuint vid = createShader(str, GL_VERTEX_SHADER);
+        str = loadFile("assets/shader/gdi/rect.frag", length);
+        GLuint fid = createShader(str, GL_FRAGMENT_SHADER);
+        pid = createProgramID(vid, fid);
+        destroyShader(vid);
+        destroyShader(fid);
+    }
+    glUseProgram(pid);
+
+    float p[4][4] =
+    {
+        {-width / 2 , height / 2, 0 , 1}, {width / 2, height / 2, 0, 1},
+        {-width / 2, -height / 2, 0, 1} , {width / 2, -height / 2, 0, 1},
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 16, p);
+
+
+
+    glUniformMatrix4fv(glGetUniformLocation(pid, "mProjection"), 1, false, mProjection->d());
+    iMatrix mv;
+    mv.loadIdentity();
+    mv.translate((x + width) / 2, (y + height / 2), 0);
+
+    GLuint positionAttr = glGetAttribLocation(pid, "position");
+    glEnableVertexAttribArray(positionAttr);
+    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+
+    glUniformMatrix4fv(glGetUniformLocation(pid, "mModelview"), 1, false, mv.d());
+    glUniform4f(glGetUniformLocation(pid, "rect"), x, devSize.height - y, width, height);
+    glUniform1f(glGetUniformLocation(pid, "radius"), radius);
+    glUniform4f(glGetUniformLocation(pid, "color"), _r, _g, _b, _a);
+    glUniform1f(glGetUniformLocation(pid, "degree"), degree);
+
+    uint8 indices[6] = { 0, 1, 2, 1, 2, 3 };
+    glDrawElements(GL_TRIANGLES, 6 * 1, GL_UNSIGNED_BYTE, indices);
+
+    glDisableVertexAttribArray(positionAttr);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void fillRect(iRect rt, float radius, float degree)
+{
+    fillRect(rt.origin.x, rt.origin.y, rt.size.width, rt.size.height, radius, degree);
+}
+
+
+void drawCircle(iPoint p, float radius)
+{
+    drawCircle(p.x, p.y, radius);
+}
+
+void fillCircle(iPoint p, float radius)
+{
+    fillCircle(p.x, p.y, radius);
+}
+
+void fillCircle(float x, float y, float radius)
+{
+    static GLuint pid = 0;
+
+
+    if (pid == 0)
+    {
+        int length;
+        char* str = loadFile("assets/shader/gdi/gdi.vert", length);
+        GLuint vid = createShader(str, GL_VERTEX_SHADER);
+        str = loadFile("assets/shader/gdi/circle2.frag", length);
+        GLuint fid = createShader(str, GL_FRAGMENT_SHADER);
+        pid = createProgramID(vid, fid);
+        destroyShader(vid);
+        destroyShader(fid);
+    }
+    glUseProgram(pid);
+
+    float p[4][4] =
+    {
+        {x - radius - _lineWidth / 2, y + radius + _lineWidth / 2, 0, 1} , { x + radius + _lineWidth / 2 , y + radius + _lineWidth / 2, 0,1},
+        {x - radius - _lineWidth / 2, y - radius - _lineWidth / 2, 0, 1}, { x + radius + _lineWidth / 2, y - radius - _lineWidth / 2, 0,1}
+    };
+
+    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(float) * 16, p);
+
+    GLuint positionAttr = glGetAttribLocation(pid, "position");
+    glEnableVertexAttribArray(positionAttr);
+    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, 0, (const void*)0);
+
+    GLuint mp = glGetUniformLocation(pid, "mProjection");
+    glUniformMatrix4fv(mp, 1, false, mProjection->d());
+
+    GLuint mm = glGetUniformLocation(pid, "mModelview");
+    glUniformMatrix4fv(mm, 1, false, mModelview->d());
+
+
+    glUniform2f(glGetUniformLocation(pid, "center"), x, devSize.height - y);
+    glUniform1f(glGetUniformLocation(pid, "lineWidth"), _lineWidth);
+    glUniform1f(glGetUniformLocation(pid, "radius"), radius);
+    glUniform4f(glGetUniformLocation(pid, "color"), _r, _g, _b, _a);
+
+
+
+    uint8 indices[6] = { 0, 1, 2, 1, 2, 3 };
+    glDrawElements(GL_TRIANGLES, 6 * 1, GL_UNSIGNED_BYTE, indices);
+
+
+    glDisableVertexAttribArray(positionAttr);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
 Texture* createTexture(int width, int height, bool rgba32f)
@@ -461,9 +733,7 @@ Texture* createTexture(int width, int height, bool rgba32f)
     tex->potWidth = width;
     tex->potHeight = height;
     tex->retainCount = 1;
-#ifdef _DEBUG
-    texNum++;
-#endif
+
     return tex;
 }
 
@@ -520,8 +790,8 @@ int GetEncoderClsid(const WCHAR* format, CLSID* pClsid)
 
 void saveImageFromRGBA(const char* path, uint8* rgba, int width, int height)
 {
-    int potWidth = nextPot(width);
-    //int potHeight = nextPot(height);
+    int potWidth = nextPOT(width);
+    //int potHeight = nextPOT(height);
 
     Bitmap* bmp = new Bitmap(width, height, PixelFormat32bppARGB);
     BitmapData bmpData;
@@ -557,8 +827,8 @@ uint8* bmp2rgba(Bitmap* bmp, int& width, int& height)
 {
     width = bmp->GetWidth();
     height = bmp->GetHeight();
-    int potWidth = nextPot(width);
-    int potHeight = nextPot(height);
+    int potWidth = nextPOT(width);
+    int potHeight = nextPOT(height);
 
     BitmapData bmpData;
     Rect rt(0, 0, width, height);
@@ -640,47 +910,7 @@ Texture* createGreyImage(const char* szFormat, ...)
     uint8* rgba = bmp2rgba(bmp, width, height);
     delete bmp;
 
-    convertGrey(rgba, width, height, nextPot(width));
-
-    Texture* tex = createImageWithRGBA(rgba, width, height);
-    free(rgba);
-
-    return tex;
-}
-
-void convertColor(iColor4f color, uint8* rgba, int width, int height, int potWidth)
-{
-    for (int j = 0; j < height; j++)
-    {
-        for (int i = 0; i < width; i++)
-        {
-            uint8* c = &rgba[potWidth * 4 * j + 4 * i];
-            c[0] *= color.r;
-            c[1] *= color.g;
-            c[2] *= color.b;
-            c[3] *= color.a;
-        }
-    }
-}
-
-Texture* createColorImage(iColor4f c, const char* szFormat, ...)
-{
-    va_list args;
-    va_start(args, szFormat);
-
-    char szText[1024];
-    _vsnprintf(szText, sizeof(szText), szFormat, args);
-    va_end(args);
-
-    wchar_t* ws = utf8_to_utf16(szText);
-    Bitmap* bmp = new Bitmap(ws);
-    free(ws);
-
-    int width, height;
-    uint8* rgba = bmp2rgba(bmp, width, height);
-    delete bmp;
-
-    convertColor(c, rgba, width, height, nextPot(width));
+    convertGrey(rgba, width, height, nextPOT(width));
 
     Texture* tex = createImageWithRGBA(rgba, width, height);
     free(rgba);
@@ -691,7 +921,7 @@ Texture* createColorImage(iColor4f c, const char* szFormat, ...)
 uint8* convertReflect(uint8* rgba, int width, int& height, int potWidth, float rateY)
 {
     int newHeight = height * rateY;
-    int newPotHeight = nextPot(newHeight);
+    int newPotHeight = nextPOT(newHeight);
     uint8* buf = (uint8*)calloc(sizeof(uint8), potWidth * newPotHeight * 4);
     memcpy(buf, rgba, sizeof(uint8) * potWidth * height * 4);
 
@@ -731,7 +961,7 @@ Texture* createReflectImage(float rateY, const char* szFormat, ...)
     uint8* rgba = bmp2rgba(bmp, width, height);
     delete bmp;
 
-    uint8* tmp = convertReflect(rgba, width, height, nextPot(width), rateY);
+    uint8* tmp = convertReflect(rgba, width, height, nextPOT(width), rateY);
     free(rgba);
 
     Texture* tex = createImageWithRGBA(tmp, width, height);
@@ -757,13 +987,13 @@ Texture** createDivideImage(int wNum, int hNum, const char* szFormat, ...)
     uint8* rgba = bmp2rgba(bmp, width, height);
     delete bmp;
 
-    int potWidth = nextPot(width);
-    int potHeight = nextPot(height);
+    int potWidth = nextPOT(width);
+    int potHeight = nextPOT(height);
 
     int w = width / wNum;
     int h = height / hNum;
-    int potW = nextPot(w);
-    int potH = nextPot(h);
+    int potW = nextPOT(w);
+    int potH = nextPOT(h);
 
     Texture** texs = (Texture**)malloc(sizeof(Texture*) * wNum * hNum);
 #if 0
@@ -800,10 +1030,10 @@ Texture** createDivideImage(int wNum, int hNum, const char* szFormat, ...)
 #endif
 
     free(buf);
-    free(RGBA);
 
     return texs;
 }
+
 
 void freeImage(Texture* tex)
 {
@@ -905,6 +1135,7 @@ void drawImage(Texture* tex, int x, int y,
     float ratX, float ratY,
     int xyz, float degree, int reverse)
 {
+
     int width = tex->width * ratX;
     int height = tex->height * ratY;
     switch (anc) {
@@ -918,96 +1149,72 @@ void drawImage(Texture* tex, int x, int y,
     case BOTTOM | HCENTER:  x -= width / 2; y -= height;     break;
     case BOTTOM | RIGHT:    x -= width;     y -= height;     break;
     }
+    gVbo->qNum = 1;
+    iQuad* q = &gVbo->q[0];
+    q->tl.p[0] = x, q->tl.p[1] = y;
+    q->tr.p[0] = x + width, q->tr.p[1] = y;
+    q->bl.p[0] = x, q->bl.p[1] = y + height;
+    q->br.p[0] = x + width, q->br.p[1] = y + height;
 
-    iPoint position[4] = {
-        {x, y},             // top|left
-        {x, y + height},      // bottom|left,  
-        {x + width, y},       // top|right
-        {x + width, y + height} // bottom|right
-    };
-#if 0
-    iPoint coordinate[4] = {
-        {0.0, 0.0},
-        {0.0, tex->height / tex->potHeight},
-        {tex->width / tex->potWidth, 0.0},
-        {tex->width / tex->potWidth, tex->height / tex->potHeight}
-    };
-#else
-    iPoint coordinate[4] = {
-        {ix / tex->potWidth, iy / tex->potHeight},
-        {ix / tex->potWidth, (iy + ih) / tex->potHeight},
-        {(ix + iw) / tex->potWidth, iy / tex->potHeight},
-        {(ix + iw) / tex->potWidth, (iy + ih) / tex->potHeight}
-    };
-#endif
-    float color[4][4] = {
-        {_r, _g, _b, _a},
-        {_r, _g, _b, _a},
-        {_r, _g, _b, _a },
-        {_r, _g, _b, _a} };
-    if (reverse == REVERSE_WIDTH)
+    q->tl.uv.x = ix / tex->potWidth, q->tl.uv.y = iy / tex->potHeight;
+    q->tr.uv.x = (ix + iw) / tex->potWidth, q->tr.uv.y = iy / tex->potHeight;
+    q->bl.uv.x = ix / tex->potWidth, q->bl.uv.y = (iy + ih) / tex->potHeight;
+    q->br.uv.x = (ix + iw) / tex->potWidth, q->br.uv.y = (iy + ih) / tex->potHeight;
+
+    iColor4b c = iColor4bMake(_r * 0xff, _g * 0xff, _b * 0xff, _a * 0xff);
+    q->tl.c = c;
+    q->tr.c = c;
+    q->bl.c = c;
+    q->br.c = c;
+
+    if (reverse & REVERSE_WIDTH)
     {
-        iPoint t;
-        for (int i = 0; i < 2; i++)
-        {
-            t = position[i];
-            position[i] = position[i + 2];
-            position[i + 2] = t;
-        }
+        float t = q->tl.p[0];
+        q->tl.p[0] = q->tr.p[0];
+        q->tr.p[0] = t;
+
+        t = q->bl.p[0];
+        q->bl.p[0] = q->br.p[0];
+        q->br.p[0] = t;
     }
-    else if (reverse == REVERSE_HEIGHT)
+    if (reverse & REVERSE_HEIGHT)
     {
-        iPoint t;
-        for (int i = 0; i < 2; i++)
-        {
-            t = position[2 * i];
-            position[2 * i] = position[2 * i + 1];
-            position[2 * i + 1] = t;
-        }
+        float t = q->tl.p[1];
+        q->tl.p[1] = q->bl.p[1];
+        q->bl.p[1] = t;
+
+        t = q->tr.p[1];
+        q->tr.p[1] = q->br.p[1];
+        q->br.p[1] = t;
+
     }
 
-    glPushMatrix();
+    float m[16];
+    memcpy(m, mModelview->d(), sizeof(float) * 16);
+
     if (degree)
     {
         iPoint t = iPointMake(x + width / 2, y + height / 2);
-        for (int i = 0; i < 4; i++)
-            position[i] -= t;
-        glTranslatef(t.x, t.y, 0);
+        q->tl.p[0] -= t.x, q->tl.p[1] -= t.y;
+        q->tr.p[0] -= t.x, q->tr.p[1] -= t.y;
+        q->bl.p[0] -= t.x, q->bl.p[1] -= t.y;
+        q->br.p[0] -= t.x, q->br.p[1] -= t.y;
+        mModelview->translate(t.x, t.y, 0);
 
         float _xyz[3] = { 0, 0, 0 };
         _xyz[xyz] = 1.0f;
         while (degree > 360) degree -= 360;
         degree = 360 - degree;
-        glRotatef(degree, _xyz[0], _xyz[1], _xyz[2]);
+        mModelview->rotate(_xyz[0], _xyz[1], _xyz[2], degree);
     }
 
-    glEnableClientState(GL_VERTEX_ARRAY);
-    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex->texID);
+    gVbo->tex = tex;
+    gVbo->programID = getProgramID();
+    gVbo->paint(0.0f);
 
-    glVertexPointer(2, GL_FLOAT, 0, position);
-    glTexCoordPointer(2, GL_FLOAT, 0, coordinate);
-    glColorPointer(4, GL_FLOAT, 0, color);
 
-#if 1
-    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-#elif 1
-    uint8 indices[4] = { 0, 1, 2, 3 };
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_BYTE, indices);
-#else
-    uint8 indices[6] = { 0, 1, 2,  1, 2, 3 };
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_BYTE, indices);
-#endif
+    memcpy(mModelview->d(), m, sizeof(float) * 16);
 
-    glDisableClientState(GL_VERTEX_ARRAY);
-    glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    glDisableClientState(GL_COLOR_ARRAY);
-    glDisable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glPopMatrix();
 }
 
 void setClip(int x, int y, int width, int height)
@@ -1046,11 +1253,6 @@ float getStringSize() { return _stringSize; }
 void setStringSize(float size)
 {
     _stringSize = size;
-}
-
-float getStirngSize()
-{
-    return 0.0f;
 }
 
 void setStringRGBA(float r, float g, float b, float a)
@@ -1093,7 +1295,6 @@ void getStringBorderRGBA(float& r, float& g, float& b, float& a)
     b = _stringBorderB;
     a = _stringBorderA;
 }
-
 #if 1
 
 iRect rectOfString(uint8* rgba, int width, int height)
@@ -1245,39 +1446,30 @@ iSize sizeOfString(const char* szFormat, ...)
 }
 
 #else
-
 iSize sizeOfString(const char* szFormat, ...)
 {
     va_list args;
     va_start(args, szFormat);
-
     char szText[1024];
     _vsnprintf(szText, sizeof(szText), szFormat, args);
     va_end(args);
-
     wchar_t* wStringName = utf8_to_utf16(_stringName);
     wchar_t* wStr = utf8_to_utf16(szText);
-
     GraphicsPath path;
     FontFamily  fontFamily(wStringName);
     PointF      pointF(0, 0);
     StringFormat sf;// top|left
     //sf.SetFormatFlags();
-
     GraphicsPath p;
     p.AddString(wStr, lstrlenW(wStr), &fontFamily, FontStyleRegular,
         _stringSize, pointF, &sf);
     Rect rt;
     p.GetBounds(&rt);
-
     free(wStringName);
     free(wStr);
-
     return iSizeMake(rt.Width, rt.Height);
 }
-
 #endif
-
 void drawString(int x, int y, int anc, const char* szFormat, ...)
 {
     // #bug
@@ -1434,27 +1626,131 @@ void saveFile(const char* filePath, char* buf, int bufLength)
     fclose(pf);
 }
 
-float getDistanceLine0(iPoint p, iPoint sp, iPoint ep)
+iVBO::iVBO(int qNum_)
 {
-    iPoint n = ep - sp;
-    float len = sqrtf(n.x * n.x + n.y * n.y);
-    n /= len;
+    _qNum = qNum_;
+    qNum = 0;
+    q = (iQuad*)malloc(sizeof(iQuad) * _qNum);
 
-    iPoint m = p - sp;
-    iPoint proj = n * (m.x * n.x + m.y * n.y);
+    indices = (short*)malloc(sizeof(short) * 6 * _qNum);
 
-    return iPointLength(m - proj);
+    for (int i = 0; i < _qNum; i++)
+    {
+        iQuad* quad = &q[i];
+        quad->tl.p[2] = 0; quad->tl.p[3] = 1;
+        quad->tr.p[2] = 0; quad->tr.p[3] = 1;
+        quad->bl.p[2] = 0; quad->bl.p[3] = 1;
+        quad->br.p[2] = 0; quad->br.p[3] = 1;
+        quad->tl.uv = iPointMake(0, 0);
+        quad->tr.uv = iPointMake(1, 0);
+        quad->bl.uv = iPointMake(0, 1);
+        quad->br.uv = iPointMake(1, 1);
+
+        indices[6 * i + 0] = 4 * i + 0;
+        indices[6 * i + 1] = 4 * i + 1;
+        indices[6 * i + 2] = 4 * i + 2;
+        indices[6 * i + 3] = 4 * i + 1;
+        indices[6 * i + 4] = 4 * i + 2;
+        indices[6 * i + 5] = 4 * i + 3;
+    }
+
+    tex = NULL;
+
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(iQuad) * _qNum, NULL, GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    programID = 0;
 }
 
-float getDistanceLine1(iPoint p, iPoint sp, iPoint ep)
+iVBO::~iVBO()
 {
-    iPoint n = ep - sp;
-    float len = sqrtf(n.x * n.x + n.y * n.y);
+    free(q);
+    free(indices);
+    freeImage(tex);
+    glDeleteBuffers(1, &vbo);
+}
 
-    n /= len;
+void iVBO::paint(float dt)
+{
+    glUseProgram(programID);
 
-    iPoint m = p - sp;
-    iPoint proj = n * max(0.0f, min((m.x * n.x + m.y * n.y), len));
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(iQuad) * qNum, q);
 
-    return iPointLength(m - proj);
+    GLuint positionAttr = glGetAttribLocation(programID, "position");
+    GLuint texCoordAttr = glGetAttribLocation(programID, "texCoord");
+    GLuint colorAttr = glGetAttribLocation(programID, "color");
+
+    glEnableVertexAttribArray(positionAttr);
+    glEnableVertexAttribArray(texCoordAttr);
+    glEnableVertexAttribArray(colorAttr);
+
+    glVertexAttribPointer(positionAttr, 4, GL_FLOAT, GL_FALSE, sizeof(iVertex), (const void*)0);
+    glVertexAttribPointer(texCoordAttr, 2, GL_FLOAT, GL_FALSE, sizeof(iVertex), (const void*)offsetof(iVertex, uv));
+    glVertexAttribPointer(colorAttr, 4, GL_UNSIGNED_BYTE, GL_FALSE, sizeof(iVertex), (const void*)offsetof(iVertex, c));
+
+    GLuint tid = glGetUniformLocation(programID, "texID");
+    glUniform1i(tid, 0);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, tex->texID);
+
+
+    GLuint mp = glGetUniformLocation(programID, "mProjection");
+    glUniformMatrix4fv(mp, 1, false, mProjection->d());
+    GLuint mm = glGetUniformLocation(programID, "mModelview");
+    glUniformMatrix4fv(mm, 1, false, mModelview->d());
+
+    glDrawElements(GL_TRIANGLES, 6 * qNum, GL_UNSIGNED_SHORT, indices);
+
+    glDisableVertexAttribArray(positionAttr);
+    glDisableVertexAttribArray(texCoordAttr);
+    glDisableVertexAttribArray(colorAttr);
+
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+void convertColor(iColor4f color, uint8* rgba, int width, int height, int potWidth)
+{
+    for (int j = 0; j < height; j++)
+    {
+        for (int i = 0; i < width; i++)
+        {
+            uint8* c = &rgba[potWidth * 4 * j + 4 * i];
+            c[0] *= color.r;
+            c[1] *= color.g;
+            c[2] *= color.b;
+            c[3] *= color.a;
+        }
+    }
+}
+
+
+Texture* createColorImage(iColor4f c, const char* szFormat, ...)
+{
+    va_list args;
+    va_start(args, szFormat);
+
+    char szText[1024];
+    _vsnprintf(szText, sizeof(szText), szFormat, args);
+    va_end(args);
+
+    wchar_t* ws = utf8_to_utf16(szText);
+    Bitmap* bmp = new Bitmap(ws);
+    free(ws);
+
+    int width, height;
+    uint8* rgba = bmp2rgba(bmp, width, height);
+    delete bmp;
+
+    convertColor(c, rgba, width, height, nextPOT(width));
+
+    Texture* tex = createImageWithRGBA(rgba, width, height);
+    free(rgba);
+
+    return tex;
 }

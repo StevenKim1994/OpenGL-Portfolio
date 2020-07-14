@@ -12,7 +12,13 @@ extern bool mouseMove;
 
 extern Object** goblins;
 extern int goblinNum;
+extern iStrTex* killIndicator;
 
+extern iStrTex* hpIndicator;
+extern iStrTex* mpIndicator;
+extern iStrTex* staminaIndicator;
+extern iStrTex* expIndicator;
+extern iStrTex* skillIndicator[3];
 extern int gameState;
 
 void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, int NumX, int NumY)
@@ -38,6 +44,7 @@ void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, in
 				}
 				else
 				{
+					setLineWidth(0);
 					setRGBA(0.63137, 0.94901, 0.92549, 1);
 					fillRect(x, y, 32, 32);
 				}
@@ -87,9 +94,10 @@ void drawMinimapTile(float dt, int* tiledata, MapTile* tileInfo, Texture** tiles
 			switch (t->attr)
 			{
 			case canMove: break;
-			case canNotMove: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			case deadZone:	setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
-			case nextStagePortal: setRGBA(1, 1, 1, 1); drawRect(x, y, MapTileWidth, MapTileHeight); break;
+			case canNotMove: setRGBA(0, 1, 0, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
+			case deadZone:	setRGBA(1, 0, 0, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
+			case nextStagePortal: setRGBA(1, 0, 1, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
+			default: setRGBA(0, 0, 0, 1), fillRect(x, y, MapTileWidth, MapTileHeight); break;
 			}
 #endif
 
@@ -494,6 +502,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	if (hero->getMp() != hero->getMaxMP())
 	{
 		hero->setMP(hero->getMp() + 0.1f);
+		mpIndicator->setString("%0.1f", (hero->getMp()));
 
 		if (hero->getMp() > hero->getMaxMP())
 			hero->setMP(hero->getMaxMP());
@@ -504,6 +513,7 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	if (hero->getStamina() != hero->getMaxStamina())
 	{
 		hero->setStamina(hero->getStamina() + 0.1f);
+		staminaIndicator->setString("%f", (hero->getStamina()));
 
 		if (hero->getStamina() > hero->getMaxStamina())
 			hero->setStamina(hero->getMaxStamina());
@@ -512,15 +522,51 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	
 	hero->CoolDown_SK1 += dt;
 	if (hero->CoolDown_SK1 > hero->_CoolDown_SK1)
+	{
 		hero->CoolDown_SK1 = hero->_CoolDown_SK1;
+	}
 
 	hero->CoolDown_SK2 += dt;
 	if (hero->CoolDown_SK2 > hero->_CoolDown_SK2)
+	{
 		hero->CoolDown_SK2 = hero->_CoolDown_SK2;
+	}
 
 	hero->CoolDown_SK3 += dt;
 	if (hero->CoolDown_SK3 > hero->_CoolDown_SK3)
+	{
 		hero->CoolDown_SK3 = hero->_CoolDown_SK3;
+	}
+
+	if (hero->_CoolDown_SK1 - hero->CoolDown_SK1 > 0)
+	{
+		skillIndicator[0]->setString("%1.0f", hero->_CoolDown_SK1 - hero->CoolDown_SK1);
+	}
+	else
+	{
+		skillIndicator[0]->setString("On!");
+	}
+
+	if (hero->_CoolDown_SK2 - hero->CoolDown_SK2 > 0)
+	{
+		skillIndicator[1]->setString("%1.0f", hero->_CoolDown_SK2 - hero->CoolDown_SK2);
+	}
+	else
+	{
+		skillIndicator[1]->setString("On!");
+	}
+
+	if (hero->imgBuff->animation)
+	{
+		skillIndicator[2]->setString("Buff\nOn!");
+	}
+	else
+	{
+		skillIndicator[2]->setString("Buff\nOff!");
+	}
+
+
+	expIndicator->setString("%f", (hero->getExp()));
 }
 
 void drawGoblin(float dt, int* tiledata ,MapTile* tile, int NumX, int NumY)
@@ -552,12 +598,12 @@ void debugHitbox(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 	//hitbox orc
 	if(goblins != NULL)
 	for (int i = 0; i < goblinNum; i++)
-		drawRect((goblins[i]->getPosition().x - goblins[i]->getSize().width / 2) + offMt.x, (goblins[i]->getPosition().y - goblins[i]->getSize().height) + offMt.y, goblins[i]->getSize().width, goblins[i]->getSize().height);
+		drawRect((goblins[i]->getPosition().x + offMt.x + 700), (goblins[i]->getPosition().y - goblins[i]->getSize().height) + offMt.y, goblins[i]->getSize().width, goblins[i]->getSize().height);
 
 	//hitbox player
 	if(hero != NULL)
-	drawRect((hero->getPosition().x - hero->getSize().width / 2) + offMt.x,
-		(hero->getPosition().y - hero->getSize().height) + offMt.y, hero->getSize().width, hero->getSize().height);
+	drawRect((hero->getPosition().x + offMt.x + 700),
+		hero->getPosition().y, + offMt.y, hero->getSize().width, hero->getSize().height);
 }
 
 

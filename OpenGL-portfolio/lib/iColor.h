@@ -17,4 +17,4 @@ struct iColor4b
 #define iColor4bBlack iColor4bMake(0,0,0,255);
 
 iColor4f iColor4fMake(float r, float g, float b, float a);
-iColor4f iColor4bMake(unsigned char r, unsigned char g, unsigned char b, unsigned char a);
+iColor4b iColor4bMake(unsigned char r, unsigned char g, unsigned char b, unsigned char a);

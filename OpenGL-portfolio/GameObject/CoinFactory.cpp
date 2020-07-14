@@ -7,17 +7,15 @@ int coinNum = 0;
 
 void loadCoin()
 {
-	_coins = (Object**)malloc(sizeof(Object*) * _coinNum);
+	_coins = (Object**)malloc(sizeof(Object) * _coinNum);
 	for (int i = 0; i < _coinNum; i++)
 		_coins[i] = new Coin();
-	coins = (Object**)malloc(sizeof(Object*) * _coinNum);
+	coins = (Object**)malloc(sizeof(Object) * _coinNum);
 	coinNum = 0;
 }
 
 void freeCoin()
 {
-	for (int i = 0; i < _coinNum; i++)
-		delete _coins[i];
 	free(_coins);
 	free(coins);
 }
@@ -48,7 +46,6 @@ void checkCoin(iPoint p, iPoint off)
 		Coin* c = (Coin*)coins[i];
 		if (c->touchRect(p))
 		{
-			audioPlay(7);
 			c->stat = CoinStat_move;
 			c->delta = 0.0f;
 			c->sp = c->position + off;

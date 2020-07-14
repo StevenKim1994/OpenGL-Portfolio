@@ -74,12 +74,7 @@ void iImage::replaceAtIndex(int index, Texture* tex)
 	if (t->retainCount > 1)
 		t->retainCount--;
 	else
-	{
 		glDeleteTextures(1, &t->texID);
-#ifdef _DEBUG
-		texNum--;
-#endif
-	}
 	memcpy(t, tex, sizeof(Texture));
 	free(tex);
 #endif
@@ -226,9 +221,8 @@ iImage* iImage::copy()
 	img->arrayTex = array;
 #else
 	iImage* img = new iImage();
-	iArray* array = img->arrayTex;
 	memcpy(img, this, sizeof(iImage));
-	img->arrayTex = array;
+	img->arrayTex = new iArray(freeTex);
 	for (int i = 0; i < arrayTex->count; i++)
 		img->addObject((Texture*)arrayTex->objectAtIndex(i));
 #endif

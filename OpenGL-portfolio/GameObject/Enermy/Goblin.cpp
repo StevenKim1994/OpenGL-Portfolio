@@ -134,7 +134,7 @@ void Goblin::cbDeath(void* cb)
 	Object* o = (Object*)cb;
 	o->alive = false;
 
-	hero->setExp(hero->getExp() + 15.0f);
+	hero->setExp(hero->getExp() + 5.0f);
 	addCoin(o->position, 100);	
 }
 
@@ -300,6 +300,8 @@ void Goblin::Skill1()
 	audioPlay(5);
 	hero->setHP(hero->getHp() - 5.0);
 	hero->setBehave(ObjectBehave::ObjectBehave_hurt, hero->direction);
+	extern iStrTex* hpIndicator;
+	hpIndicator->setString("%f", hero->getHp());
 
 	if (hero->getHp() < 1)
 		hero->alive = false;

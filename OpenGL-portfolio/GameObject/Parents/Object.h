@@ -27,10 +27,7 @@ struct ObjInfo
 	int num;
 	float sizeRate;
 	iPoint p; // 축 조절하는 거
-	// add
-	float aniDt;
-	int repeatNum;
-	iColor4f color = {1, 1, 1, 1};
+
 };
 
 

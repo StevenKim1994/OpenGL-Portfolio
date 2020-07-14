@@ -3,34 +3,29 @@
 
 #include "sceneManager.h"
 #include "stage.h"
-#include "game.h"
-
 Texture* menuBg;
 Texture* menuBanner;
-Texture* texLogo;
-
-bool touching = false;
-iPoint prevPoint;
+Texture* tex;
 
 void loadMenu()
 {
+
 	menuBg = createImage("assets/menu/menuBg.jpg");
 	menuBanner = createImage("assets/menu/Banner.png");
-	texLogo = createImage("assets/menu/mainlogo.png");
+	tex = createImage("assets/menu/mainlogo.png");
 	
 	createPopMenuBtn();
 	createPopSettings();
+	createPopQuitAnswer();
 	
-	showPopMenuBtn(true);
 	audioPlay(3);
 }
 
 void freeMenu()
 {
-	freeImage(menuBg);
-	freeImage(menuBanner);
-	freeImage(texLogo);
-
+	free(menuBg);
+	free(menuBanner);
+	free(tex);
 	freePopMenuBtn();
 	freePopSettings();
 }
@@ -39,14 +34,20 @@ void drawMenu(float dt)
 {
 
 	drawImage(menuBg, 0, 0, TOP | LEFT);
-	drawImage(texLogo, devSize.width / 2 , 150, VCENTER | HCENTER); // banner
+	drawImage(tex, devSize.width / 2 , 150, VCENTER | HCENTER); // banner
 
 	drawPopMenuBtn(dt);
+	showPopMenuBtn(true);
+
 	drawPopSettings(dt);
+	drawPopQuitAnswer(dt);
 }
 
 void keyMenu(iKeyState stat, iPoint point)
 {
+	if (keyPopQuitAnswer(stat, point))
+		return;
+
 	if (keyPopSettings(stat, point))
 		return;
 	
@@ -92,7 +93,6 @@ void createPopMenuBtn()
 			g->init(size);
 			
 			g->drawImage(ig, 0, 0, 2.0,2.0,TOP | LEFT);
-			g->freeIgImage(ig);
 		
 			g->drawString(size.width/2, size.height/2, VCENTER | HCENTER, strSlot[i]);
 			tex = g->getTexture();
@@ -263,7 +263,7 @@ void createPopSettings()
 	g->init(size);
 	g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
 	g->drawString(devSize.width / 2, 100, HCENTER | VCENTER, "Game Settings");
-	g->freeIgImage(ig);
+	
 
 	Texture* bgTex;
 	iImage* bgImage = new iImage();
@@ -284,8 +284,7 @@ void createPopSettings()
 		g->init(btnSize);
 		g->drawImage(ig, 0, 0, 2.0, 1.0, TOP | LEFT);
 		g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnName[i]);
-		g->freeIgImage(ig);
-
+	
 		opName = g->getTexture();
 		img->addObject(opName);
 		freeImage(opName);
@@ -323,7 +322,6 @@ void createPopSettings()
 		setStringRGBA(1, 1, 1, 1);
 		g->init(btnSize);
 		g->drawImage(ig, 0, 0, 0.5, 0.5, TOP | LEFT);
-		g->freeIgImage(ig);
 
 		tex = g->getTexture();
 		img->addObject(tex);
@@ -348,7 +346,6 @@ void createPopSettings()
 			iSize btnSize = iSizeMake(g->getIgImageWidth(ig), g->getIgImageHeight(ig));
 			g->init(btnSize);
 			g->drawImage(ig, 0, 0, 1.0, 1.0, TOP | LEFT);
-			g->freeIgImage(ig);
 
 			tex = g->getTexture();
 			img->addObject(tex);
@@ -404,82 +401,58 @@ bool keyPopSettings(iKeyState stat, iPoint point)
 	switch (stat)
 	{
 	case iKeyState::iKeyStateBegan:
-
-		//printf("%f, %f \n", point.x, point.y);
+	
+	
 		i = PopMenuSettings->selected;
-		printf("setting = %d\n", i);
+	
 
 		if (i == 0)
 		{
-			printf("seletec == %d", i);
 			PopMenuSettings->show(false);
 		}
-		else if (i > 0 && i < 3)
+		else if ( i > 0 && i < 3)
 		{
-			touching = true;
-			prevPoint = point;
+		
 
 		}
 		break;
-
+	
 
 	case iKeyState::iKeyStateMoved:
-
-		if (touching)
-		{
-			i = PopMenuSettings->selected;
-			if (i > 0 && i < 3)
-			{
-				iImage* img = PopMenuSettingsBtn[i];
-				img->position.x += (point - prevPoint).x;
-
-				if (img->position.x < 150)
-					img->position.x = 150;
-
-				else if (img->position.x > 630)
-					img->position.x = 630;
-
-				prevPoint = point;
-			}
-		}
-
-		else
 		{
 			for (i = 0; i < 3; i++)
 			{
 				if (containPoint(point, PopMenuSettingsBtn[i]->touchRect(PopMenuSettings->closePosition)))
 				{
-					printf("%d\n", i);
+				
 					j = i;
 					break;
 				}
 			}
 			PopMenuSettings->selected = j;
 		}
-		break;
+			break;
+	
 
-
-
+		
 	case iKeyState::iKeyStateEnded:
-		touching = false;
+
 		i = PopMenuSettings->selected;
 		if (i == 1) // bgm sound
 		{
 			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
-			printf("bgm %f\n", r);
 			bgmPop = r;
 			audioVolume(bgmPop, sfxPop, 2);
 		}
 		else if (i == 2) // effect sound
 		{
 			float r = (PopMenuSettingsBtn[i]->position.x - 150) / 630;
-			printf("sfx %f\n", r);
 			sfxPop = r;
 			audioVolume(bgmPop, sfxPop, 2);
 
 		}
 
-
+		
 		break;
 
 
@@ -500,5 +473,176 @@ void showPopSettings(bool show)
 
 
 
+
+iPopup* PopQuitAnswer;
+iImage** PopQuitAnswerBtn;
+
+const char* btnSlot[2] = { "Okay", "No" };
+void createPopQuitAnswer()
+{
+	iPopup* pop = new iPopup(iPopupStyleZoom);
+	iGraphics* g = iGraphics::instance();
+	//iSize size = iSizeMake(1280, 720);
+	iSize size = iSizeMake(690, 360);
+	
+	PopQuitAnswerBtn = (iImage**)malloc(sizeof(iImage*) *3); // 0: background 1: yes 2: no
+
+	setStringBorder(0);
+	setStringBorderRGBA(0, 0, 0, 0);
+	setStringRGBA(0, 0, 0, 1);
+	setStringSize(50);
+
+	igImage* ig = g->createIgImage("assets/menu/popBg.png");
+	size = iSizeMake(g->getIgImageWidth(ig) * 2.5, g->getIgImageHeight(ig) * 2.5);
+	g->init(size);
+	g->drawImage(ig, 0, 0, 2.5, 2.5, TOP | LEFT);
+	g->drawString(size.width / 2, size.height / 2, VCENTER|HCENTER, "Do you want exit?");
+	Texture* btnTex;
+	btnTex = g->getTexture();
+	
+	iImage* img = new iImage();
+
+	img->addObject(btnTex);
+	freeImage(btnTex);
+
+
+	pop->addObject((img));
+	//PopQuitAnswerBtn[0] = img; // Background
+
+#define menuBtnSizeRateW 1.0f
+#define	menuBtnSizeRateH 1.0f
+	
+
+	for (int i = 0; i < 2; i++) // 네, 아니오 btn
+	{
+		iImage* answerBtn = new iImage();
+		
+		for (int j = 0; j < 2; j++) 
+		{
+			
+			if (j == 0) // off
+			{
+				setRGBA(1, 1, 1, 1);
+				setStringSize(30);
+				igImage* bg = g->createIgImage("assets/menu/BTN0.png");
+				iSize btnSize = iSizeMake(g->getIgImageWidth(bg) * menuBtnSizeRateW, g->getIgImageHeight(bg) * menuBtnSizeRateH);
+				g->init(btnSize);
+				g->drawImage(bg, 0, 0, menuBtnSizeRateW, menuBtnSizeRateH, TOP | LEFT);
+				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnSlot[i]);
+				btnTex = g->getTexture();
+
+			}
+
+			else //on
+			{
+				setRGBA(1, 0, 0, 1);
+				setStringSize(30);
+				igImage* bg = g->createIgImage("assets/menu/BTN0.png");
+				iSize btnSize = iSizeMake(g->getIgImageWidth(bg) * menuBtnSizeRateW, g->getIgImageHeight(bg) * menuBtnSizeRateH);
+				g->init(btnSize);
+				g->drawImage(bg, 0, 0, menuBtnSizeRateW, menuBtnSizeRateH, TOP | LEFT);
+				g->drawString(btnSize.width / 2, btnSize.height / 2, VCENTER | HCENTER, btnSlot[i]);
+				btnTex = g->getTexture();
+			}
+
+			answerBtn->addObject(btnTex);
+			freeImage(btnTex);
+		}
+		
+		answerBtn->position = iPointMake( (size.width/2)-300 + (550 * i), 450);
+		pop->addObject(answerBtn);
+
+		PopQuitAnswerBtn[i] = answerBtn;
+
+	}
+
+
+
+
+	pop->openPosition = iPointMake((devSize.width / 2)-size.width/2, devSize.height / 2 -size.height/2);
+	pop->closePosition = iPointMake((devSize.width / 2)-size.width/2, devSize.height / 2 - size.height/2);
+	pop->methodDrawBefore = drawPopQuitAnswerBefore;
+	PopQuitAnswer = pop;
+	
+}
+
+void freePopQuitAnswer()
+{
+	delete PopQuitAnswer;
+	
+}
+
+void drawPopQuitAnswer(float dt)
+{
+	PopQuitAnswer->paint(dt);
+}
+
+bool keyPopQuitAnswer(iKeyState stat, iPoint point)
+{
+	if (PopQuitAnswer->bShow == false)
+		return false;
+
+	if (PopQuitAnswer->stat != iPopupStatProc)
+		return true;
+	
+	int i, j = -1;
+
+	switch (stat)
+	{
+		case iKeyState::iKeyStateBegan:
+		{
+			i = PopQuitAnswer->selected;
+
+			if (i == -1)
+				break;
+
+			if (i == 0) // OkayBtn
+			{
+				extern bool runWnd;
+				runWnd = false; //종료!
+			}
+			else if (i == 1) // NoBtn
+			{
+				PopQuitAnswer->show(false); // 창 닫음
+			}
+			break;
+		}
+	
+		case iKeyState::iKeyStateMoved:
+		{
+			for (i = 0; i < 2; i++)
+			{
+				if (containPoint(point, PopQuitAnswerBtn[i]->touchRect(PopQuitAnswer->closePosition)))
+				{
+					j = i;
+					break;
+				}
+			}
+			PopQuitAnswer->selected = j;
+			break;
+
+		}
+
+		case iKeyState::iKeyStateEnded:
+			break;
+	}
+
+
+
+	return true;
+}
+
+void showPopQuitAnswer(bool show)
+{
+	PopQuitAnswer->show(show);
+}
+
+void drawPopQuitAnswerBefore(iPopup* me, iPoint p,float dt)
+{
+	for (int i = 0; i < 2; i++)
+	{
+		PopQuitAnswerBtn[i]->setTexAtIndex(i == PopQuitAnswer->selected);
+	}
+}
 
 

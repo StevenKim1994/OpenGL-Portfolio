@@ -114,3 +114,37 @@ iPoint iPointRotate(const iPoint& p, const iPoint& t, float degree)
 	_p.y = t.y - _p.y;
 	return _p;
 }
+
+float iPointAngle(const iPoint& v1, const iPoint& v2, const iPoint& v3)
+{
+
+	iPoint a = iPointMake(v1.x - v2.x, v1.y - v2.y); // v1-v2;
+	iPoint b = iPointMake(v3.x - v2.x, v3.y - v2.y); // v3-v2;
+	iPoint o = iPointZero;
+
+	double oa = iPointDistance(o, a);
+	double ob = iPointDistance(o, b);
+	double ab = iPointDistance(a, b);
+	float degree = acos((oa * oa + ob * ob - ab * ab) / (2 * oa * ob)) * 180 / M_PI;
+
+	if (a.y > b.y)
+	{
+		if (degree)
+			degree = 360 - degree;
+	}
+
+	if (degree > 180)
+		degree -= 360;
+
+
+
+
+	return degree;
+
+}
+
+float iPointDistance(const iPoint& p0, const iPoint& p1)
+{
+	return sqrt((p1.x - p0.x) * (p1.x - p0.x) + (p1.y - p0.y) * (p1.y - p0.y));
+}
+

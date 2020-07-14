@@ -9,6 +9,7 @@
 #include "Flyeye.h"
 
 Texture* bg;
+Texture* title;
 Texture* enter;
 
 Flyeye** flyeyes;
@@ -52,20 +53,21 @@ void loadIntro()
 		
 	}
 
+	audioPlay(2);
 	createTitle();
 	showTitle(true);
-
-	audioPlay(2);
 }
 
 void freeIntro()
 {
-	freeImage(bg);
-	freeImage(enter);
 	for (int i = 0; i < 5; i++)
 		delete flyeyes[i];
+
 	free(flyeyes);
 
+	free(bg);
+	free(title);
+	free(enter);
 
 	freeTitle();
 }
@@ -122,7 +124,7 @@ void drawIntro(float dt)
 	{
 		audioStop(0); // Intro BGM stop
 		audioPlay(1); // 버튼음 재생
-		setLoading(gs_menu, freeIntro, loadMenu);
+		setLoading(gs_menu, freeMenu, loadMenu);
 	}
 
 	drawTitle(dt);
