@@ -141,10 +141,15 @@ void loadEndStage()
 	}
 
 	mushrooms = (Monster**)malloc(sizeof(Monster*) * 1);
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < mush_Num; i++)
 	{
 		Mushroom* mush = new Mushroom(i + 1);
-		mush->setPosition(iPointMake(MapTileWidth* 27, MapTileHeight * 25));
+		if (i == 0)
+			mush->setPosition(iPointMake(MapTileWidth * 27, MapTileHeight * 25));
+
+		else if (i == 1)
+			mush->setPosition(iPointMake(MapTileWidth * 39, MapTileHeight * 25));
+
 		mushrooms[i] = mush;
 	}
 
@@ -157,6 +162,8 @@ void loadEndStage()
 	loadEffectHit();
 	loadProjectile();
 	
+
+
 }
 void freeEndStage()
 {
@@ -190,6 +197,8 @@ void freeEndStage()
 	//freePopGameOverUI();
 	//freePopStageNPCMenuUI();
 	// UI는 게임오버때 까지 계속쓰임
+
+
 }
 void drawEndStage(float dt)
 {
@@ -204,7 +213,7 @@ void drawEndStage(float dt)
 		fires[i]->paint(dt, offMt);
 
 	//mushroom
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < mush_Num; i++)
 		((Mushroom*)mushrooms[i])->paint(dt, offMt, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
 
 
@@ -214,8 +223,6 @@ void drawEndStage(float dt)
 	drawNumber(dt, offMt);
 	drawProjectile(dt, offMt);
 	fbo->unbind();
-
-
 
 	showCamera(texFboStage, dt);
 
@@ -318,6 +325,7 @@ void drawEndStage(float dt)
 		}
 	}
 
+	
 	
 	
 }

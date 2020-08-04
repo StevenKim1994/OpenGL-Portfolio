@@ -265,6 +265,7 @@ void Goblin::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 
 		r += rValue * (1 + goblin_number); // 고블린인덱스
 
+		
 		float rateOrcV = _sin(r);
 		float orcDir;
 

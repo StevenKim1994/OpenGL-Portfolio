@@ -302,14 +302,20 @@ void drawStage(float dt)
 	drawPopQuitAnswerUI(dt);
 	drawPopGameOverUI(dt);
 	drawPopPlayerInventory(dt);
-	
+	static bool nextStageIn = false;
+// 개발용 코드
+	if (nextStageIn == false)
+	{
+		//setLoading(gs_endStage, freeStage, loadEndStage); // 다음 씬으로! loadendStage() // 개발용 코드
+		//nextStageIn = true;
+	}
+// 개발용 코드
 	if (hero->alive == false) // 플레이어가 죽으면 
 	{
 		printf("Player is Dead\n");
 		showPopGameOverUI(true);
 	}
 
-	static bool nextStageIn = false;
 	if (hero->getPosition().x >= 2512 && hero->getPosition().y >= 494 && nextStageIn ==false)
 	{
 		nextStageIn = true;

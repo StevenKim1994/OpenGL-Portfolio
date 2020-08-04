@@ -1,7 +1,7 @@
 #pragma once
 #include "Monster.h"
 
-#define mush_Num 1
+#define mush_Num 2
 
 class Mushroom : public Monster
 {
@@ -19,6 +19,7 @@ public:
 	static void cbDeath(void* cb);
 	static void cbHurt(void* cb);
 	static void cbBehave(void* cb);
+	static void cbSkill1(void* cb);
 
 public:
 	void setDetected_Player(bool check);
@@ -38,5 +39,10 @@ public:
 	iImage* img;
 
 	float aiTime, _aiTime; // 반응까지에 걸리는 시간 _aiTime은 최대치
+
+public:
+	iImage* imgSkill1; // 공격스킬
+
+	void SKill1();
 	
 };
