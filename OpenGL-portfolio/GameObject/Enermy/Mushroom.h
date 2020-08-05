@@ -13,13 +13,14 @@ public:
 
 	void setBehave(ObjectBehave be, int direction);
 
-	void Skill1();
 	void setDmg(float dmg);
+	void Skill1();
 
 	static void cbDeath(void* cb);
 	static void cbHurt(void* cb);
 	static void cbBehave(void* cb);
-	static void cbSkill1(void* cb);
+	static void cbSkill(void* cb);
+
 
 public:
 	void setDetected_Player(bool check);
@@ -43,6 +44,4 @@ public:
 public:
 	iImage* imgSkill1; // 공격스킬
 
-	void SKill1();
-	
 };

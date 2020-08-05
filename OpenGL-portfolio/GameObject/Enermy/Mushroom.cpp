@@ -3,6 +3,7 @@
 #include "GameUI.h"
 #include "../PlayerCharacter/Player.h"
 #include "../GameObject/Prop/coin.h"
+#include "GameEffect.h"
 extern Object** coins;
 extern int coinNum;
 
@@ -13,10 +14,11 @@ extern int coinNum;
 #define Mush_Width 10
 #define Mush_Height 10
 
-#define Mush_Speed 6.0
+#define Mush_Speed 1.0
 
 static iImage** imgMush = NULL;
 
+extern Object** heros;
 extern Player* hero;
 
 Mushroom::Mushroom(int number)
@@ -51,17 +53,17 @@ Mushroom::Mushroom(int number)
 				tex->potHeight *= oi->sizeRate;
 				img->addObject(tex);
 				freeImage(tex);
-		
+
 			}
 
 			switch (i)
 			{
-			//case 0:
-			//	img->_repeatNum = 0;
-			//	break;
-				
-			default:
+			case 0:
 				img->_repeatNum = 0;
+				break;
+
+			default:
+				img->_repeatNum = 1;
 				break;
 			}
 			img->_aniDt = 0.1f;
@@ -80,31 +82,18 @@ Mushroom::Mushroom(int number)
 
 	HP = Mush_HP;
 	MP = Mush_MP;
-	
+
 	direction = 0;
+
+	_speed = Mush_Speed;
 
 	behave = ObjectBehave::ObjectBehave_NULL;
 	setBehave(ObjectBehave::ObjectBehave_idle, direction);
 
-	iImage* img = new iImage();
-	{ // 스클 불러오는 부분
-		for (int i = 0; i < 22; i++)
-		{
-
-			iGraphics* g = iGraphics::instance();
-			Texture* tex = createImage("assets/stage/mushroom/Skill1/Projectile (%d).png", i + 1);
 	
-			img->addObject(tex);
-			freeImage(tex);
-		}
-	}
-
-	img->aniDt = 0.0f;
-	img->_aniDt = 0.15f;
-	img->repeatNum = 1;
-
-	imgSkill1 = img;
 }
+
+
 
 Mushroom::~Mushroom()
 {
@@ -136,48 +125,90 @@ void Mushroom::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 	else
 		direction = 0;
 
-	if (iPointLength(hero->getPosition() - position) < 150) // 플레이어가 사정거리에 들어왔을시 투사체 발사
+
+	if (iPointLength(hero->getPosition() - position) < 150)
 	{
-		if (behave != ObjectBehave::ObjectBehave_hurt && behave != ObjectBehave::ObjectBehave_death)
-		{ 
-			setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
-			
+		if (detected_Player == false)
+		{
+
+			int sx = position.x;
+			sx /= MapTileWidth;
+
+			int sy = position.y;
+			sy /= MapTileHeight;
+
+			int ex = hero->getPosition().x;
+			ex /= MapTileWidth;
+
+			int ey = hero->getPosition().y;
+			ey /= MapTileHeight;
+
+			detected_Player = true;
+
 		}
+	
+
+		if (detected_Player)
+		{
+			speed += 0.05f;
+			if (speed > _speed)
+			{
+				setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+				speed = 0.0f;
+			}
+		
+
+		}
+
 	}
 	else
 	{
+	
+		detected_Player = false;
 		if (behave != ObjectBehave::ObjectBehave_hurt && behave != ObjectBehave::ObjectBehave_death)
 			setBehave(ObjectBehave::ObjectBehave_idle, direction);
 	}
+	
 }
 
-void Mushroom::setBehave(ObjectBehave be, int direction)
+void Mushroom::setBehave(ObjectBehave be, int dir)
 {
-	if (behave != be || direction != direction)
+	if (behave != be || direction != dir)
 	{
 		behave = be;
 		img = imgs[(int)be];
-		
-		if (be == ObjectBehave::ObjectBehave_idle)
-			img->startAnimation(cbBehave, this);
+
+		if (be == ObjectBehave::ObjectBehave_death)
+			img->startAnimation(cbDeath, this);
 
 		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
-		{
-			
-			
-			
-		}
-			
-		this->direction = direction;
+			img->startAnimation(cbSkill, this);
+		
+		else
+			img->startAnimation(cbBehave, this);
+
+		direction = dir;
 	}
-	if(!img->animation)
-		img->startAnimation(cbSkill1,this);
 }
 
+
+void Mushroom::cbSkill(void* cb)
+{
+	printf("cbSkill1\n");
+	Mushroom* o = (Mushroom*)cb;
+	o->Skill1();
+	o->setBehave(ObjectBehave::ObjectBehave_idle, o->direction);
+	
+}
 void Mushroom::Skill1()
 {
-}
+	if (this->direction)
+		addProjectile(1, this->position + iPointMake(150, -30), this->direction, 3, 1);// , (Object**)heros, 1);
 
+	else
+		addProjectile(1, this->position - iPointMake(150, +30), this->direction, 3, 1);//, (Object**)heros, 1);
+
+}
 void Mushroom::setDmg(float dmg)
 {
 }
@@ -192,11 +223,7 @@ void Mushroom::cbHurt(void* cb)
 
 void Mushroom::cbBehave(void* cb)
 {
-}
-
-void Mushroom::cbSkill1(void* cb)
-{
-	printf("!!usb!\n");
+	
 }
 
 void Mushroom::setDetected_Player(bool check)
@@ -217,8 +244,3 @@ Object* Mushroom::getTarget()
 	return nullptr;
 }
 
-void Mushroom::SKill1()
-{
-
-
-}

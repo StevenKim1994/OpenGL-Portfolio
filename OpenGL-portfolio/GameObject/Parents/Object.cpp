@@ -245,5 +245,6 @@ void Object::cbBehave(void* cb)
 void Object::cbSkill(void* cb)
 {
 	Object* o = (Object*)cb;
+	
 }
 

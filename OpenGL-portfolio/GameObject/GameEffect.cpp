@@ -173,9 +173,10 @@ struct Projectile
 	iPoint p;
 	int dir;
 	int speed;
-	int targetNum;
+	//int targetNum;
 	iSize rectSize = iSizeMake(32, 32);
-	Object** target;
+	//Object** target;
+	int shooter; // 0 : player , 1: enermy;
 
 	bool paint(float dt, iPoint off)
 	{
@@ -187,23 +188,30 @@ struct Projectile
 		img->paint(dt, p + off);
 		img->leftRight = dir;
 
+		/*
 		extern int gameState;
 
 		
 			for (int i = 0; i < targetNum; i++)
 			{
 
-				if (containPoint(iPointMake(p.x, p.y + 32), iRectMake(target[i]->position.x, target[i]->position.y, 64, 64)))
+				if (gameState == 1)
 				{
-					if (((Monster*)target[i])->type == 2)
+					if (containPoint(iPointMake(p.x, p.y + 32), iRectMake(target[i]->position.x, target[i]->position.y, 64, 64)))
 					{
-						((Goblin*)target[i])->setDmg(7);
-						addEffectHit(0, target[i]->position);
-						//zoomCamera(target[i]->position, 1.5);
-						return true;
+
+						if (((Monster*)target[i])->type == 2)
+						{
+							((Goblin*)target[i])->setDmg(7);
+							addEffectHit(0, target[i]->position);
+							//zoomCamera(target[i]->position, 1.5);
+							return true;
+						}
+
 					}
 				}
 			}
+		*/
 		
 
 		if (img->animation)
@@ -223,7 +231,7 @@ int projectNum;
 void loadProjectile()
 {
 	int i;
-	_projectile = (Projectile**)malloc(sizeof(Projectile*) * 1);
+	_projectile = (Projectile**)malloc(sizeof(Projectile*) * 2); // 0 : 플레이어 2 번스킬 , 1 : Mushroom 투사체
 
 	iImage* img = new iImage();
 	for (int i = 0; i < 61; i++)
@@ -242,15 +250,38 @@ void loadProjectile()
 
 	delete img;
 
-	projectile = (Projectile**)malloc(sizeof(Projectile*) * 1 * _projectNum);
+	img = new iImage();
+	for (int i = 0; i < 22; i++)
+	{
+		Texture* tex = createImage("assets/stage/mushroom/Skill1/Projectile (%d).png", i + 1);
+		img->addObject(tex);
+		freeImage(tex);
+	}
+
+	img->position = iPointMake(-188, -188);
+	img->_aniDt = 0.03f;
+	img->_repeatNum = 1;
+
+	_projectile[1] = (Projectile*)malloc(sizeof(Projectile) * _projectNum);
+
+	for (i = 0; i < _projectNum; i++)
+		_projectile[1][i].img = img->copy();
+
+	delete img;
+
+
+
+	projectile = (Projectile**)malloc(sizeof(Projectile*) * 2 * _projectNum);
 	projectNum = 0;
+
+
 
 
 }
 
 void freeProjectile()
 {
-	for (int j = 0; j < 1; j++)
+	for (int j = 0; j < 2; j++)
 	{
 		for (int i = 0; i < _projectNum; i++)
 			delete _projectile[j][i].img;
@@ -277,7 +308,7 @@ void drawProjectile(float dt, iPoint off)
 	}
 }
 
-void addProjectile(int index, iPoint p, int direction, int speed, Object** ObjTarget, int TargetNum)
+void addProjectile(int index, iPoint p, int direction, int speed, int shooter)// Object** ObjTarget, int TargetNum)
 {
 	for (int i = 0; i < _projectNum; i++)
 	{
@@ -288,8 +319,9 @@ void addProjectile(int index, iPoint p, int direction, int speed, Object** ObjTa
 			pj->dir = direction;
 			pj->speed = speed;
 			pj->img->startAnimation();
-			pj->target = ObjTarget;
-			pj->targetNum = TargetNum;
+			//pj->target = ObjTarget;
+			//pj->targetNum = TargetNum;
+			pj->shooter = shooter;
 
 			projectile[projectNum] = pj;
 			projectNum++;
@@ -298,6 +330,8 @@ void addProjectile(int index, iPoint p, int direction, int speed, Object** ObjTa
 
 	}
 }
+
+
 
 bool Damage::paint(float dt, iPoint off)
 {

@@ -17,6 +17,7 @@ bool mouseMove = false;
 
 //object
 Object** goblins;
+Object** heros;
 Player* hero;
 
 
@@ -184,7 +185,9 @@ void loadStage()
 	}
 
 
-	
+	heros = (Object**)malloc(sizeof(Object) * 1);
+	heros[0] = hero;
+
 	goblins = (Object**)malloc(sizeof(Object) * goblin_Num);
 	for (int i = 0; i < goblin_Num; i++) // 맵에 오크 생성
 	{
@@ -194,6 +197,7 @@ void loadStage()
 		goblins[i] = goblin;
 	}
 
+	
 
 
 	sp = new iShortestPath();
@@ -307,7 +311,7 @@ void drawStage(float dt)
 	if (nextStageIn == false)
 	{
 		//setLoading(gs_endStage, freeStage, loadEndStage); // 다음 씬으로! loadendStage() // 개발용 코드
-		//nextStageIn = true;
+	//	nextStageIn = true;
 	}
 // 개발용 코드
 	if (hero->alive == false) // 플레이어가 죽으면 
