@@ -54,6 +54,7 @@ void drawNumber(float dt, iPoint off)
 				damage[j] = damage[1 + j];
 			i--;
 		}
+
 	}
 }
 void addNumber(int dmg, iPoint position)
@@ -177,6 +178,7 @@ struct Projectile
 	iSize rectSize = iSizeMake(32, 32);
 	//Object** target;
 	int shooter; // 0 : player , 1: enermy;
+	float damage;
 
 	bool paint(float dt, iPoint off)
 	{
@@ -292,6 +294,11 @@ void freeProjectile()
 	free(projectile);
 }
 
+#include "Player.h"
+extern Player* hero;
+extern Object** goblins;
+extern Monster** mushrooms;
+
 
 
 void drawProjectile(float dt, iPoint off)
@@ -303,6 +310,32 @@ void drawProjectile(float dt, iPoint off)
 			projectNum--;
 			for (int j = i; j < projectNum; j++)
 				projectile[j] = projectile[1 + j];
+		}
+		if (projectile[i]->shooter == 0) // 발사한 오브젝트가 player 일때
+		{
+			for (int j = 0; j < goblin_Num; j++)
+			{
+				if (containRect(projectile[i]->img->touchRect(), goblins[j]->img->touchRect()))
+				{
+					printf("goblins[%d] hit!\n", j);
+				}
+
+			}
+			for (int j = 0; j < mush_Num; j++)
+			{
+				if (containRect(projectile[i]->img->touchRect(), mushrooms[j]->img->touchRect()))
+				{
+					printf("mushrooms[%d] hit!\n", j);
+				}
+
+			}
+		}
+		else if (projectile[i]->shooter == 1) // 발사한 오브젝트가 enermy 일때
+		{
+			if (containRect(projectile[i]->img->touchRect(), hero->img->touchRect())) // 적이 쏜 투사체와 플레이어가 충돌하였을때
+			{
+				printf("player hit!\n");
+			}
 		}
 
 	}

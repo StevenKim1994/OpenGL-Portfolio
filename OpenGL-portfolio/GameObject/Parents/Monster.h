@@ -1,6 +1,9 @@
 #pragma once
 #include "CanMove.h"
 
+#define mush_Num 2
+#define goblin_Num 10
+
 class Monster : public CanMove
 {
 public:
