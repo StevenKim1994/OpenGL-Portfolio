@@ -207,10 +207,13 @@ void Mushroom::cbSkill(void* cb)
 void Mushroom::Skill1()
 {
 	if (this->direction)
-		addProjectile(1, this->position + iPointMake(150, -30), this->direction, 3, 1);// , (Object**)heros, 1);
-
+	{
+		// 플레이어의 1번 스킬처럼 몬스터도 똑같이 구현하기
+	}
 	else
-		addProjectile(1, this->position - iPointMake(150, +30), this->direction, 3, 1);//, (Object**)heros, 1);
+	{
+
+	}
 
 }
 void Mushroom::setDmg(float dmg)
