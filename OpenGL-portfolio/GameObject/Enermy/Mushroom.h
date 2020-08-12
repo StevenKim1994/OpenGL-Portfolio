@@ -36,8 +36,8 @@ private:
 
 public:
 	int mush_number;
-	iImage** imgs;
-	iImage* img;
+	//iImage** imgs;
+	//iImage* img;
 
 	float aiTime, _aiTime; // 반응까지에 걸리는 시간 _aiTime은 최대치
 

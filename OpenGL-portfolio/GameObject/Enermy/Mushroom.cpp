@@ -31,8 +31,9 @@ Mushroom::Mushroom(int number)
 			"assets/stage/mushroom/Attack (%d).png", 8, 2.5f, {-75,-100},
 			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
 			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
+			"assets/stage/mushroom/Hurt (%d).png", 4, 2.5f, {-75, -100},
 			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
-			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
+			"assets/stage/mushroom/Hurt (%d).png", 4, 2.5f, {-75, -100},
 		};
 
 		iGraphics* g = iGraphics::instance();
@@ -183,7 +184,10 @@ void Mushroom::setBehave(ObjectBehave be, int dir)
 
 		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
 			img->startAnimation(cbSkill, this);
-		
+
+		else if (be == ObjectBehave::ObjectBehave_hurt)
+			img->startAnimation(cbHurt, this);
+
 		else
 			img->startAnimation(cbBehave, this);
 

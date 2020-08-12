@@ -157,8 +157,7 @@ void iImage::paint(float dt, iPoint off)
 
 
 	int x = p.x;
-	int y = p.y;
-	int width = tex->width;
+	int y = p.y;	int width = tex->width;
 	int height = tex->height;
 
 	switch (anc) {

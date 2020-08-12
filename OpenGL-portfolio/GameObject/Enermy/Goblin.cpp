@@ -130,6 +130,7 @@ extern Object** coins;
 extern int coinNum;
 
 void Goblin::cbDeath(void* cb)
+
 {
 	Object* o = (Object*)cb;
 	o->alive = false;

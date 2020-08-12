@@ -233,6 +233,8 @@ struct Projectile
 					if (containPoint(p, iRectMake(goblins[j]->position.x - 16, goblins[j]->position.y - 16, 32, 32)))
 					{
 						// 데미지 주는곳
+						goblins[j]->setDamage(7);
+						addNumber(7, goblins[j]->position);
 						goblins[j]->setBehave(ObjectBehave::ObjectBehave_hurt, goblins[j]->direction);
 						//projectile[i]->
 						addEffectHit(0,p);
@@ -252,7 +254,9 @@ struct Projectile
 
 					if (containPoint(p, iRectMake(mushrooms[j]->position.x - 55, mushrooms[j]->position.y - 35, 110, 70)))
 					{
-						//mushrooms[j]->setBehave(ObjectBehave::ObjectBehave_hurt, mushrooms[j]->direction);
+						mushrooms[j]->setDamage(7);
+						addNumber(7, mushrooms[j]->position);
+						mushrooms[j]->setBehave(ObjectBehave::ObjectBehave_hurt, mushrooms[j]->direction);
 						addEffectHit(0, p);
 
 						return true;
