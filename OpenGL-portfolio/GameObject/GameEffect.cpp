@@ -298,13 +298,15 @@ void freeProjectile()
 extern Player* hero;
 extern Object** goblins;
 extern Monster** mushrooms;
-
+extern int goblinNum;
+extern int mushNum;
 
 
 void drawProjectile(float dt, iPoint off)
 {
 	for (int i = 0; i < projectNum; i++)
 	{
+		//printf("%f ,%f shot \n", projectile[i]->p.x, projectile[i]->p.y);
 		if (projectile[i]->paint(dt, off))
 		{
 			projectNum--;
@@ -313,21 +315,34 @@ void drawProjectile(float dt, iPoint off)
 		}
 		if (projectile[i]->shooter == 0) // 발사한 오브젝트가 player 일때
 		{
-			for (int j = 0; j < goblin_Num; j++)
+			if (goblinNum > 0) // 고블린이 살아 있으면
 			{
-				if (containRect(projectile[i]->img->touchRect(), goblins[j]->img->touchRect()))
+				for (int j = 0; j < goblin_Num; j++)
 				{
-					printf("goblins[%d] hit!\n", j);
-				}
+			
 
+					if (containPoint(projectile[i]->p, iRectMake(goblins[j]->position.x - 16, goblins[j]->position.y - 16, 32, 32)))
+					{
+						// 데미지 주는곳
+						goblins[j]->setBehave(ObjectBehave::ObjectBehave_hurt, goblins[j]->direction);
+					}
+
+				}
 			}
-			for (int j = 0; j < mush_Num; j++)
+			
+			if (mushNum > 0 ) // 버섯이 살아있으면
 			{
-				if (containRect(projectile[i]->img->touchRect(), mushrooms[j]->img->touchRect()))
+				for (int j = 0; j < mush_Num; j++)
 				{
-					printf("mushrooms[%d] hit!\n", j);
-				}
+					//printf("projectile %f %f\n", projectile[i]->p.x, projectile[i]->p.y);
+					//printf("mush %f %f\n", mushrooms[j]->position.x, mushrooms[j]->position.y);
+					
+					if (containPoint(projectile[i]->p, iRectMake(mushrooms[j]->position.x -55, mushrooms[j]->position.y - 35 , 110 ,70)))
+					{
+						printf("mushrooms[%d] hit!\n", j);
+					}
 
+				}
 			}
 		}
 		else if (projectile[i]->shooter == 1) // 발사한 오브젝트가 enermy 일때

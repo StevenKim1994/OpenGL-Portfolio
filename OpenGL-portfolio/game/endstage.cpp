@@ -32,6 +32,9 @@ extern float gameTime;
 extern float _gameTime;
 extern bool mouseMove;
 
+int _mushNum = mush_Num;
+int mushNum = 0; // 처음엔 0
+
 static bool coli_fire = false;
 void cbShake()
 {
@@ -84,6 +87,8 @@ int endStagetiles[endStageMapTileNumX * endStageMapTileNumY] =
 
 void loadEndStage()
 {
+	mushNum = _mushNum;
+
 	logoDt = 0.0;
 	texFboStage = createTexture(devSize.width, devSize.height);
 
@@ -178,8 +183,11 @@ void freeEndStage()
 
 	free(fires);
 
-	for (int i = 0; i < 1; i++)
+	for (int i = 0; i < mushNum; i++)
 		delete mushrooms[i];
+
+	mushNum = 0;
+	
 
 	free(mushrooms);
 

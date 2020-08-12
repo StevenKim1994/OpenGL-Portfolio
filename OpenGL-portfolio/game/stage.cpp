@@ -264,6 +264,7 @@ void freeStage()
 
 	for (int i = 0; i < goblinNum; i++)
 		delete goblins[i];
+	goblinNum = 0; // 스테이지를 지났으니 
 	
 	free(goblins);
 
@@ -274,6 +275,8 @@ void freeStage()
 
 	freeCoin();
 }
+
+
 
 void drawStage(float dt)
 {
