@@ -17,6 +17,8 @@
 #include "CoinFactory.h"
 #include "endstage.h"
 
+#include "../GameObject/Prop/Thunder.h"
+
 
 void loadStage();
 void freeStage();

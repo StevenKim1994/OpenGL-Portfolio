@@ -177,6 +177,9 @@
     <ClInclude Include="lib\iMatrix.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="GameObject\Prop\Thunder.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="OpenGL-portfolio.rc">
@@ -346,6 +349,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="lib\iMatrix.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject\Prop\Thunder.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

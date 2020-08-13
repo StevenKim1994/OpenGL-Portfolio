@@ -314,7 +314,7 @@ void Player::Skill2()
 
 	printf("skill2! on!\n");
 
-	addProjectile(0, hero->getPosition(), hero->direction, 3, 0);
+	addProjectile(0, hero->getPosition(), hero->direction, 15, 0);
 
 }
 

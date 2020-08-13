@@ -172,6 +172,7 @@
     <ClInclude Include="GameObject\Prop\coin.h" />
     <ClInclude Include="GameObject\Prop\Fire.h" />
     <ClInclude Include="GameObject\Prop\FirePlace.h" />
+    <ClInclude Include="GameObject\Prop\Thunder.h" />
     <ClInclude Include="GameObject\stageTileInfo.h" />
     <ClInclude Include="game\bossstage.h" />
     <ClInclude Include="game\drawObject.h" />
@@ -235,6 +236,7 @@
     <ClCompile Include="GameObject\Prop\coin.cpp" />
     <ClCompile Include="GameObject\Prop\Fire.cpp" />
     <ClCompile Include="GameObject\Prop\FirePlace.cpp" />
+    <ClCompile Include="GameObject\Prop\Thunder.cpp" />
     <ClCompile Include="game\bossstage.cpp" />
     <ClCompile Include="game\drawObject.cpp" />
     <ClCompile Include="game\ending.cpp" />

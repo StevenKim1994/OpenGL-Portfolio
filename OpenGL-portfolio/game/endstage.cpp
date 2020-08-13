@@ -166,6 +166,8 @@ void loadEndStage()
 	loadNumber();
 	loadEffectHit();
 	loadProjectile();
+
+
 	
 
 
@@ -217,7 +219,7 @@ void drawEndStage(float dt)
 	drawRect(hero->getPosition().x+offMt.x, hero->getPosition().y+offMt.y, hero->getSize().width, hero->getSize().height);
 	
 	//fires
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)	
 		fires[i]->paint(dt, offMt);
 
 	//mushroom

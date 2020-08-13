@@ -19,6 +19,7 @@ bool mouseMove = false;
 Object** goblins;
 Object** heros;
 Player* hero;
+Thunder** Thunders;
 
 
 // 오브젝트 풀 관련
@@ -52,6 +53,10 @@ float _gameTime = 100000000000;
 static float logoDt = 0.0;
 
 Player* minimapHero;
+
+
+
+
 
 
 
@@ -197,6 +202,14 @@ void loadStage()
 		goblins[i] = goblin;
 	}
 
+	Thunders = (Thunder**)malloc(sizeof(Thunder*) * 2);
+	for (int i = 0; i < 2; i++)
+	{
+		Thunder* th = new Thunder();
+		th->setPosition(iPointMake(MapTileWidth * 10 + (i * (MapTileWidth+350)), MapTileHeight * 17));
+		Thunders[i] = th;
+	}
+
 	
 
 
@@ -256,6 +269,11 @@ void loadStage()
 
 void freeStage()
 {
+	for (int i = 0; i < 2; i++)
+		delete Thunders[i];
+
+	free(Thunders);
+
 	freeImage(texFboStage);
 	for (int i = 0; i < 1520; i++)
 		delete tileset[i];
@@ -286,6 +304,10 @@ void drawStage(float dt)
 	drawHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 	drawCoin(dt, offMt, maptile);
 	drawProjectile(dt, offMt);
+
+	for (int i = 0; i < 2; i++)
+		Thunders[i]->paint(dt, offMt);
+
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);
 
@@ -356,6 +378,9 @@ void drawStage(float dt)
 		hero->setStamina(hero->getStamina());
 		nameIndicator->setString("%d", hero->getLevel());
 	}
+
+
+
 
 }
 
