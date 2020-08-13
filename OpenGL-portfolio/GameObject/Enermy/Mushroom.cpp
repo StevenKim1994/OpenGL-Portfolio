@@ -7,7 +7,7 @@
 extern Object** coins;
 extern int coinNum;
 
-#define Mush_HP 50
+#define Mush_HP 20
 #define Mush_MP 100
 #define Mush_Staminia 100
 
@@ -34,6 +34,7 @@ Mushroom::Mushroom(int number)
 			"assets/stage/mushroom/Hurt (%d).png", 4, 2.5f, {-75, -100},
 			"assets/stage/mushroom/Idle (%d).png", 4, 2.5f, {-75, -75},
 			"assets/stage/mushroom/Hurt (%d).png", 4, 2.5f, {-75, -100},
+			"assets/stage/mushroom/Death/Death (%d).png", 4, 2.5f, {-75,-100},
 		};
 
 		iGraphics* g = iGraphics::instance();
@@ -90,7 +91,28 @@ Mushroom::Mushroom(int number)
 
 	behave = ObjectBehave::ObjectBehave_NULL;
 	setBehave(ObjectBehave::ObjectBehave_idle, direction);
+	alive = true;
 
+	// 스킬 1 로드
+	iImage* imgS = new iImage();
+	{
+		for (int i = 1; i <= 22; i++)
+		{
+			iGraphics* g = iGraphics::instance();
+			setRGBA(1, 1, 1, 1);
+			Texture* tex = createImage("assets/stage/mushroom/Skill1/Projectile (%d).png", i);
+			imgS->addObject(tex);
+			freeImage(tex);
+		}
+		imgS->position = iPointMake(-300, -300);
+		imgS->aniDt = 0.0f;
+		imgS->_aniDt = 0.01f;
+		imgS->_repeatNum = 1;
+	
+
+		imgSkill1 = imgS;
+		setRGBA(1, 1, 1, 1);
+	}
 	
 }
 
@@ -169,6 +191,12 @@ void Mushroom::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 		if (behave != ObjectBehave::ObjectBehave_hurt && behave != ObjectBehave::ObjectBehave_death)
 			setBehave(ObjectBehave::ObjectBehave_idle, direction);
 	}
+
+	if (imgSkill1->animation)
+	{
+		imgSkill1->leftRight = direction;
+		imgSkill1->paint(dt, offset);
+	}
 	
 }
 
@@ -206,22 +234,73 @@ void Mushroom::cbSkill(void* cb)
 }
 void Mushroom::Skill1()
 {
-	if (this->direction)
-	{
-		// 플레이어의 1번 스킬처럼 몬스터도 똑같이 구현하기
-	}
+	float cool = 0.0f;
+	bool collision = false;
+	iPoint targetPos;
+	printf("%f %f\n", position.x, position.y);
+	if (direction == 0)
+		targetPos = iPointMake(position.x - 376, position.y - 230);
 	else
-	{
+		targetPos = iPointMake(position.x , position.y - 230);
 
+
+	imgSkill1->position = targetPos;
+	imgSkill1->startAnimation();
+
+	if (collision == false)
+	{
+		if (containPoint(hero->getPosition(), imgSkill1->touchRect()))
+		{
+			hero->setHP(hero->getHp() - 10.0);
+			hero-> setBehave(ObjectBehave::ObjectBehave_hurt, hero->direction);
+			extern iStrTex* hpIndicator;
+			hpIndicator->setString("%f", hero->getHp());
+
+			if (hero->getHp() < 1)
+				hero->alive = false;
+		}
 	}
+
+	while (cool >= 10.0f)
+		cool += 0.01f;
+
+	printf("end\n");
 
 }
 void Mushroom::setDmg(float dmg)
 {
+	printf("%f\n", HP);
+	ObjectBehave be = behave;
+	int dir = direction;
+
+	if (HP > 0)
+	{
+		HP -= dmg;
+		be = ObjectBehave::ObjectBehave_hurt;
+	}
+	else
+	{
+		HP = 0;
+		be = ObjectBehave::ObjectBehave_death;
+	}
+	setBehave(be, dir);
+	addNumber(dmg, position + iPointMake(0, -50));
 }
+
+#include "../PlayerCharacter/Player.h"
+#include "../GameObject/Prop/coin.h"
+#include "../GameObject/CoinFactory.h"
+extern Object** coins;
+extern int coinNum;
+
 
 void Mushroom::cbDeath(void* cb)
 {
+	Object* o = (Object*)cb;
+	o->alive = false;
+
+	hero->setExp(hero->getExp() + 10.0f);
+//	addCoin(o->position, 300);
 }
 
 void Mushroom::cbHurt(void* cb)
@@ -230,7 +309,7 @@ void Mushroom::cbHurt(void* cb)
 
 void Mushroom::cbBehave(void* cb)
 {
-	
+	iImage* i = (iImage*)cb;
 }
 
 void Mushroom::setDetected_Player(bool check)

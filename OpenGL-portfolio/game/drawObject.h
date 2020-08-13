@@ -3,6 +3,7 @@
 #include "iStd.h"
 #include "Player.h"
 #include "Goblin.h"
+#include "Mushroom.h"
 #include "../GameObject/Prop/Fire.h"
 #include "sceneManager.h"
 

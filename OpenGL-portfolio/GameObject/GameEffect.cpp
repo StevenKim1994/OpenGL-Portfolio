@@ -171,7 +171,7 @@ void addEffectHit(int index, iPoint p)
 #include "Player.h"
 extern Player* hero;
 extern Object** goblins;
-extern Monster** mushrooms;
+extern Object** mushrooms;
 extern int goblinNum;
 extern int mushNum;
 extern Object** orcs;

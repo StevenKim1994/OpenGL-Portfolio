@@ -27,7 +27,7 @@ static Texture* endStageTileset[1521];
 static MapTile* endStagemaptile;
 stageNPC* stagenpc;
 Fire** fires;
-Monster** mushrooms;
+Object** mushrooms;
 extern float gameTime;
 extern float _gameTime;
 extern bool mouseMove;
@@ -145,7 +145,7 @@ void loadEndStage()
 		fires[i] = fire;
 	}
 
-	mushrooms = (Monster**)malloc(sizeof(Monster*) * 1);
+	mushrooms = (Object**)malloc(sizeof(Object*) * 2);
 	for (int i = 0; i < mush_Num; i++)
 	{
 		Mushroom* mush = new Mushroom(i + 1);
@@ -222,7 +222,10 @@ void drawEndStage(float dt)
 
 	//mushroom
 	for (int i = 0; i < mush_Num; i++)
-		((Mushroom*)mushrooms[i])->paint(dt, offMt, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
+	{
+		if(mushrooms[i]->alive)
+			((Mushroom*)mushrooms[i])->paint(dt, offMt, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
+	}
 
 
 	stagenpc->paint(dt, offMt);

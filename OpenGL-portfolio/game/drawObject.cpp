@@ -11,6 +11,7 @@ extern Player* hero;
 extern bool mouseMove;
 
 extern Object** goblins;
+extern Object** mushrooms;
 extern int goblinNum;
 extern iStrTex* killIndicator;
 
@@ -276,6 +277,9 @@ void meleeAttackCb()
 	hero->setBehave(be, hero->direction);
 }
 
+extern int mushNum;
+extern int goblinNum;
+
 void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 {
 	void* playercb = NULL;
@@ -373,12 +377,11 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 
 				extern int gameState;
 			
-				switch (gameState)
+				if (goblinNum > 0)
 				{
-				case gs_stage:
 					for (int i = 0; i < goblin_Num; i++)
 					{
-				
+
 						if (containPoint(goblins[i]->getPosition(), hero->imgSkill->touchRect()))
 						{
 							Goblin* goblin = (Goblin*)goblins[i];
@@ -386,12 +389,21 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 							addEffectHit(0, goblin->getPosition());
 						}
 					}
-					break;
-
-				case gs_endStage:
-
-					break;
 				}
+
+				if (mushNum > 0)
+				{
+					for (int i = 0; i < mush_Num; i++)
+					{
+						if (containPoint(mushrooms[i]->getPosition(), hero->imgSkill->touchRect()))
+						{
+							Mushroom* mush = (Mushroom*)mushrooms[i];
+							mush->setDmg(hero->getDamage());
+							addEffectHit(0, mush->getPosition());
+						}
+					}
+				}
+				
 			}
 			else if (keyDown & keyboard_num2 && (hero->CoolDown_SK2 - hero->_CoolDown_SK2 == 0))
 			{
