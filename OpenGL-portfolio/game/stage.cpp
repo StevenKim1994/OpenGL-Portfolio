@@ -264,7 +264,9 @@ void loadStage()
 	minimapFbo->potWidth *= 0.5;
 	minimapFbo->height *= 0.5;
 	minimapFbo->potHeight *= 0.5;
-	
+
+	setRGBA(1, 0, 0, 1);
+
 }
 
 void freeStage()
@@ -305,8 +307,31 @@ void drawStage(float dt)
 	drawCoin(dt, offMt, maptile);
 	drawProjectile(dt, offMt);
 
+
 	for (int i = 0; i < 2; i++)
+	{
 		Thunders[i]->paint(dt, offMt);
+	
+	}
+	
+
+	bool ThunderCheck = false;
+
+	setRGBA(1, 1, 1, 1);
+	for (int i = 0; i < 2; i++)
+	{
+		if (Thunders[i]->img->frame == 9 && ThunderCheck == false)
+		{
+			if (containPoint(hero->getPosition()+offMt,iRectMake(Thunders[i]->position.x+offMt.x+50,Thunders[i]->position.y+offMt.y, 200, 500)))
+			{
+				ThunderCheck = true;
+				printf("!!!\n");
+				hero->setBehave(ObjectBehave::ObjectBehave_hurt, hero->direction);
+				hero->setDmg(2.0f);
+				hpIndicator->setString("%f",hero->HP - 2.0f);
+			}
+		}
+	}
 
 	drawEffectHit(dt, offMt);
 	drawNumber(dt, offMt);

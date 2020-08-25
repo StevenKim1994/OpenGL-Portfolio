@@ -251,6 +251,7 @@ void Mushroom::Skill1()
 	{
 		if (containPoint(hero->getPosition(), imgSkill1->touchRect()))
 		{
+			collision = true;
 			hero->setHP(hero->getHp() - 10.0);
 			hero-> setBehave(ObjectBehave::ObjectBehave_hurt, hero->direction);
 			extern iStrTex* hpIndicator;

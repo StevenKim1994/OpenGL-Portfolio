@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Thunder.h"
+#include "../PlayerCharacter/Player.h"
 
 static iImage** imgThunder = NULL;
-
+extern Player* hero;
 
 
 Thunder::Thunder()
@@ -75,6 +76,7 @@ Thunder::~Thunder()
 
 void Thunder::paint(float dt, iPoint offset)
 {
+	
 	if (img->animation == false)
 	{
 		delay += dt;
@@ -86,7 +88,12 @@ void Thunder::paint(float dt, iPoint offset)
 	}
 	else
 		img->paint(dt, position + offset);
+
 	
+
+
+
+
 }
 
 void Thunder::cbBehave(void* parm)
