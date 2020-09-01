@@ -232,7 +232,7 @@ void loadCursor()
 
 void freeCursor()
 {
-    freeImage(texCursor);
+   // freeImage(texCursor);
 }
 
 void drawCursor(float dt)
