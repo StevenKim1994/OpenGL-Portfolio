@@ -22,6 +22,9 @@ struct MapTile
 #define endStageMapTileNumX 80
 #define endStageMapTileNumY 30
 
+#define vilegeTileNumX 40
+#define vilegeTileNumY 22
+
 
 #define MapTileWidth 32
 #define MapTileHeight 32

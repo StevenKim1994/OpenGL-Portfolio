@@ -92,6 +92,7 @@ void loadEndStage()
 	logoDt = 0.0;
 	texFboStage = createTexture(devSize.width, devSize.height);
 
+
 	iGraphics* g = iGraphics::instance();
 	setRGBA(0, 0, 0, 0);
 	iSize logoSize = iSizeMake(500, 70);

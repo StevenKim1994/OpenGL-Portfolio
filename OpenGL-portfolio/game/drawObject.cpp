@@ -36,7 +36,7 @@ void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, in
 			float x = offMt.x + MapTileWidth * (i % NumX);
 			float y = offMt.y + MapTileHeight * (i / NumX);
 
-			if (gameState < gs_villege)
+			if (gameState != gs_villege)
 			{
 				if (i > 879)
 				{

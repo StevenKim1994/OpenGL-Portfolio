@@ -156,6 +156,7 @@
   <ItemGroup>
     <ClInclude Include="GameObject\CoinFactory.h" />
     <ClInclude Include="GameObject\Enermy\Flyeye.h" />
+    <ClInclude Include="GameObject\Enermy\GhostWarrior.h" />
     <ClInclude Include="GameObject\Enermy\Mushroom.h" />
     <ClInclude Include="GameObject\GameEffect.h" />
     <ClInclude Include="GameObject\GameUI.h" />
@@ -220,6 +221,7 @@
   <ItemGroup>
     <ClCompile Include="GameObject\CoinFactory.cpp" />
     <ClCompile Include="GameObject\Enermy\Flyeye.cpp" />
+    <ClCompile Include="GameObject\Enermy\GhostWarrior.cpp" />
     <ClCompile Include="GameObject\Enermy\Mushroom.cpp" />
     <ClCompile Include="GameObject\GameEffect.cpp" />
     <ClCompile Include="GameObject\GameUI.cpp" />

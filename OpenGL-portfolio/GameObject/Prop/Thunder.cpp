@@ -58,7 +58,7 @@ Thunder::Thunder()
 	size = iSizeMake(50, 100);
 
 	_delay = 2.5f;
-	delay = 0.0f;
+	delay = 0.0f;	
 }
 
 Thunder::~Thunder()
@@ -100,3 +100,4 @@ void Thunder::cbBehave(void* parm)
 {
 	Thunder* t = (Thunder*)parm;
 }
+	
