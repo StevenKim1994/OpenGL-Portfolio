@@ -42,6 +42,10 @@ extern Texture* minimapFbo;
 extern iPoint offMt;
 extern Player* hero;
 
+Object** ghostwarriors;
+
+
+
 extern iStrTex* killIndicator;
 extern iStrTex* timeIndicator;
 extern iStrTex* hpIndicator;
@@ -59,7 +63,8 @@ static float logoDt;
 
 void loadVillege()
 {
-	gameState = gs_villege;
+	gameState = gs_villege; 
+
 	
 	hero->setPosition(iPointZero);
 
@@ -106,6 +111,16 @@ void loadVillege()
 	sp = new iShortestPath();
 	sp->init(Vilegetiles, vilegeTileNumX, vilegeTileNumY);
 
+	ghostwarriors = (Object**)malloc(sizeof(Object) * 1);
+	for (int i = 0; i < 1; i++)
+	{
+		GhostWarrior* gw = new GhostWarrior(i);
+		gw->setPosition(iPointMake(MapTileWidth*35, MapTileHeight * 13));
+		gw->alive = true;
+		ghostwarriors[i] = gw;
+
+		gw->setBehave(ObjectBehave::ObjectBehave_idle, gw->direction);
+	}
 
 
 	createPopPlayerUI();
@@ -119,6 +134,12 @@ void loadVillege()
 
 void freeVillege()
 {
+
+	for (int i = 0; i < 1; i++)
+		delete ghostwarriors[i];
+
+	free(ghostwarriors);
+
 	freeNumber();
 	freeEffectHit();
 	freeProjectile();
@@ -136,7 +157,16 @@ void drawVillege(float dt)
 	fbo->bind(texFboVilege);
 
 	drawMapTile(dt, Vilegetiles, vilegemaptile, vilegeTileset, vilegeTileNumX, vilegeTileNumY);
+	for (int i = 0; i < 1; i++)
+	{
+		// 여기 죽었을때 부분 추가해야함
+		((GhostWarrior*)ghostwarriors[i])->paint(dt, offMt, vilegemaptile, vilegeTileNumX, vilegeTileNumY);
+	
+	}
+
 	drawHero(dt, Vilegetiles, vilegemaptile, vilegeTileNumX, vilegeTileNumY);
+
+
 
 	fbo->unbind();
 	showCamera(texFboVilege, dt);

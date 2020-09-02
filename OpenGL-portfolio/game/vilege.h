@@ -5,6 +5,7 @@
 #include "GameEffect.h"
 #include "Player.h"
 #include "drawObject.h"
+#include "GhostWarrior.h"
 
 void loadVillege();
 void freeVillege();

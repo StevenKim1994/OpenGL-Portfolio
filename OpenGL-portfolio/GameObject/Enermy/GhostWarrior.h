@@ -11,7 +11,7 @@ public:GhostWarrior(int number);
 public:
 	void paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY);
 
-	void setBehave(ObjectBehave be, int direction);
+	void setBehave(ObjectBehave be, int dir);
 	void Skill1();
 	void Skill2();
 	void setDmg(float dmg);
