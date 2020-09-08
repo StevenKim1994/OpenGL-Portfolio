@@ -323,7 +323,10 @@ void createPopPlayerUI()
 	//SkillBar
 	{
 		//BarBackground
-		setRGBA(0, 0, 1, 1);
+		if (gameState != gs_villege)
+			setRGBA(0, 0, 1, 1);
+		else
+			setRGBA(0, 0, 1, 0.3);
 		iImage* SKBg = new iImage();
 		Texture* SKbgTex;
 		iSize SKbgSize = iSizeMake(500, 100);

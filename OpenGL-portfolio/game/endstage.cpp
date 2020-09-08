@@ -202,6 +202,7 @@ void freeEndStage()
 	freeNumber();
 	freeEffectHit();
 	freeProjectile();
+
 	//freePopPlayerUI();
 	//freePopMenuUI();
 	//freePopQuitAnswerUI();
@@ -241,6 +242,7 @@ void drawEndStage(float dt)
 	showCamera(texFboStage, dt);
 
 	fbo->bind(minimapFbo);
+	fbo->clear(1, 1, 1, 0);
 	drawMinimapTile(dt, endStagetiles, endStagemaptile, endStageTileset, endStageMapTileNumX, endStageMapTileNumY);
 	drawMinimapHero(dt, endStagetiles, endStagemaptile, endStageMapTileNumX, endStageMapTileNumY);
 	fbo->unbind();
@@ -264,7 +266,9 @@ void drawEndStage(float dt)
 
 	staminaIndicator->setString("Stamina : %.1f / %.1f", hero->getStamina(), hero->getMaxStamina());
 
-	
+	if (hero->getHp() <= 0)
+		hero->alive = false;
+
 
 	for (int i = 0; i < 2; i++)
 	{
@@ -272,6 +276,7 @@ void drawEndStage(float dt)
 		{
 			if (coli_fire == false)
 			{
+				hero->setDmg(1.0f);
 				coli_fire = true;
 				printf("fire!\n");
 				shakeCamera(25,0.5, cbShake);

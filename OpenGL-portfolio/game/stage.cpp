@@ -267,6 +267,8 @@ void loadStage()
 
 	setRGBA(1, 0, 0, 1);
 
+	
+
 }
 
 void freeStage()
@@ -346,6 +348,7 @@ void drawStage(float dt)
 	setRGBA(1, 1, 1, 1);
 	fbo->bind(minimapFbo);
 	setLineWidth(3);
+	fbo->clear(0, 0, 0, 0);
 	drawMinimapTile(dt, tiles, maptile, tileset, stageMapTileNumX, stageMapTileNumY);
 	drawMinimapHero(dt, tiles, maptile, stageMapTileNumX, stageMapTileNumY);
 	fbo->unbind();
@@ -357,11 +360,11 @@ void drawStage(float dt)
 	drawPopGameOverUI(dt);
 	drawPopPlayerInventory(dt);
 	static bool nextStageIn = false;
-// 개발용 코드
+// 개발용 코드 #DEBUG
 	if (nextStageIn == false)
 	{
-		//setLoading(gs_endStage, freeStage, loadEndStage); // 다음 씬으로! loadendStage() // 개발용 코드
-	//	nextStageIn = true;
+		setLoading(gs_villege, freeStage, loadVillege);
+		nextStageIn = true;
 	}
 // 개발용 코드
 	if (hero->alive == false) // 플레이어가 죽으면 

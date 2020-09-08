@@ -169,6 +169,10 @@ void drawVillege(float dt)
 
 
 	fbo->unbind();
+	
+	fbo->bind(minimapFbo);
+	fbo->clear(1, 1, 1, 0);
+	fbo->unbind();
 	showCamera(texFboVilege, dt);
 
 	drawNumber(dt, offMt);

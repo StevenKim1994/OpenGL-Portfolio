@@ -157,13 +157,12 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 			setBehave(ObjectBehave::ObjectBehave_move, direction);
 
 		moveForMouse(dt, NumX, NumY);
-		
 	}
 
 
-	//img->leftRight = direction;
+	img->leftRight = direction;
 
-	//direction = (position.x < targetPosition.x);
+	direction = (position.x > targetPosition.x);
 
 }
 

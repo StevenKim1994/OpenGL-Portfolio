@@ -89,11 +89,6 @@ void Thunder::paint(float dt, iPoint offset)
 	else
 		img->paint(dt, position + offset);
 
-	
-
-
-
-
 }
 
 void Thunder::cbBehave(void* parm)

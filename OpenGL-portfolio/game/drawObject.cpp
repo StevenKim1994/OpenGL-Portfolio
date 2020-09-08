@@ -26,6 +26,7 @@ void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, in
 {
 	int i, num = NumX * NumY;
 
+	
 	setRGBA(1, 1, 1, 1);
 	{ // MapTilePaint
 
@@ -74,36 +75,40 @@ void drawMapTile(float dt, int* tiledata,MapTile* tileInfo,Texture** tileset, in
 
 void drawMinimapTile(float dt, int* tiledata, MapTile* tileInfo, Texture** tileset, int NumX, int NumY)
 {
+	
 	int i, num = NumX * NumY;
 
-	setRGBA(1, 1, 1, 1);
-	{ // MapTilePaint
+	if (gameState != gs_villege)
+	{
+		setRGBA(1, 1, 1, 1);
+		{ // MapTilePaint
 
-		for (i = 0; i < num; i++) // layer 0
-		{
-			MapTile* t = &tileInfo[i];
+			for (i = 0; i < num; i++) // layer 0
+			{
+				MapTile* t = &tileInfo[i];
 
-			float x = offMt.x + MapTileWidth * (i % NumX);
-			float y = offMt.y + MapTileHeight * (i / NumX);
+				float x = offMt.x + MapTileWidth * (i % NumX);
+				float y = offMt.y + MapTileHeight * (i / NumX);
 
-			
+
 				setRGBA(0, 0, 0, 1);
 				fillRect(x, y, 32, 32);
-			
+
 
 #if _DEBUG // tileHitbox
-			switch (t->attr)
-			{
-			case canMove: break;
-			case canNotMove: setRGBA(0, 1, 0, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
-			case deadZone:	setRGBA(1, 0, 0, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
-			case nextStagePortal: setRGBA(1, 0, 1, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
-			default: setRGBA(0, 0, 0, 1), fillRect(x, y, MapTileWidth, MapTileHeight); break;
-			}
+				switch (t->attr)
+				{
+				case canMove: break;
+				case canNotMove: setRGBA(0, 1, 0, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
+				case deadZone:	setRGBA(1, 0, 0, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
+				case nextStagePortal: setRGBA(1, 0, 1, 1); fillRect(x, y, MapTileWidth, MapTileHeight); break;
+				default: setRGBA(0, 0, 0, 1), fillRect(x, y, MapTileWidth, MapTileHeight); break;
+				}
 #endif
 
-		}
+			}
 
+		}
 	}
 }
 
@@ -118,157 +123,158 @@ void drawMinimapHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 
 		iPoint movement = iPointMake(0, 1) * powGravity * dt;
 		minimapHero->applyJump(movement, dt);
-
-		if (getKeyDown() & keyboard_space) // 윗점프
+		if (gameState != gs_villege)
 		{
-			if (minimapHero->getStamina() > 50.0f)
+			if (getKeyDown() & keyboard_space) // 윗점프
 			{
-				minimapHero->setStamina(minimapHero->getStamina() - 50.0f);
-				minimapHero->jump();
-				
-
-				if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
+				if (minimapHero->getStamina() > 50.0f)
 				{
-					keyStat = getKeyStat();
-					keyDown = getKeyDown();
-				}
-				iPoint v = iPointZero;
-				ObjectBehave be;
-				if (keyStat & keyboard_left) v.x = -1;
-				else if (keyStat & keyboard_right) v.x = 1;
-				//if (keyStat & keyboard_up) v.y = -1;
-				else if (keyStat & keyboard_down) v.y = 1;
-			}
-		}
-
-		if (getKeyDown() & keyboard_down) // 아래점프 아래바닥보다 한칸밑이 갈수 있는곳이면 아랫점프를 시도함!
-		{
-
-			int sx = minimapHero->getPosition().x;
-			sx /= MapTileWidth;
-
-			int sy = minimapHero->getPosition().y;
-			sy /= MapTileHeight;
-			sy += 2;// 아랫칸인덱스
-
-			if (tiledata[sy * NumX + sx] == canMove)
-			{
-				iPoint jumpVector = iPointMake(minimapHero->getPosition().x, minimapHero->getPosition().y + 1);
-				minimapHero->setPosition(jumpVector);
-			}
-		}
-
-		if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
-		{
-			keyStat = getKeyStat();
-			keyDown = getKeyDown();
-		}
-		iPoint v = iPointZero;
-		ObjectBehave be;
-		if (keyStat & keyboard_left) v.x = -1;
-		else if (keyStat & keyboard_right) v.x = 1;
-		//if (keyStat & keyboard_up) v.y = -1;
-		else if (keyStat & keyboard_down) v.y = 1;
+					minimapHero->setStamina(minimapHero->getStamina() - 50.0f);
+					minimapHero->jump();
 
 
-
-
-		if (minimapHero->alive)
-		{
-
-			if (mouseMove) // 마우스 입력이 있을때
-			{
-				if (minimapHero->moveForMouse(dt, NumX, NumY))
-					mouseMove = false;
-
-				if (v != iPointZero)
-				{
-					mouseMove = false;
-					minimapHero->setTargetPosition(minimapHero->getPosition());
-					minimapHero->pathNum = minimapHero->pathIndex;
+					if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
+					{
+						keyStat = getKeyStat();
+						keyDown = getKeyDown();
+					}
+					iPoint v = iPointZero;
+					ObjectBehave be;
+					if (keyStat & keyboard_left) v.x = -1;
+					else if (keyStat & keyboard_right) v.x = 1;
+					//if (keyStat & keyboard_up) v.y = -1;
+					else if (keyStat & keyboard_down) v.y = 1;
 				}
 			}
-			else // 키보드 입력일때
+
+			if (getKeyDown() & keyboard_down) // 아래점프 아래바닥보다 한칸밑이 갈수 있는곳이면 아랫점프를 시도함!
 			{
 
-				if (keyDown & keyboard_space)
-					be = ObjectBehave::ObjectBehave_jump;
-				else if (keyDown & keyboard_down)
-					be = ObjectBehave::ObjectBehave_idle;
+				int sx = minimapHero->getPosition().x;
+				sx /= MapTileWidth;
 
-				else
-					be = (v == iPointZero ? ObjectBehave::ObjectBehave_idle : ObjectBehave::ObjectBehave_move);
-				int dir = minimapHero->direction;
+				int sy = minimapHero->getPosition().y;
+				sy /= MapTileHeight;
+				sy += 2;// 아랫칸인덱스
 
-
-				if (v.x < 0) dir = 0;
-				else if (v.x > 0) dir = 1;
-
-				if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1 && minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack2 && hero->behave != ObjectBehave::ObjectBehave_jump && hero->behave != ObjectBehave::ObjectBehave_hurt)
-					minimapHero->setBehave(be, dir);
-				float minX, maxX, minY, maxY;
-
-				if (v != iPointZero)
+				if (tiledata[sy * NumX + sx] == canMove)
 				{
-					v /= iPointLength(v);
-					iPoint mp = v * (minimapHero->getMovement() * dt);
-					minimapHero->move(mp + movement, tile, NumX, NumY);
-
-					minX = devSize.width * 0.333333f;
-					maxX = devSize.width * 0.666667f;
-					minY = devSize.height * 0.333333f;
-					maxY = devSize.height * 0.666667f;
-				}
-				else// if(v == iPointZero)
-				{
-					minimapHero->move(movement * 3, tile, NumX, NumY);
-
-					minX = devSize.width / 2;
-					maxX = devSize.width / 2;
-					minY = devSize.height / 2;
-					maxY = devSize.height / 2;
-				}
-
-
-				iPoint vp = offMt + minimapHero->getPosition();
-				if (vp.x < minX)
-				{
-					// 왼쪽으로 넘어갔을 경우
-
-					offMt.x += (minX - vp.x) * dt;
-					if (offMt.x > 0)
-						offMt.x = 0;
-				}
-				else if (vp.x > maxX)
-				{
-
-					// 오른쪽으로 넘어갔을 경우
-					offMt.x += (maxX - vp.x) * dt;
-					if (offMt.x < devSize.width - MapTileWidth * NumX)
-						offMt.x = devSize.width - MapTileWidth * NumX;
-				}
-				if (vp.y < minY)
-				{
-					// 위로 넘어갔을 경우
-					offMt.y += (minY - vp.y) * dt;
-					if (offMt.y > 0)
-						offMt.y = 0;
-				}
-				else if (vp.y > maxY)
-				{
-					// 아래로 넘어갔을 경우
-					offMt.y += (maxY - vp.y) * dt;
-					if (offMt.y < devSize.height - MapTileHeight * NumY)
-						offMt.y = devSize.height - MapTileHeight * NumY;
+					iPoint jumpVector = iPointMake(minimapHero->getPosition().x, minimapHero->getPosition().y + 1);
+					minimapHero->setPosition(jumpVector);
 				}
 			}
+
+			if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1)
+			{
+				keyStat = getKeyStat();
+				keyDown = getKeyDown();
+			}
+			iPoint v = iPointZero;
+			ObjectBehave be;
+			if (keyStat & keyboard_left) v.x = -1;
+			else if (keyStat & keyboard_right) v.x = 1;
+			//if (keyStat & keyboard_up) v.y = -1;
+			else if (keyStat & keyboard_down) v.y = 1;
+
+
+
+
+			if (minimapHero->alive)
+			{
+
+				if (mouseMove) // 마우스 입력이 있을때
+				{
+					if (minimapHero->moveForMouse(dt, NumX, NumY))
+						mouseMove = false;
+
+					if (v != iPointZero)
+					{
+						mouseMove = false;
+						minimapHero->setTargetPosition(minimapHero->getPosition());
+						minimapHero->pathNum = minimapHero->pathIndex;
+					}
+				}
+				else // 키보드 입력일때
+				{
+
+					if (keyDown & keyboard_space)
+						be = ObjectBehave::ObjectBehave_jump;
+					else if (keyDown & keyboard_down)
+						be = ObjectBehave::ObjectBehave_idle;
+
+					else
+						be = (v == iPointZero ? ObjectBehave::ObjectBehave_idle : ObjectBehave::ObjectBehave_move);
+					int dir = minimapHero->direction;
+
+
+					if (v.x < 0) dir = 0;
+					else if (v.x > 0) dir = 1;
+
+					if (minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack1 && minimapHero->behave != ObjectBehave::ObjectBehave_meleeAttack2 && hero->behave != ObjectBehave::ObjectBehave_jump && hero->behave != ObjectBehave::ObjectBehave_hurt)
+						minimapHero->setBehave(be, dir);
+					float minX, maxX, minY, maxY;
+
+					if (v != iPointZero)
+					{
+						v /= iPointLength(v);
+						iPoint mp = v * (minimapHero->getMovement() * dt);
+						minimapHero->move(mp + movement, tile, NumX, NumY);
+
+						minX = devSize.width * 0.333333f;
+						maxX = devSize.width * 0.666667f;
+						minY = devSize.height * 0.333333f;
+						maxY = devSize.height * 0.666667f;
+					}
+					else// if(v == iPointZero)
+					{
+						minimapHero->move(movement * 3, tile, NumX, NumY);
+
+						minX = devSize.width / 2;
+						maxX = devSize.width / 2;
+						minY = devSize.height / 2;
+						maxY = devSize.height / 2;
+					}
+
+
+					iPoint vp = offMt + minimapHero->getPosition();
+					if (vp.x < minX)
+					{
+						// 왼쪽으로 넘어갔을 경우
+
+						offMt.x += (minX - vp.x) * dt;
+						if (offMt.x > 0)
+							offMt.x = 0;
+					}
+					else if (vp.x > maxX)
+					{
+
+						// 오른쪽으로 넘어갔을 경우
+						offMt.x += (maxX - vp.x) * dt;
+						if (offMt.x < devSize.width - MapTileWidth * NumX)
+							offMt.x = devSize.width - MapTileWidth * NumX;
+					}
+					if (vp.y < minY)
+					{
+						// 위로 넘어갔을 경우
+						offMt.y += (minY - vp.y) * dt;
+						if (offMt.y > 0)
+							offMt.y = 0;
+					}
+					else if (vp.y > maxY)
+					{
+						// 아래로 넘어갔을 경우
+						offMt.y += (maxY - vp.y) * dt;
+						if (offMt.y < devSize.height - MapTileHeight * NumY)
+							offMt.y = devSize.height - MapTileHeight * NumY;
+					}
+				}
+			}
+
+			setRGBA(1, 1, 1, 1);
+			fillRect(minimapHero->getPosition().x + offMt.x, minimapHero->getPosition().y + offMt.y, 32, 32);
+			setRGBA(1, 1, 1, 1);
+
 		}
-
-		setRGBA(1, 1, 1, 1);
-		fillRect(minimapHero->getPosition().x+offMt.x, minimapHero->getPosition().y+offMt.y, 32, 32);
-		setRGBA(1, 1, 1, 1);
-
-	
 }
 
 void meleeAttackCb()
