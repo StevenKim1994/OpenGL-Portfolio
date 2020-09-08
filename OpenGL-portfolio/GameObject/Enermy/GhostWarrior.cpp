@@ -11,9 +11,14 @@
 #define GhostWarrior_Height 100
 
 static iImage** imgGhostWarrior = NULL;
-
+extern iShortestPath* sp;
+extern int Vilegetiles[40 * 22];
 GhostWarrior::GhostWarrior(int number)
 {
+	movement = 2;
+	oldPosition = position;
+	
+	sp->init(Vilegetiles, vilegeTileNumX, vilegeTileNumY);
 	type = 2;
 	if (imgGhostWarrior == NULL)
 	{
@@ -22,7 +27,7 @@ GhostWarrior::GhostWarrior(int number)
 			"assets/stage/ghostwarrior/Attack/Attack%d.png", 11, 2.0f, {-150, -270},
 			"assets/stage/ghostwarrior/Attack/Attack%d.png", 11, 2.0f, {-150, -270},
 			"assets/stage/ghostwarrior/Fly/fly%d.png", 5, 2.0f, {-150,-270},
-			"assets/stage/ghostwarrior/Fly/fly%d.png", 5, 2.0f, {-150,-270},
+			"assets/stage/ghostwarrior/Fly/fly%6d.png", 5, 2.0f, {-150,-270},
 			"assets/stage/ghostwarrior/Fly/fly%d.png", 5, 2.0f, {-150,-270},
 			"assets/stage/ghostwarrior/Hit/hit%d.png", 6, 2.0f, {-150,-270},
 			"assets/stage/ghostwarrior/Death/death%d.png",8, 2.0f, {-150,-270},
@@ -85,9 +90,11 @@ GhostWarrior::GhostWarrior(int number)
 	speed = 0.0;
 	_speed = 10; // 나중에 이건 바꿔야함
 
-	movement = 100;
+	movement = 225;
 	behave = ObjectBehave::ObjectBehave_NULL;
 	setBehave(ObjectBehave::ObjectBehave_idle, direction);
+
+	_aiTime = 2.0f;
 
 
 }
@@ -108,68 +115,101 @@ GhostWarrior::~GhostWarrior()
 	free(imgs);
 }
 
-extern iShortestPath* sp;
+
+/*
+보스의 알고리즘 패턴
+
+플레이어와 거리 차가 500 이면 플레이어를 발견함 이때 부터 1페이즈 시작
+
+
+보스의 상태
+state (체력 + 시간)
+1페이즈 초반(50% 체력까지, 페이즈 진입후 2분 초과시 바로 2페이즈 진입)      맵을 로밍하면서 플레이어 방향으로 큰 범위공격
+2페이즈 중반(20% 체력까지, 페이즈 진입후 1분 초과시 바로 3페이즈 진입)      플레이어 주위에 지역범위 스킬(번개같은거 사용)
+3페이즈 막반(무제한)                     다시 체력 100%
+*/
+
 
 void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 {
-	iPoint gwMovement = iPointMake(0, 1) * powGravity * dt;
-	
-	move(v + gwMovement, tile, NumX, NumY);
+	iPoint gwMovement = iPointMake(0, 1) * powGravity * dt ;
+	iPoint mp = v * (movement * dt);
+
+	if(action == false)
+	move(mp  + gwMovement, tile, NumX, NumY);
 
 	img->paint(dt, position + offset);
 
 	// 플레이어 발견 했을때!
-	if (iPointLength(hero->getPosition() - position) < 150)
+	if (iPointLength(hero->getPosition() - position) < 500 && detected_Player == false)
 	{
-		if (detected_Player == false)
-		{
-			printf("Player Detected!\n");
-
-			detected_Player = true;
-		}
-		
+		detected_Player = true;
+		targetPosition = iPointMake(300, position.y);
+		printf("Player Detected!\n");
 	}
-
+	
+//	iPointMake(MapTileWidth * 35, MapTileHeight * 13)
 	if (detected_Player)
 	{
-
-		int sx = position.x;
-		sx /= MapTileWidth;
-
-		int sy = position.y;
-		sy /= MapTileHeight;
-
-		int ex = hero->getPosition().x;
-		ex /= MapTileWidth;
-
-		int ey = hero->getPosition().y;
-		ey /= MapTileHeight;
-
-		sp->dijkstra(sy * NumX + sx, ey * NumX + ex, path, pathNum);
-		sp->removeDuplicate(path, pathNum);
-		
-
-		targetPosition = position;
-
-		pathIndex = 1;
+		Parse = 1;
+	}
 	
-		if (targetPosition != position)
+	if (Parse == 1)
+	{
+		parseDt += 0.01f;
+		
+		if (position != targetPosition)
+		{
 			setBehave(ObjectBehave::ObjectBehave_move, direction);
+			moveForMouse(dt, NumX, NumY);
+			
+		}
+		
+		else
+		{
+			
+			//v = iPointZero;
+			
+			if (aiTime >= _aiTime)
+			{
+			
+				img->leftRight = direction;
+				setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+				//공격이 끝나면 콜백함수로 aiTime = 0.0f; 해주기 
+			}
+			else
+				setBehave(ObjectBehave::ObjectBehave_idle, direction);
 
-		moveForMouse(dt, NumX, NumY);
+			aiTime += 0.01f;
+		}
+
+
+
+		if (parseDt >= 120.0f || HP <= getMaxHp() * 0.5)
+		{
+			Parse = 2;
+			parseDt = 0.0f;
+		}
+	}
+	else if (Parse == 2)
+	{
+
+	}
+	else if (Parse == 3)
+	{
+		setHP(getMaxHp()); // 다시 체력 100%로
+		
+		// 페이즈 1처럼 행동
 	}
 
-
-	img->leftRight = direction;
-
-	direction = (position.x > targetPosition.x);
-
+	
 }
 
 void GhostWarrior::setBehave(ObjectBehave be, int dir)
 {
 	if (behave != be || direction != dir)
 	{
+		direction = dir;
 		behave = be;
 		img = imgs[(int)be];
 		if (be == ObjectBehave::ObjectBehave_death)
@@ -179,8 +219,7 @@ void GhostWarrior::setBehave(ObjectBehave be, int dir)
 		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
 			img->startAnimation(cbSkill, this);
 		else
-			img->startAnimation(cbBehave, img);
-		direction = dir;
+			img->startAnimation(cbBehave, this);
 	}
 
 }

@@ -23,8 +23,12 @@ public:
 public:
 
 	bool detected_Player;
-	iPoint Target_Pos;
+
+	iPoint oldPosition;
 	Object* Target;
+	int Parse = 0; // 0: 플레이어를 발견하지 못한상태
+	float parseDt = 0.0f;
+	bool action = false;
 
 public:
 	

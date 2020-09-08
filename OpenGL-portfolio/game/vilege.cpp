@@ -34,7 +34,7 @@ int Vilegetiles[40 * 22] =
 extern iShortestPath* sp;
 
 static Texture* vilegeTileset[880];
-static MapTile* vilegemaptile;
+ MapTile* vilegemaptile;
 static Texture* texFboVilege;
 static Texture* stageLogo;
 extern Texture* minimapFbo;
@@ -116,6 +116,7 @@ void loadVillege()
 	{
 		GhostWarrior* gw = new GhostWarrior(i);
 		gw->setPosition(iPointMake(MapTileWidth*35, MapTileHeight * 13));
+		gw->targetPosition = gw->getPosition();
 		gw->alive = true;
 		ghostwarriors[i] = gw;
 

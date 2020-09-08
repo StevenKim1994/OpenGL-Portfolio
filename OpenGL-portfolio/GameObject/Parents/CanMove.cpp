@@ -44,7 +44,7 @@ void CanMove::move(iPoint movement, MapTile* maptile, int NumX, int NumY)
 				break;
 		}
 		//printf("min = %d, curr = %f\n", min, position.x);
-		position.x += mp.x;
+		position.x += mp.x ;
 		if (position.x < min + size.width / 2)
 			position.x = min + size.width / 2;
 	}
