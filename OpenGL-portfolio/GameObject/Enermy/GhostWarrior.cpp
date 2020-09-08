@@ -60,8 +60,14 @@ GhostWarrior::GhostWarrior(int number)
 				img->_repeatNum = 0;
 				break;
 
+			case 3:
+			case 4:
+			case 5:
+				img->_repeatNum = 0;
+				break;
+
 			default:
-				img->_repeatNum = 0; // 테스트용 설정 나중에 1로 바꿔야함
+				img->_repeatNum = 1; // 테스트용 설정 나중에 1로 바꿔야함
 				break;
 			}
 
@@ -217,7 +223,7 @@ void GhostWarrior::setBehave(ObjectBehave be, int dir)
 		else if (be == ObjectBehave::ObjectBehave_hurt)
 			img->startAnimation(cbHurt, this);
 		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
-			img->startAnimation(cbSkill, this);
+			img->startAnimation(cbMeleeAttack, this);
 		else
 			img->startAnimation(cbBehave, this);
 	}
@@ -288,7 +294,16 @@ void GhostWarrior::cbBehave(void* cb)
 
 void GhostWarrior::cbSkill(void* cb)
 {
+
 	GhostWarrior* o = (GhostWarrior*)cb;
 	o->Skill1();
 	o->setBehave(ObjectBehave::ObjectBehave_idle, o->direction);
+}
+
+void GhostWarrior::cbMeleeAttack(void* cb)
+{
+	GhostWarrior* o = (GhostWarrior*)cb;
+	
+	o->aiTime = 0.0f;
+
 }

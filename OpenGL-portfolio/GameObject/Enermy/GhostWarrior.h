@@ -19,6 +19,7 @@ public:
 	static void cbDeath(void* cb);
 	static void cbBehave(void* cb);
 	static void cbSkill(void* cb);
+	static void cbMeleeAttack(void* cb);
 
 public:
 
