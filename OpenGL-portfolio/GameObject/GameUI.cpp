@@ -375,6 +375,8 @@ void freePopPlayerUI()
 void drawPopPlayerUI(float dt)
 {
 	PopPlayerUI->paint(dt);
+
+	
 }
 
 bool keyPopPlayerUI(iKeyState stat, iPoint point)
@@ -439,6 +441,8 @@ bool keyPopPlayerUI(iKeyState stat, iPoint point)
 void showPopPlayerUI(bool show)
 {
 	PopPlayerUI->show(show);
+
+	
 }
 
 

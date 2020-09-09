@@ -275,6 +275,7 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 					img->leftRight = direction;
 					shakeCamera(100,0.25);
 					setBehave(ObjectBehave::ObjectBehave_meleeAttack2, direction);
+				
 
 				}
 				else if (behave == ObjectBehave::ObjectBehave_meleeAttack2 && img->animation == true)
@@ -370,16 +371,21 @@ void GhostWarrior::Skill1()
 	iPoint targetPos;
 	printf("skill! shooting!\n");
 
-	if (direction == 0)
+	for (int i = 1; i <=3; i++)
 	{
-		targetPos = iPointMake(position.x, position.y- imgSkill1->touchRect().size.height+70);
+		if (direction == 0)
+		{
+			targetPos = iPointMake(position.x + (i * imgSkill1->touchRect().size.width) - imgSkill1->touchRect().size.width, position.y +  - imgSkill1->touchRect().size.height + 70);
+		}
+		else
+		{
+			targetPos = iPointMake(position.x - ( i * imgSkill1->touchRect().size.width ), position.y - imgSkill1->touchRect().size.height + 70);
+		}
+
+		addProjectile(2, targetPos, direction, 0, 2);
+		//imgSkill1->position = targetPos;
+		//imgSkill1->startAnimation();
 	}
-	else
-	{
-		targetPos = iPointMake(position.x-imgSkill1->touchRect().size.width, position.y - imgSkill1->touchRect().size.height+70);
-	}
-	imgSkill1->position = targetPos;
-	imgSkill1->startAnimation();
 
 
 	printf("end!\n");

@@ -296,7 +296,7 @@ int projectNum;
 void loadProjectile()
 {
 	int i;
-	_projectile = (Projectile**)malloc(sizeof(Projectile*) * 2); // 0 : 플레이어 2 번스킬 , 1 : Mushroom 투사체
+	_projectile = (Projectile**)malloc(sizeof(Projectile*) * 3); // 0 : 플레이어 2 번스킬 , 1 : Mushroom 투사체 2 : boss Skill1 바닥이펙트
 
 	iImage* img = new iImage();
 	for (int i = 0; i < 61; i++)
@@ -334,13 +334,28 @@ void loadProjectile()
 
 	delete img;
 
+	img = new iImage();
+	for (int i = 0; i < 25; i++)
+	{
+		Texture* tex = createImage("assets/stage/ghostwarrior/Skill1/skill (%d).png", i+1);
+		img->addObject(tex);
+		freeImage(tex);
+	}
+
+	img->position = iPointMake(0, 0);
+	img->aniDt = 0.0f;
+	img->_aniDt = 0.025f;
+	img->_repeatNum = 1;
 
 
-	projectile = (Projectile**)malloc(sizeof(Projectile*) * 2 * _projectNum);
+	_projectile[2] = (Projectile*)malloc(sizeof(Projectile) * _projectNum);
+
+	for (i = 0; i < _projectNum; i++)
+		_projectile[2][i].img = img->copy();
+
+
+	projectile = (Projectile**)malloc(sizeof(Projectile*) * 3 * _projectNum);
 	projectNum = 0;
-
-
-
 
 }
 
