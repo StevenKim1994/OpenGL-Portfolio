@@ -182,9 +182,9 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 	}
 	
 //	iPointMake(MapTileWidth * 35, MapTileHeight * 13)
-	if (detected_Player)
+	if (detected_Player && Parse == 0)
 	{
-		Parse = 1;
+		Parse = 1; // 원래 1로 해야대는데 2페이즈 개발중이라 그럼
 	}
 	
 	if (Parse == 1)
@@ -259,6 +259,7 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 					leftRight = true;
 					setBehave(ObjectBehave::ObjectBehave_move, direction);
 					action = false;
+					
 
 				}
 			}
@@ -307,6 +308,7 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 					action = false;
 					count = 0;
 					count2 = 0;
+					Parse = 2;
 					
 				}
 			}
@@ -324,7 +326,22 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 	}
 	else if (Parse == 2)
 	{
-		setBehave(ObjectBehave::ObjectBehave_idle, direction);
+		setBehave(ObjectBehave::ObjectBehave_move, direction);
+		targetPosition = iPointMake(MapTileWidth * 21, MapTileHeight * 17);
+
+		moveForMouse(dt, NumX, NumY);
+
+		if (targetPosition == position)
+		{
+			action = true;
+		}
+
+		if (action == true)
+		{
+			
+				printf("Fire Meteor!!\n");
+				//2페이즈에서 맵전체 랜덤위치에 메테오 뿌림
+		}
 
 	}
 	else if (Parse == 3)

@@ -61,6 +61,8 @@ extern bool mouseMove;
 
 static float logoDt;
 
+static Texture* gwName;
+
 void loadVillege()
 {
 	gameState = gs_villege; 
@@ -132,6 +134,20 @@ void loadVillege()
 	loadNumber();
 	loadEffectHit();
 	loadProjectile();
+
+	if (gameState == gs_villege)
+	{
+		setRGBA(1, 0, 0, 1);
+		iGraphics* g = iGraphics::instance();
+		iSize size = iSizeMake(720, 50);
+		setStringSize(15);
+		setRGBA(0, 0, 0, 0);
+		g->init(size);
+		g->fillRect(0, 0, size.width, size.height);
+		setRGBA(0, 0, 0, 1);
+		g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, "GhostWarrior");
+		gwName = g->getTexture();
+	}
 }
 
 void freeVillege()
@@ -213,18 +229,11 @@ void drawVillege(float dt)
 			//만약 스테이지가 보스스테이지면 UI상에 보스 체력표시함
 			if (gameState == gs_villege)
 			{
-				setRGBA(1, 0, 0, 1);
-				iGraphics* g = iGraphics::instance();
-				iSize size = iSizeMake(720, 50);
-				setStringSize(15);
-				setRGBA(0, 0, 0, 0);
-				g->init(size);
-				g->fillRect(0, 0, size.width, size.height);
-				setRGBA(0, 0, 0, 1);
-				g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, "GhostWarrior");
-				drawImage(g->getTexture(), devSize.width / 2, devSize.height / 9, HCENTER|VCENTER);
+				
+				drawImage(gwName, devSize.width / 2, devSize.height / 9, HCENTER|VCENTER);
 
 				setRGBA(1, 0, 0, 1);
+				
 
 				drawRect(devSize.width / 2, devSize.height / 7,720, 50); // 체력바 프레임
 				fillRect(devSize.width / 2, devSize.height / 7, 720, 50); // 보스체력
