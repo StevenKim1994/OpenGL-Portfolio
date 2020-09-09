@@ -116,6 +116,7 @@ void loadVillege()
 	{
 		GhostWarrior* gw = new GhostWarrior(i);
 		gw->setPosition(iPointMake(MapTileWidth*35, MapTileHeight * 13));
+		gw->oldPosition = iPointMake(MapTileWidth * 35, MapTileHeight * 130);
 		gw->targetPosition = gw->getPosition();
 		gw->alive = true;
 		ghostwarriors[i] = gw;

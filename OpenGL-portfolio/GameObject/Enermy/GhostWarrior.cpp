@@ -16,8 +16,9 @@ extern int Vilegetiles[40 * 22];
 GhostWarrior::GhostWarrior(int number)
 {
 	movement = 2;
-	oldPosition = position;
 	
+	count = 0;
+	count2 = 0;
 	sp->init(Vilegetiles, vilegeTileNumX, vilegeTileNumY);
 	type = 2;
 	if (imgGhostWarrior == NULL)
@@ -135,6 +136,7 @@ state (체력 + 시간)
 3페이즈 막반(무제한)                     다시 체력 100%
 */
 
+bool cc = false;
 
 void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 {
@@ -150,7 +152,9 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 	if (iPointLength(hero->getPosition() - position) < 500 && detected_Player == false)
 	{
 		detected_Player = true;
+		oldPosition = position;
 		targetPosition = iPointMake(300, position.y);
+
 		printf("Player Detected!\n");
 	}
 	
@@ -163,28 +167,125 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 	if (Parse == 1)
 	{
 		parseDt += 0.01f;
+		if (HP == getMaxHp() * 0.7)
+		{
+			Parse = 2;
+		}
 		
 		if (position != targetPosition)
 		{
-			setBehave(ObjectBehave::ObjectBehave_move, direction);
-			moveForMouse(dt, NumX, NumY);
-			
+			if(action == false)
+			{ 
+				if (leftRight)
+				{
+					direction = 0;
+					img->leftRight = direction;
+				}
+				else
+				{
+					direction = 1;
+					img->leftRight = direction;
+				}
+				setBehave(ObjectBehave::ObjectBehave_move, direction);
+				moveForMouse(dt, NumX, NumY);	
+			}
 		}
 		
 		else
 		{
-			
+			action = true;
 			//v = iPointZero;
 			
-			if (aiTime >= _aiTime)
+			/* left Attack Action */
+			if (leftRight == false)
 			{
-			
-				img->leftRight = direction;
-				setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
-				//공격이 끝나면 콜백함수로 aiTime = 0.0f; 해주기 
+				if (aiTime >= _aiTime && count < 2)
+				{
+					printf("left attack! %d \n", count);
+					
+					direction = 0;
+					img->leftRight = direction;
+					shakeCamera(100, 0.25);
+					setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+
+				}
+				else if (behave == ObjectBehave::ObjectBehave_meleeAttack1 && img->animation == true)
+				{
+					printf("ing! %d \n", count);
+					setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+				}
+				else
+					setBehave(ObjectBehave::ObjectBehave_idle, direction);
+
+				if (count == 2)
+				{
+					printf("!!!\n");
+
+					if (targetPosition == position)
+					{
+						printf("turn!\n");
+
+						iPoint temp = targetPosition;
+						targetPosition = oldPosition;
+						oldPosition = temp;
+						targetPosition.y = position.y;
+
+						direction = !direction;
+						img->leftRight = direction;
+					}
+					leftRight = true;
+					setBehave(ObjectBehave::ObjectBehave_move, direction);
+					action = false;
+
+				}
 			}
-			else
-				setBehave(ObjectBehave::ObjectBehave_idle, direction);
+		
+			/*Right Attack Action*/
+
+			if (leftRight == true)
+			{
+				if (aiTime >= _aiTime && count2 < 2)
+				{
+					printf("right attack! %d \n", count2);
+					
+					direction = 1;
+					img->leftRight = direction;
+					shakeCamera(100,0.25);
+					setBehave(ObjectBehave::ObjectBehave_meleeAttack2, direction);
+
+				}
+				else if (behave == ObjectBehave::ObjectBehave_meleeAttack2 && img->animation == true)
+				{
+					printf("ing2! %d\n", count2);
+					setBehave(ObjectBehave::ObjectBehave_meleeAttack2, direction);
+				}
+				else
+					setBehave(ObjectBehave::ObjectBehave_idle, direction);
+
+				if (count2 == 2)
+				{
+					printf("@@@\n");
+
+					if (targetPosition == position)
+					{
+						printf("turn!\n");
+
+						iPoint temp = targetPosition;
+						targetPosition = oldPosition;
+						oldPosition = temp;
+						targetPosition.y = position.y;
+
+						direction = !direction;
+						img->leftRight = direction;
+					}
+					leftRight = false;
+					setBehave(ObjectBehave::ObjectBehave_move, direction);
+					action = false;
+					count = 0;
+					count2 = 0;
+					
+				}
+			}
 
 			aiTime += 0.01f;
 		}
@@ -199,6 +300,7 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 	}
 	else if (Parse == 2)
 	{
+		setBehave(ObjectBehave::ObjectBehave_idle, direction);
 
 	}
 	else if (Parse == 3)
@@ -224,6 +326,8 @@ void GhostWarrior::setBehave(ObjectBehave be, int dir)
 			img->startAnimation(cbHurt, this);
 		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
 			img->startAnimation(cbMeleeAttack, this);
+		else if(be == ObjectBehave::ObjectBehave_meleeAttack2)
+			img->startAnimation(cbMeleeAttack2, this);
 		else
 			img->startAnimation(cbBehave, this);
 	}
@@ -305,5 +409,15 @@ void GhostWarrior::cbMeleeAttack(void* cb)
 	GhostWarrior* o = (GhostWarrior*)cb;
 	
 	o->aiTime = 0.0f;
+	o->count++;
 
 }
+
+void GhostWarrior::cbMeleeAttack2(void* cb)
+{
+	GhostWarrior* o = (GhostWarrior*)cb;
+
+	o->aiTime = 0.0f;
+	o->count2++;
+}
+

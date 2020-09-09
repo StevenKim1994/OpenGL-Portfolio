@@ -20,6 +20,7 @@ public:
 	static void cbBehave(void* cb);
 	static void cbSkill(void* cb);
 	static void cbMeleeAttack(void* cb);
+	static void cbMeleeAttack2(void* cb);
 
 public:
 
@@ -30,7 +31,9 @@ public:
 	int Parse = 0; // 0: 플레이어를 발견하지 못한상태
 	float parseDt = 0.0f;
 	bool action = false;
-
+	bool leftRight = false; // false : left, true : right;
+	int count;
+	int count2;
 public:
 	
 	float aiTime, _aiTime;
