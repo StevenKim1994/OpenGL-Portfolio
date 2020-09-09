@@ -103,7 +103,30 @@ GhostWarrior::GhostWarrior(int number)
 
 	_aiTime = 2.0f;
 
+	// 스킬 1 로드
+	iImage* imgS = new iImage();
+	{
+		for (int i = 1; i <= 21; i++)
+		{
+			iGraphics* g = iGraphics::instance();
+			setRGBA(1, 1, 1, 1);
+			Texture* tex = createImage("assets/stage/ghostwarrior/Skill1/skill (%d).png", i);
+			tex->width *= 1.0;
+			tex->height *= 1.0;
+			tex->width *= 1.0;
+			tex->potHeight *= 1.0;
+			imgS->addObject(tex);
+			freeImage(tex);
+		}
+		imgS->position = iPointMake(0,0);
+		imgS->aniDt = 0.0f;
+		imgS->_aniDt = 0.025f;
+		imgS->_repeatNum = 1;
 
+		imgSkill1 = imgS;
+
+		setRGBA(1, 1, 1, 1);
+	}
 }
 
 GhostWarrior::~GhostWarrior()
@@ -310,6 +333,13 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 		// 페이즈 1처럼 행동
 	}
 
+	if (imgSkill1->animation)
+	{
+		imgSkill1->paint(dt, offset);
+		
+	}
+
+
 	
 }
 
@@ -336,25 +366,26 @@ void GhostWarrior::setBehave(ObjectBehave be, int dir)
 
 void GhostWarrior::Skill1()
 {
-	extern Player* hero;
 
-	if (hero->getPosition().x > position.x)
-		hero->setPosition(hero->getPosition() - iPointMake(-10, 0));
+	iPoint targetPos;
+	printf("skill! shooting!\n");
 
+	if (direction == 0)
+	{
+		targetPos = iPointMake(position.x, position.y- imgSkill1->touchRect().size.height+70);
+	}
 	else
-		hero->setPosition(hero->getPosition() - iPointMake(+10, 0));
+	{
+		targetPos = iPointMake(position.x-imgSkill1->touchRect().size.width, position.y - imgSkill1->touchRect().size.height+70);
+	}
+	imgSkill1->position = targetPos;
+	imgSkill1->startAnimation(cbSkill,this);
 
-	shakeCamera(25, 0.5);
-	audioPlay(5);
-	hero->setHP(hero->getHp() - 5.0);
-	hero->setBehave(ObjectBehave::ObjectBehave_hurt, hero->direction);
-	extern iStrTex* hpIndicator;
-	hpIndicator->setString("%f", hero->getHp());
 
-	if (hero->getHp() < 1)
-		hero->alive = false;
+	printf("end!\n");
 
 }
+
 
 void GhostWarrior::Skill2()
 {
@@ -398,16 +429,14 @@ void GhostWarrior::cbBehave(void* cb)
 
 void GhostWarrior::cbSkill(void* cb)
 {
-
 	GhostWarrior* o = (GhostWarrior*)cb;
 	o->Skill1();
-	o->setBehave(ObjectBehave::ObjectBehave_idle, o->direction);
 }
 
 void GhostWarrior::cbMeleeAttack(void* cb)
 {
 	GhostWarrior* o = (GhostWarrior*)cb;
-	
+	o->Skill1();
 	o->aiTime = 0.0f;
 	o->count++;
 
@@ -416,8 +445,9 @@ void GhostWarrior::cbMeleeAttack(void* cb)
 void GhostWarrior::cbMeleeAttack2(void* cb)
 {
 	GhostWarrior* o = (GhostWarrior*)cb;
-
+	o->Skill1();
 	o->aiTime = 0.0f;
 	o->count2++;
 }
+
 

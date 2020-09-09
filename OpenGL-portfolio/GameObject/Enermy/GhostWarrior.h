@@ -13,6 +13,7 @@ public:
 
 	void setBehave(ObjectBehave be, int dir);
 	void Skill1();
+	
 	void Skill2();
 	void setDmg(float dmg);
 
@@ -21,6 +22,7 @@ public:
 	static void cbSkill(void* cb);
 	static void cbMeleeAttack(void* cb);
 	static void cbMeleeAttack2(void* cb);
+
 
 public:
 
@@ -35,7 +37,11 @@ public:
 	int count;
 	int count2;
 public:
-	
 	float aiTime, _aiTime;
+
+public:
+	iImage* imgSkill1; //
+
+
 
 };

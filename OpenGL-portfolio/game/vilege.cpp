@@ -265,9 +265,7 @@ void keyVilliege(iKeyState stat, iPoint point)
 		if (sy != ey) // 횡스크롤 게임이므로 최단경로 고려할떄 같은 가로위치일떄만 고려함
 			return;
 
-		sp->dijkstra(sy * stageMapTileNumX + sx, ey * stageMapTileNumX + ex, hero->path, hero->pathNum);
-
-		sp->removeDuplicate(hero->path, hero->pathNum);
+	
 		hero->setTargetPosition(hero->getPosition());
 		hero->pathIndex = 1;
 
