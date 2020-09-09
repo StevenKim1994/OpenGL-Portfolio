@@ -379,7 +379,7 @@ void GhostWarrior::Skill1()
 		targetPos = iPointMake(position.x-imgSkill1->touchRect().size.width, position.y - imgSkill1->touchRect().size.height+70);
 	}
 	imgSkill1->position = targetPos;
-	imgSkill1->startAnimation(cbSkill,this);
+	imgSkill1->startAnimation();
 
 
 	printf("end!\n");
