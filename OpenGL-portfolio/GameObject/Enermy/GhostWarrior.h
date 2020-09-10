@@ -13,8 +13,8 @@ public:
 
 	void setBehave(ObjectBehave be, int dir);
 	void Skill1();
-	
 	void Skill2();
+	void MeteorSkill();
 	void setDmg(float dmg);
 
 	static void cbDeath(void* cb);
@@ -22,7 +22,7 @@ public:
 	static void cbSkill(void* cb);
 	static void cbMeleeAttack(void* cb);
 	static void cbMeleeAttack2(void* cb);
-
+	static void cbMeteorSkill(void* cb);
 
 public:
 
@@ -36,6 +36,7 @@ public:
 	bool leftRight = false; // false : left, true : right;
 	int count;
 	int count2;
+	float tempY;
 public:
 	float aiTime, _aiTime;
 

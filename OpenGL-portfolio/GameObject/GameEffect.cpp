@@ -84,7 +84,7 @@ struct EffectHit
 	bool paint(float dt, iPoint off)
 	{
 		img->paint(dt, p + off);
-		img->leftRight = dir;
+		img->leftRight =  dir;
 		if (img->animation)
 			return false;
 		return true;
@@ -99,7 +99,7 @@ void loadEffectHit()
 {
 	int i;
 
-	_ehEffectHit = (EffectHit**)malloc(sizeof(EffectHit*) * 1);
+	_ehEffectHit = (EffectHit**)malloc(sizeof(EffectHit*) * 2);
 
 	iImage* img = new iImage();
 	for (i = 0; i < 31; i++)
@@ -118,7 +118,28 @@ void loadEffectHit()
 
 	delete img;
 
-	ehEffectHit = (EffectHit**)malloc(sizeof(EffectHit*) * 1 * _ehNum);
+	setRGBA(1, 1, 1, 1);
+	img = new iImage();
+	for (i = 1; i < 20; i++)
+	{
+		Texture* tex = createImage("assets/stage/ghostwarrior/colisioneffect/eff (%d).png", i);
+		tex->width *= 0.7f;
+		tex->height *= 0.7f;
+		tex->potWidth *= 0.7f;
+		tex->potHeight *= 0.7f;
+		img->addObject(tex);
+		freeImage(tex);
+	}
+	img->position = iPointMake(0, 0);
+	img->_aniDt = 0.01f;
+	img->_repeatNum = 1;
+
+	_ehEffectHit[1] = (EffectHit*)malloc(sizeof(EffectHit) * _ehNum);
+	for (i = 0; i < _ehNum; i++)
+		_ehEffectHit[1][i].img = img->copy();
+
+
+	ehEffectHit = (EffectHit**)malloc(sizeof(EffectHit*) * 2 * _ehNum);
 	ehNum = 0;
 }
 
@@ -193,10 +214,17 @@ struct Projectile
 
 		if (dir == 1)
 			p += iPointMake(1, 0) * speed;
+
+		else if (dir == 2)
+			p += iPointMake(0, -1) * speed;
+		else if (dir == 3)
+			p += iPointMake(0, 1) * speed;
+
 		else
 			p += iPointMake(-1, 0) * speed;
+		
 		img->paint(dt, p + off);
-		img->leftRight = dir;
+		img->leftRight = 0;
 
 		/*
 		extern int gameState;
@@ -275,7 +303,19 @@ struct Projectile
 				return true;
 			}
 		}
+		else if (shooter == 2)  // 발사한 오브젝트가 boss면
+		{
 
+			if (gameState == gs_villege)
+			{
+				if (containPoint(p, iRectMake(0,400,3000,3000))) // 땅에 충돌시
+				{
+					printf("explosion\n");
+					addEffectHit(1, iPointMake(p.x, p.y));
+					return true;
+				}
+			}
+		}
 
 
 
@@ -296,8 +336,8 @@ int projectNum;
 void loadProjectile()
 {
 	int i;
-	_projectile = (Projectile**)malloc(sizeof(Projectile*) * 3); // 0 : 플레이어 2 번스킬 , 1 : Mushroom 투사체 2 : boss Skill1 바닥이펙트
-
+	_projectile = (Projectile**)malloc(sizeof(Projectile*) * 4); // 0 : 플레이어 2 번스킬 , 1 : Mushroom 투사체 2 : boss Skill1 바닥이펙트
+	// 4 :보스 메테오
 	iImage* img = new iImage();
 	for (int i = 0; i < 61; i++)
 	{
@@ -354,9 +394,37 @@ void loadProjectile()
 		_projectile[2][i].img = img->copy();
 
 
-	projectile = (Projectile**)malloc(sizeof(Projectile*) * 3 * _projectNum);
-	projectNum = 0;
 
+	delete img;
+
+	img = new iImage();
+	for (int i = 0; i < 61; i++)
+	{
+		Texture* tex = createImage("assets/stage/props/fire/tile%03d.png", i);
+
+		tex->height *= 3.0f;
+		tex->width *= 3.0f;
+		tex->potHeight *= 3.0f;
+		tex->potWidth *= 3.0f;
+		
+		img->addObject(tex);
+		img->leftRight = 1;
+	
+		freeImage(tex);
+	}
+
+	img->position = iPointMake(0, 0);
+	img->aniDt = 0.0f;
+	img->_aniDt = 0.025f;
+	img->_repeatNum = 0;
+
+	_projectile[3] = (Projectile*)malloc(sizeof(Projectile) * _projectNum);
+
+	for (i = 0; i < _projectNum; i++)
+		_projectile[3][i].img = img->copy();
+
+	projectile = (Projectile**)malloc(sizeof(Projectile*) * 4 * _projectNum);
+	projectNum = 0;
 }
 
 void freeProjectile()

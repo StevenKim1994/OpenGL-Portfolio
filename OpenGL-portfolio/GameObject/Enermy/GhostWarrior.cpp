@@ -28,7 +28,7 @@ GhostWarrior::GhostWarrior(int number)
 			"assets/stage/ghostwarrior/Attack/Attack%d.png", 11, 2.0f, {-150, -270},
 			"assets/stage/ghostwarrior/Attack/Attack%d.png", 11, 2.0f, {-150, -270},
 			"assets/stage/ghostwarrior/Fly/fly%d.png", 5, 2.0f, {-150,-270},
-			"assets/stage/ghostwarrior/Fly/fly%6d.png", 5, 2.0f, {-150,-270},
+			"assets/stage/ghostwarrior/Fly/fly%d.png", 5, 2.0f, {-150,-270},
 			"assets/stage/ghostwarrior/Fly/fly%d.png", 5, 2.0f, {-150,-270},
 			"assets/stage/ghostwarrior/Hit/hit%d.png", 6, 2.0f, {-150,-270},
 			"assets/stage/ghostwarrior/Death/death%d.png",8, 2.0f, {-150,-270},
@@ -68,7 +68,7 @@ GhostWarrior::GhostWarrior(int number)
 				break;
 
 			default:
-				img->_repeatNum = 1; // 테스트용 설정 나중에 1로 바꿔야함
+				img->_repeatNum = 1; 
 				break;
 			}
 
@@ -163,6 +163,7 @@ bool cc = false;
 
 void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 {
+
 	iPoint gwMovement = iPointMake(0, 1) * powGravity * dt ;
 	iPoint mp = v * (movement * dt);
 
@@ -177,7 +178,7 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 		detected_Player = true;
 		oldPosition = position;
 		targetPosition = iPointMake(300, position.y);
-
+		tempY = position.y;
 		printf("Player Detected!\n");
 	}
 	
@@ -326,29 +327,55 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 	}
 	else if (Parse == 2)
 	{
-		setBehave(ObjectBehave::ObjectBehave_move, direction);
-		targetPosition = iPointMake(MapTileWidth * 21, MapTileHeight * 17);
+		//printf("Fire Skill On!\n");
+		if (action == false)
+		{
+			direction = 1;
+			img->leftRight = direction;
+			setBehave(ObjectBehave::ObjectBehave_move, direction);
+			targetPosition = iPointMake(MapTileWidth * 21, MapTileHeight * 17);
 
-		moveForMouse(dt, NumX, NumY);
+			moveForMouse(dt, NumX, NumY);
+		}
 
 		if (targetPosition == position)
 		{
 			action = true;
-		}
-
-		if (action == true)
-		{
+			printf("Fire Meteor!!\n");
+			setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
 			
-				printf("Fire Meteor!!\n");
-				//2페이즈에서 맵전체 랜덤위치에 메테오 뿌림
+			if (aiTime >= _aiTime)
+			{
+				targetPosition = iPointMake(300,tempY);
+				oldPosition = iPointMake(MapTileWidth * 35, tempY);
+				action = false;
+				count = 0;
+				count2 = 0;
+				Parse = 1;
+			}
+
+			aiTime += 0.01f;;
+
+
+			//2페이즈에서 맵전체 랜덤위치에 메테오 뿌림
 		}
 
 	}
 	else if (Parse == 3)
 	{
+		printf("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt\n");
 		setHP(getMaxHp()); // 다시 체력 100%로
-		
+		targetPosition = iPointMake(300, MapTileHeight * 13);
+		oldPosition = iPointMake(MapTileWidth * 35, MapTileHeight * 13);
+
+		Parse = 1;
+		action = false;
+		count = 0;
+		count2 = 0;
+		aiTime = 0;
 		// 페이즈 1처럼 행동
+		setBehave(ObjectBehave::ObjectBehave_move, direction);
+		moveForMouse(dt, NumX, NumY);
 	}
 
 	if (imgSkill1->animation)
@@ -372,9 +399,11 @@ void GhostWarrior::setBehave(ObjectBehave be, int dir)
 			img->startAnimation(cbDeath, this);
 		else if (be == ObjectBehave::ObjectBehave_hurt)
 			img->startAnimation(cbHurt, this);
+		else if (be == ObjectBehave::ObjectBehave_meleeAttack1 && Parse == 2)
+			img->startAnimation(cbMeteorSkill, this);
 		else if (be == ObjectBehave::ObjectBehave_meleeAttack1)
 			img->startAnimation(cbMeleeAttack, this);
-		else if(be == ObjectBehave::ObjectBehave_meleeAttack2)
+		else if (be == ObjectBehave::ObjectBehave_meleeAttack2)
 			img->startAnimation(cbMeleeAttack2, this);
 		else
 			img->startAnimation(cbBehave, this);
@@ -413,6 +442,19 @@ void GhostWarrior::Skill1()
 void GhostWarrior::Skill2()
 {
 }
+
+void GhostWarrior::MeteorSkill()
+{
+	printf("METEOR!!!\n");
+
+	
+	setBehave(ObjectBehave::ObjectBehave_idle, direction);
+	
+
+
+
+}
+
 
 void GhostWarrior::setDmg(float dmg)
 {
@@ -471,6 +513,19 @@ void GhostWarrior::cbMeleeAttack2(void* cb)
 	o->Skill1();
 	o->aiTime = 0.0f;
 	o->count2++;
+}
+
+void GhostWarrior::cbMeteorSkill(void* cb)
+{
+	printf("at@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ttt!\n");
+	GhostWarrior* o = (GhostWarrior*)cb;
+	addProjectile(3, iPointMake(100 + random() % 1100, 0), 3, 5+random()%20, 2);
+	addProjectile(3, iPointMake(100 + random() % 1100, 0), 3, 5+random() % 20, 2);
+	addProjectile(3, iPointMake(100 + random() % 1100, 0), 3, 5+random() % 20, 2);
+	addProjectile(3, iPointMake(random() % 1280, 0), 3, 5+ random() % 20, 2);
+	addProjectile(3, iPointMake(random() % 1280, 0), 3, 5+random() % 20, 2);
+	o->setBehave(ObjectBehave::ObjectBehave_move, o->direction);
+	
 }
 
 
