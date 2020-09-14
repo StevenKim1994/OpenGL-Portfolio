@@ -341,7 +341,7 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 		if (targetPosition == position)
 		{
 			action = true;
-			printf("Fire Meteor!!\n");
+			//printf("Fire Meteor!!\n");
 			setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
 			
 			if (aiTime >= _aiTime)
@@ -450,9 +450,6 @@ void GhostWarrior::MeteorSkill()
 	
 	setBehave(ObjectBehave::ObjectBehave_idle, direction);
 	
-
-
-
 }
 
 
@@ -517,7 +514,7 @@ void GhostWarrior::cbMeleeAttack2(void* cb)
 
 void GhostWarrior::cbMeteorSkill(void* cb)
 {
-	printf("at@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ttt!\n");
+	printf("Meteor Casting!\n");
 	GhostWarrior* o = (GhostWarrior*)cb;
 	addProjectile(3, iPointMake(100 + random() % 1100, 0), 3, 5+random()%20, 2);
 	addProjectile(3, iPointMake(100 + random() % 1100, 0), 3, 5+random() % 20, 2);

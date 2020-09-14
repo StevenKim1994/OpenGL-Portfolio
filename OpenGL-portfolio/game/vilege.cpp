@@ -63,6 +63,9 @@ static float logoDt;
 
 static Texture* gwName;
 
+
+
+
 void loadVillege()
 {
 	gameState = gs_villege; 
@@ -184,7 +187,7 @@ void drawVillege(float dt)
 
 	drawHero(dt, Vilegetiles, vilegemaptile, vilegeTileNumX, vilegeTileNumY);
 
-
+	printf("%f\n", hero->position.y);
 
 	fbo->unbind();
 	

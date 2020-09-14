@@ -193,8 +193,10 @@ void addEffectHit(int index, iPoint p)
 extern Player* hero;
 extern Object** goblins;
 extern Object** mushrooms;
+extern Object** ghostwarriors;
 extern int goblinNum;
 extern int mushNum;
+
 extern Object** orcs;
 
 struct Projectile
@@ -203,6 +205,7 @@ struct Projectile
 	iPoint p;
 	int dir;
 	int speed;
+	int index;
 	//int targetNum;
 	iSize rectSize = iSizeMake(32, 32);
 	//Object** target;
@@ -293,6 +296,19 @@ struct Projectile
 
 				}
 			}
+
+			for(int j = 0; j<1; j++)
+			{
+				if(containPoint(p, iRectMake(ghostwarriors[j]->position.x, ghostwarriors[j]->position.y,100, 500)))
+				{
+					ghostwarriors[j]->setDamage(7);
+					addNumber(7, ghostwarriors[j]->position);
+					ghostwarriors[j]->setBehave(ObjectBehave::ObjectBehave_hurt, ghostwarriors[j]->direction);
+					addEffectHit(0, p);
+
+					return true;
+				}
+			}
 		}
 		else if (shooter == 1) // 발사한 오브젝트가 enermy 일때
 		{
@@ -303,15 +319,38 @@ struct Projectile
 				return true;
 			}
 		}
-		else if (shooter == 2)  // 발사한 오브젝트가 boss면
+		else if(shooter ==2 && index == 2 && img->frame == 1) // 발사한 오브젝트가 boss고 지진스킬 애니메이션이 시작할때 한번만 체크
 		{
+			
+				if(hero->getPosition().y == 631.0f) // 플레이어가 점프하지 않으면 데미지 입음.
+				{
+					hero->setDamage(7);
+					addEffectHit(0, hero->position);
+					addNumber(7, hero->position);
 
-			if (gameState == gs_villege)
+
+					//return true;
+				}
+		
+		}
+		else if (shooter == 2 )  // 발사한 오브젝트가 boss면
+		{
+			if (containPoint(p, iRectMake(hero->getPosition().x, hero->getPosition().y, 100, 100))) // 플레이어와 충돌시
 			{
-				if (containPoint(p, iRectMake(0,400,3000,3000))) // 땅에 충돌시
+				printf("meteor hit@@@@@@@@@@@@@@@@@@@@@@@@@@@@@!!!!@@@@@@@@@@@@@@@@!\n");
+		
+				hero->setDamage(15.0);
+				addEffectHit(1, iPointMake(p.x-200, p.y-200));
+				addNumber(15, hero->position);
+				
+				return true;
+			}
+			else if (gameState == gs_villege)
+			{
+				if (containPoint(p, iRectMake(0,800,100,000))) // 땅에 충돌시
 				{
 					printf("explosion\n");
-					addEffectHit(1, iPointMake(p.x, p.y));
+					addEffectHit(1, iPointMake(p.x-200, p.y-200));
 					return true;
 				}
 			}
@@ -467,6 +506,7 @@ void addProjectile(int index, iPoint p, int direction, int speed, int shooter)//
 			pj->dir = direction;
 			pj->speed = speed;
 			pj->img->startAnimation();
+			pj->index = index;
 			//pj->target = ObjTarget;
 			//pj->targetNum = TargetNum;
 			pj->shooter = shooter;
