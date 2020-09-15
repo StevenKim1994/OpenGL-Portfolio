@@ -16,7 +16,7 @@ extern int Vilegetiles[40 * 22];
 GhostWarrior::GhostWarrior(int number)
 {
 	movement = 2;
-	
+	alive = true;
 	count = 0;
 	count2 = 0;
 	sp->init(Vilegetiles, vilegeTileNumX, vilegeTileNumY);
@@ -167,229 +167,241 @@ bool cc = false;
 
 void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int NumY)
 {
-
-	iPoint gwMovement = iPointMake(0, 1) * powGravity * dt ;
-	iPoint mp = v * (movement * dt);
-
-	if(action == false)
-	move(mp  + gwMovement, tile, NumX, NumY);
-
-	img->paint(dt, position + offset);
-
-	// 플레이어 발견 했을때!
-	if (iPointLength(hero->getPosition() - position) < 500 && detected_Player == false)
+	if (HP <= 0)
 	{
-		detected_Player = true;
-		oldPosition = position;
-		targetPosition = iPointMake(300, position.y);
-		tempY = position.y;
-		printf("Player Detected!\n");
+		alive = false;
 	}
-	
-//	iPointMake(MapTileWidth * 35, MapTileHeight * 13)
-	if (detected_Player && Parse == 0)
+
+	if (alive == false)
 	{
-		Parse = 1; // 원래 1로 해야대는데 2페이즈 개발중이라 그럼
+		setBehave(ObjectBehave::ObjectBehave_death, direction);
 	}
-	
-	if (Parse == 1)
+
+	if (alive)
 	{
-		parseDt += 0.01f;
-		if (HP == getMaxHp() * 0.7)
+		iPoint gwMovement = iPointMake(0, 1) * powGravity * dt;
+		iPoint mp = v * (movement * dt);
+
+		if (action == false)
+			move(mp + gwMovement, tile, NumX, NumY);
+
+
+		// 플레이어 발견 했을때!
+		if (iPointLength(hero->getPosition() - position) < 500 && detected_Player == false)
 		{
-			Parse = 2;
+			detected_Player = true;
+			oldPosition = position;
+			targetPosition = iPointMake(300, position.y);
+			tempY = position.y;
+			printf("Player Detected!\n");
 		}
-		
-		if (position != targetPosition)
+
+		//	iPointMake(MapTileWidth * 35, MapTileHeight * 13)
+		if (detected_Player && Parse == 0)
 		{
-			if(action == false)
-			{ 
-				if (leftRight)
-				{
-					direction = 0;
-					img->leftRight = direction;
-				}
-				else
-				{
-					direction = 1;
-					img->leftRight = direction;
-				}
-				setBehave(ObjectBehave::ObjectBehave_move, direction);
-				moveForMouse(dt, NumX, NumY);	
-			}
+			Parse = 1; // 원래 1로 해야대는데 2페이즈 개발중이라 그럼
 		}
-		
-		else
+
+		if (Parse == 1)
 		{
-			action = true;
-			//v = iPointZero;
-			
-			/* left Attack Action */
-			if (leftRight == false)
+			parseDt += 0.01f;
+			if (HP == getMaxHp() * 0.7)
 			{
-				if (aiTime >= _aiTime && count < 2)
-				{
-					printf("left attack! %d \n", count);
-					
-					direction = 0;
-					img->leftRight = direction;
-					shakeCamera(100, 0.25);
-					setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
-
-				}
-				else if (behave == ObjectBehave::ObjectBehave_meleeAttack1 && img->animation == true)
-				{
-					printf("ing! %d \n", count);
-					setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
-				}
-				else
-					setBehave(ObjectBehave::ObjectBehave_idle, direction);
-
-				if (count == 2)
-				{
-					printf("!!!\n");
-
-					if (targetPosition == position)
-					{
-						printf("turn!\n");
-
-						iPoint temp = targetPosition;
-						targetPosition = oldPosition;
-						oldPosition = temp;
-						targetPosition.y = position.y;
-
-						direction = !direction;
-						img->leftRight = direction;
-					}
-					leftRight = true;
-					setBehave(ObjectBehave::ObjectBehave_move, direction);
-					action = false;
-					
-
-				}
-			}
-		
-			/*Right Attack Action*/
-
-			if (leftRight == true)
-			{
-				if (aiTime >= _aiTime && count2 < 2)
-				{
-					printf("right attack! %d \n", count2);
-					
-					direction = 1;
-					img->leftRight = direction;
-					shakeCamera(100,0.25);
-					setBehave(ObjectBehave::ObjectBehave_meleeAttack2, direction);
 				
+			}
 
-				}
-				else if (behave == ObjectBehave::ObjectBehave_meleeAttack2 && img->animation == true)
+			if (position != targetPosition)
+			{
+				if (action == false)
 				{
-					printf("ing2! %d\n", count2);
-					setBehave(ObjectBehave::ObjectBehave_meleeAttack2, direction);
-				}
-				else
-					setBehave(ObjectBehave::ObjectBehave_idle, direction);
-
-				if (count2 == 2)
-				{
-					printf("@@@\n");
-
-					if (targetPosition == position)
+					if (leftRight)
 					{
-						printf("turn!\n");
-
-						iPoint temp = targetPosition;
-						targetPosition = oldPosition;
-						oldPosition = temp;
-						targetPosition.y = position.y;
-
-						direction = !direction;
+						direction = 0;
 						img->leftRight = direction;
 					}
-					leftRight = false;
+					else
+					{
+						direction = 1;
+						img->leftRight = direction;
+					}
 					setBehave(ObjectBehave::ObjectBehave_move, direction);
+					moveForMouse(dt, NumX, NumY);
+				}
+			}
+
+			else
+			{
+				action = true;
+				//v = iPointZero;
+
+				/* left Attack Action */
+				if (leftRight == false)
+				{
+					if (aiTime >= _aiTime && count < 2)
+					{
+						printf("left attack! %d \n", count);
+
+						direction = 0;
+						img->leftRight = direction;
+						shakeCamera(100, 0.25);
+						setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+
+					}
+					else if (behave == ObjectBehave::ObjectBehave_meleeAttack1 && img->animation == true)
+					{
+						printf("ing! %d \n", count);
+						setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+					}
+					else
+						setBehave(ObjectBehave::ObjectBehave_idle, direction);
+
+					if (count == 2)
+					{
+						printf("!!!\n");
+
+						if (targetPosition == position)
+						{
+							printf("turn!\n");
+
+							iPoint temp = targetPosition;
+							targetPosition = oldPosition;
+							oldPosition = temp;
+							targetPosition.y = position.y;
+
+							direction = !direction;
+							img->leftRight = direction;
+						}
+						leftRight = true;
+						setBehave(ObjectBehave::ObjectBehave_move, direction);
+						action = false;
+
+
+					}
+				}
+
+				/*Right Attack Action*/
+
+				if (leftRight == true)
+				{
+					if (aiTime >= _aiTime && count2 < 2)
+					{
+						printf("right attack! %d \n", count2);
+
+						direction = 1;
+						img->leftRight = direction;
+						shakeCamera(100, 0.25);
+						setBehave(ObjectBehave::ObjectBehave_meleeAttack2, direction);
+
+
+					}
+					else if (behave == ObjectBehave::ObjectBehave_meleeAttack2 && img->animation == true)
+					{
+						printf("ing2! %d\n", count2);
+						setBehave(ObjectBehave::ObjectBehave_meleeAttack2, direction);
+					}
+					else
+						setBehave(ObjectBehave::ObjectBehave_idle, direction);
+
+					if (count2 == 2)
+					{
+						printf("@@@\n");
+
+						if (targetPosition == position)
+						{
+							printf("turn!\n");
+
+							iPoint temp = targetPosition;
+							targetPosition = oldPosition;
+							oldPosition = temp;
+							targetPosition.y = position.y;
+
+							direction = !direction;
+							img->leftRight = direction;
+						}
+						leftRight = false;
+						setBehave(ObjectBehave::ObjectBehave_move, direction);
+						action = false;
+						count = 0;
+						count2 = 0;
+						Parse = 2;
+
+					}
+				}
+
+				aiTime += 0.01f;
+			}
+
+
+
+			if (parseDt >= 120.0f || HP <= getMaxHp() * 0.5)
+			{
+				Parse = 2;
+				parseDt = 0.0f;
+			}
+		}
+		else if (Parse == 2)
+		{
+			//printf("Fire Skill On!\n");
+			if (action == false)
+			{
+				direction = 1;
+				img->leftRight = direction;
+				setBehave(ObjectBehave::ObjectBehave_move, direction);
+				targetPosition = iPointMake(MapTileWidth * 21, MapTileHeight * 17);
+
+				moveForMouse(dt, NumX, NumY);
+			}
+
+			if (targetPosition == position)
+			{
+				action = true;
+				//printf("Fire Meteor!!\n");
+				setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
+
+				if (aiTime >= _aiTime)
+				{
+					targetPosition = iPointMake(300, tempY);
+					oldPosition = iPointMake(MapTileWidth * 35, tempY);
 					action = false;
 					count = 0;
 					count2 = 0;
-					Parse = 2;
-					
+					Parse = 1;
 				}
+
+				aiTime += 0.01f;;
+
+
+				//2페이즈에서 맵전체 랜덤위치에 메테오 뿌림
 			}
 
-			aiTime += 0.01f;
 		}
-
-
-
-		if (parseDt >= 120.0f || HP <= getMaxHp() * 0.5)
+		else if (Parse == 3)
 		{
-			Parse = 2;
-			parseDt = 0.0f;
-		}
-	}
-	else if (Parse == 2)
-	{
-		//printf("Fire Skill On!\n");
-		if (action == false)
-		{
-			direction = 1;
-			img->leftRight = direction;
+			printf("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt\n");
+			setHP(getMaxHp()); // 다시 체력 100%로
+			targetPosition = iPointMake(300, MapTileHeight * 13);
+			oldPosition = iPointMake(MapTileWidth * 35, MapTileHeight * 13);
+
+			Parse = 1;
+			action = false;
+			count = 0;
+			count2 = 0;
+			aiTime = 0;
+			// 페이즈 1처럼 행동
 			setBehave(ObjectBehave::ObjectBehave_move, direction);
-			targetPosition = iPointMake(MapTileWidth * 21, MapTileHeight * 17);
-
 			moveForMouse(dt, NumX, NumY);
 		}
 
-		if (targetPosition == position)
+		if (imgSkill1->animation)
 		{
-			action = true;
-			//printf("Fire Meteor!!\n");
-			setBehave(ObjectBehave::ObjectBehave_meleeAttack1, direction);
-			
-			if (aiTime >= _aiTime)
-			{
-				targetPosition = iPointMake(300,tempY);
-				oldPosition = iPointMake(MapTileWidth * 35, tempY);
-				action = false;
-				count = 0;
-				count2 = 0;
-				Parse = 1;
-			}
+			imgSkill1->paint(dt, offset);
 
-			aiTime += 0.01f;;
-
-
-			//2페이즈에서 맵전체 랜덤위치에 메테오 뿌림
 		}
 
+
 	}
-	else if (Parse == 3)
-	{
-		printf("tttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt\n");
-		setHP(getMaxHp()); // 다시 체력 100%로
-		targetPosition = iPointMake(300, MapTileHeight * 13);
-		oldPosition = iPointMake(MapTileWidth * 35, MapTileHeight * 13);
-
-		Parse = 1;
-		action = false;
-		count = 0;
-		count2 = 0;
-		aiTime = 0;
-		// 페이즈 1처럼 행동
-		setBehave(ObjectBehave::ObjectBehave_move, direction);
-		moveForMouse(dt, NumX, NumY);
-	}
-
-	if (imgSkill1->animation)
-	{
-		imgSkill1->paint(dt, offset);
-		
-	}
-
-
 	
+	img->paint(dt, position + offset);
 }
 
 void GhostWarrior::setBehave(ObjectBehave be, int dir)
@@ -462,17 +474,19 @@ void GhostWarrior::setDmg(float dmg)
 	ObjectBehave be = behave;
 	int dir = direction;
 
-	if (HP > 0)
+	if (Parse != 2)
 	{
-		HP -= dmg;
-		be = ObjectBehave::ObjectBehave_hurt;
+		if (HP > 0)
+		{
+			HP -= dmg;
+			be = ObjectBehave::ObjectBehave_hurt;
+		}
+		else
+		{
+			HP = 0;
+			be = ObjectBehave::ObjectBehave_death;
+		}
 	}
-	else
-	{
-		HP = 0;
-		be = ObjectBehave::ObjectBehave_death;
-	}
-
 	setBehave(be, dir);
 	addNumber(dmg, position + iPointMake(0, -50));
 }

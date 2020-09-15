@@ -37,6 +37,7 @@ public:
 	int count;
 	int count2;
 	float tempY;
+	bool alive;
 public:
 	float aiTime, _aiTime;
 

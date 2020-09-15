@@ -187,6 +187,9 @@ void drawVillege(float dt)
 	}
 
 	drawHero(dt, Vilegetiles, vilegemaptile, vilegeTileNumX, vilegeTileNumY);
+	drawNumber(dt, offMt);
+	drawEffectHit(dt, offMt);
+	drawProjectile(dt, offMt);
 
 	printf("%f\n", hero->position.y);
 
@@ -197,9 +200,6 @@ void drawVillege(float dt)
 	fbo->unbind();
 	showCamera(texFboVilege, dt);
 
-	drawNumber(dt, offMt);
-	drawEffectHit(dt, offMt);
-	drawProjectile(dt, offMt);
 
 	drawPopPlayerUI(dt);
 	drawPopMenuUI(dt);
@@ -265,6 +265,8 @@ void drawVillege(float dt)
 	{
 		showPopGameOverUI(true);
 	}
+
+	
 	
 
 }

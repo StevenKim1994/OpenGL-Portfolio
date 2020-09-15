@@ -135,7 +135,7 @@ void Goblin::cbDeath(void* cb)
 	Object* o = (Object*)cb;
 	o->alive = false;
 
-	hero->setExp(hero->getExp() + 5.0f);
+	hero->setExp(hero->getExp() + 25.0f);
 	addCoin(o->position, 100);	
 }
 
