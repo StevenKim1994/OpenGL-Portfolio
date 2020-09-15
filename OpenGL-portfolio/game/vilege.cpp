@@ -138,7 +138,7 @@ void loadVillege()
 	loadEffectHit();
 	loadProjectile();
 
-	if (gameState == gs_villege)
+	if (gameState == gs_villege && hero->alive == true)
 	{
 		setRGBA(1, 0, 0, 1);
 		iGraphics* g = iGraphics::instance();
@@ -230,7 +230,7 @@ void drawVillege(float dt)
 		else
 		{
 			//만약 스테이지가 보스스테이지면 UI상에 보스 체력표시함
-			if (gameState == gs_villege)
+			if (gameState == gs_villege && hero->alive == true)
 			{
 				
 				drawImage(gwName, devSize.width / 2, devSize.height / 9, HCENTER|VCENTER);
@@ -239,7 +239,7 @@ void drawVillege(float dt)
 				
 
 				drawRect(devSize.width / 2, devSize.height / 7,720, 50); // 체력바 프레임
-				fillRect(devSize.width / 2, devSize.height / 7, 720, 50); // 보스체력
+				fillRect(devSize.width / 2, devSize.height / 7, (ghostwarriors[0]->getHp()/ghostwarriors[0]->getMaxHp()) * 720, 50); // 보스체력
 				setRGBA(1, 1, 1, 1);
 			}
 		}
@@ -257,6 +257,13 @@ void drawVillege(float dt)
 		nameIndicator->setString("%d", hero->getLevel());
 	}
 
+	if (hero->HP <= 0)
+		hero->alive = false;
+
+	if (hero->alive == false)
+	{
+		showPopGameOverUI(true);
+	}
 	
 
 }

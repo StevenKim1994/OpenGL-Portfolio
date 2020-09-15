@@ -363,8 +363,8 @@ void drawStage(float dt)
 // 개발용 코드 #DEBUG
 	if (nextStageIn == false)
 	{
-		setLoading(gs_villege, freeStage, loadVillege);
-		nextStageIn = true;
+	//	setLoading(gs_villege, freeStage, loadVillege);
+	//	nextStageIn = true;
 	}
 // 개발용 코드
 	if (hero->alive == false) // 플레이어가 죽으면 

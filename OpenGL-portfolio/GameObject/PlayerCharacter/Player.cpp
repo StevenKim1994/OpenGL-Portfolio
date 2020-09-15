@@ -294,6 +294,8 @@ void Player::Skill1()
 		targetPos = iPointMake(position.x - 128, position.y - 100);
 	imgSkill->position = targetPos;
 	imgSkill->startAnimation();
+
+
 }
 
 extern Object** goblins;

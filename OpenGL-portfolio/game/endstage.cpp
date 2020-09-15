@@ -35,6 +35,7 @@ extern bool mouseMove;
 int _mushNum = mush_Num;
 int mushNum = 0; // 처음엔 0
 
+
 static bool coli_fire = false;
 void cbShake()
 {

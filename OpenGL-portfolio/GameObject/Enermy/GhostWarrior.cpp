@@ -89,7 +89,11 @@ GhostWarrior::GhostWarrior(int number)
 		imgs[i] = imgGhostWarrior[i]->copy();
 	img = imgs[0];
 
+	setMaxHp(GhostWarrior_HP);
+	setMaxMp(GhostWarrior_MP);
+
 	HP = GhostWarrior_HP;
+
 	MP = GhostWarrior_MP;
 
 	direction = 0;

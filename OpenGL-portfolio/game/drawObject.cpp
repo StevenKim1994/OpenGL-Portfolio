@@ -12,6 +12,7 @@ extern bool mouseMove;
 
 extern Object** goblins;
 extern Object** mushrooms;
+extern Object** ghostwarriors;
 extern int goblinNum;
 extern iStrTex* killIndicator;
 
@@ -406,6 +407,19 @@ void drawHero(float dt, int* tiledata, MapTile* tile, int NumX, int NumY)
 							Mushroom* mush = (Mushroom*)mushrooms[i];
 							mush->setDmg(hero->getDamage());
 							addEffectHit(0, mush->getPosition());
+						}
+					}
+				}
+
+				if (gameState == gs_villege)
+				{
+					for (int i = 0; i < 1; i++)
+					{
+						if (containPoint(ghostwarriors[i]->getPosition(), hero->imgSkill->touchRect()))
+						{
+							GhostWarrior* ghostwarrior = (GhostWarrior*)ghostwarriors[i];
+							ghostwarrior->setDmg(hero->getDamage());
+							addEffectHit(0, ghostwarrior->getPosition());
 						}
 					}
 				}
