@@ -138,7 +138,8 @@ void loadVillege()
 	loadEffectHit();
 	loadProjectile();
 
-	if (gameState == gs_villege && hero->alive == true)
+	extern iPopup* PopGameOver;
+	if (gameState == gs_villege && PopGameOver->bShow== false)
 	{
 		setRGBA(1, 0, 0, 1);
 		iGraphics* g = iGraphics::instance();
@@ -230,7 +231,7 @@ void drawVillege(float dt)
 		else
 		{
 			//만약 스테이지가 보스스테이지면 UI상에 보스 체력표시함
-			if (gameState == gs_villege && hero->alive == true)
+			if (gameState == gs_villege && hero->alive)
 			{
 				
 				drawImage(gwName, devSize.width / 2, devSize.height / 9, HCENTER|VCENTER);
