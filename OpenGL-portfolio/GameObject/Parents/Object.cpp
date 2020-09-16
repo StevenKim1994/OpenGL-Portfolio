@@ -191,10 +191,11 @@ void Object::setDmg(float dmg)
 	{
 		be = ObjectBehave::ObjectBehave_hurt;
 	}
-	else if(HP<0)
+	else if(HP<=0)
 	{
 		HP = 0;
 		be = ObjectBehave::ObjectBehave_death;
+		alive = false;
 	}
 
 	setBehave(be, dir);

@@ -3,6 +3,7 @@
 #include "GameEffect.h"
 #include "../game/sceneManager.h"
 #include "Goblin.h"
+#include "GhostWarrior.h"
 extern iStrTex* hpIndicator;
 
 struct Damage
@@ -298,14 +299,19 @@ struct Projectile
 				}
 			}
 
+
 			if(gameState == gs_villege)
 			for(int j = 0; j<1; j++)
 			{
+				GhostWarrior* gw = (GhostWarrior*)ghostwarriors[j];
+				if(gw->Parse == 1)
 				if(containPoint(p, iRectMake(ghostwarriors[j]->position.x, ghostwarriors[j]->position.y,100, 500)))
 				{
 					ghostwarriors[j]->setDmg(7);
 					addEffectHit(0, p);
 					hpIndicator->setString("HP : %.1f / %.1f", hero->getHp(), hero->getMaxHp());
+
+
 					return true;
 				}
 			}

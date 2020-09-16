@@ -238,7 +238,6 @@ void drawVillege(float dt)
 
 				setRGBA(1, 0, 0, 1);
 				
-
 				drawRect(devSize.width / 2, devSize.height / 7,720, 50); // 체력바 프레임
 				fillRect(devSize.width / 2, devSize.height / 7, (ghostwarriors[0]->getHp()/ghostwarriors[0]->getMaxHp()) * 720, 50); // 보스체력
 				setRGBA(1, 1, 1, 1);
@@ -266,6 +265,27 @@ void drawVillege(float dt)
 		showPopGameOverUI(true);
 	}
 
+	GhostWarrior* gw = (GhostWarrior*)ghostwarriors[0];
+
+	if (gw->bsalive == false)
+	{
+		setRGBA(0, 1, 0, 1);
+		fillRect(iRectMake(0, 0, devSize.width, devSize.height));
+		setRGBA(1, 1, 1, 1);
+		setStringRGBA(0, 0, 0, 1);
+		setStringSize(30);
+		
+		iGraphics* g = iGraphics::instance();
+		iSize size = iSizeMake(720, 200);
+
+		setRGBA(0, 0, 0, 0);
+		g->init(size);
+		g->fillRect(0, 0, size.width, size.height);
+		setRGBA(0, 0, 0, 1);
+		g->drawString(size.width / 2, size.height / 2, HCENTER | VCENTER, "Congratulation!!\n Game Clear!!!\n");
+		gwName = g->getTexture();
+		drawImage(gwName, devSize.width / 2, devSize.height / 2, HCENTER|VCENTER);
+	}
 	
 	
 

@@ -3,7 +3,7 @@
 #include "GameEffect.h"
 #include "CoinFactory.h"
 
-#define GhostWarrior_HP 200
+#define GhostWarrior_HP 125
 #define GhostWarrior_MP 100
 #define GhostWarrior_Stamina 100
 
@@ -16,7 +16,7 @@ extern int Vilegetiles[40 * 22];
 GhostWarrior::GhostWarrior(int number)
 {
 	movement = 2;
-	alive = true;
+	bsalive = true;
 	count = 0;
 	count2 = 0;
 	sp->init(Vilegetiles, vilegeTileNumX, vilegeTileNumY);
@@ -170,13 +170,10 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 	if (HP <= 0)
 	{
 		alive = false;
+		if(behave != ObjectBehave::ObjectBehave_death)
+			setBehave(ObjectBehave::ObjectBehave_death, direction);
 	}
-
-	if (alive == false)
-	{
-		setBehave(ObjectBehave::ObjectBehave_death, direction);
-	}
-
+	
 	if (alive)
 	{
 		iPoint gwMovement = iPointMake(0, 1) * powGravity * dt;
@@ -199,7 +196,7 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 		//	iPointMake(MapTileWidth * 35, MapTileHeight * 13)
 		if (detected_Player && Parse == 0)
 		{
-			Parse = 1; // 원래 1로 해야대는데 2페이즈 개발중이라 그럼
+			Parse = 1; // 
 		}
 
 		if (Parse == 1)
@@ -329,14 +326,6 @@ void GhostWarrior::paint(float dt, iPoint offset, MapTile* tile, int NumX, int N
 				}
 
 				aiTime += 0.01f;
-			}
-
-
-
-			if (parseDt >= 120.0f || HP <= getMaxHp() * 0.5)
-			{
-				Parse = 2;
-				parseDt = 0.0f;
 			}
 		}
 		else if (Parse == 2)
@@ -493,11 +482,13 @@ void GhostWarrior::setDmg(float dmg)
 
 void GhostWarrior::cbDeath(void* cb)
 {
-	Object* o = (Object*)cb;
+	GhostWarrior* o = (GhostWarrior*)cb;
+	o->bsalive = false;
 	o->alive = false;
 
-	hero->setExp(hero->getExp() + 100.0f);
-	addCoin(o->position, 1000);
+
+	//hero->setExp(hero->getExp() + 100.0f);
+	//addCoin(o->position, 1000);
 
 }
 
