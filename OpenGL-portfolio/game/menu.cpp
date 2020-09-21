@@ -45,11 +45,12 @@ void drawMenu(float dt)
 
 void keyMenu(iKeyState stat, iPoint point)
 {
+	if (keyPopSettings(stat, point))
+		return;
+
 	if (keyPopQuitAnswer(stat, point))
 		return;
 
-	if (keyPopSettings(stat, point))
-		return;
 	
 	if (keyPopMenuBtn(stat, point))
 		return;
@@ -308,6 +309,8 @@ void createPopSettings()
 		pop->addObject(barImg);
 		setRGBA(1, 1, 1, 1);
 
+		
+
 
 	}
 
@@ -355,7 +358,8 @@ void createPopSettings()
 
 			pop->addObject(img);
 			PopMenuSettingsBtn[i + 1] = img;
-		
+
+			printf("%f %f\n", img->position.x, img->position.y);
 		
 		
 		
@@ -388,8 +392,15 @@ void drawPopSettings(float dt)
 	PopMenuSettings->paint(dt);
 }
 
+
+bool touching;
+iPoint prevPoint;
+
 bool keyPopSettings(iKeyState stat, iPoint point)
 {
+	printf("%f %f\n", point.x, prevPoint.x);
+	
+	
 	if (PopMenuSettings->bShow == false)
 		return false;
 
@@ -401,42 +412,68 @@ bool keyPopSettings(iKeyState stat, iPoint point)
 	switch (stat)
 	{
 	case iKeyState::iKeyStateBegan:
+	{
 	
 	
 		i = PopMenuSettings->selected;
-	
 
+		if (i == -1) break;
+			
 		if (i == 0)
 		{
-			PopMenuSettings->show(false);
+			showPopSettings(false);
+			//PopMenuSettings->show(false);
 		}
-		else if ( i > 0 && i < 3)
+		else //if(i > 0 && i < 3)
 		{
-		
-
+			touching = true;
+			prevPoint = point;
 		}
 		break;
-	
 
+	}
 	case iKeyState::iKeyStateMoved:
+	
+		if(touching)
+		{
+			
+			i = PopMenuSettings->selected;
+			if(i > 0)
+			{
+				iImage* img = PopMenuSettingsBtn[i];
+				//printf("%f %f\n", img->position.x, img->position.y);
+				img->position.x += (point - prevPoint).x;
+				if (img->position.x > 621)
+					img->position.x = 620;
+				else if (img->position.x < 190)
+					img->position.x = 190;
+				prevPoint = point;
+
+				
+			}
+			
+		}
+		else
 		{
 			for (i = 0; i < 3; i++)
 			{
 				if (containPoint(point, PopMenuSettingsBtn[i]->touchRect(PopMenuSettings->closePosition)))
 				{
-				
+
 					j = i;
 					break;
 				}
 			}
 			PopMenuSettings->selected = j;
 		}
-			break;
+		break;
+
+
+
 	
-
-		
 	case iKeyState::iKeyStateEnded:
-
+	{
+		touching = false;
 		i = PopMenuSettings->selected;
 		if (i == 1) // bgm sound
 		{
@@ -452,10 +489,11 @@ bool keyPopSettings(iKeyState stat, iPoint point)
 
 		}
 
-		
-		break;
 
 
+
+	}
+	break;
 	}
 
 
